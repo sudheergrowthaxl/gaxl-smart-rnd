@@ -1,0 +1,4 @@
+# This file ensures the output directory is tracked by git
+# Generated DQ rules will be placed here:
+# - dq_rules.json
+# - dq_rules.xlsx
