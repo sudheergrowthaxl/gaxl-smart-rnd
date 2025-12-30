@@ -161,6 +161,10 @@ class DQRuleSet(BaseModel):
         ...,
         description="Name of the dataset being analyzed"
     )
+    parent_class: str = Field(
+        default="Unknown",
+        description="Parent class/category derived from the data"
+    )
     total_records: int = Field(
         ...,
         description="Total number of records in the dataset"
@@ -228,6 +232,7 @@ class DQRuleSet(BaseModel):
             self.generate_summary()
         return {
             "dataset_name": self.dataset_name,
+            "parent_class": self.parent_class,
             "total_records": self.total_records,
             "generated_at": self.generated_at,
             "source_profiling": self.source_profiling,

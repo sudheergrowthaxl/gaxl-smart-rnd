@@ -33,6 +33,7 @@ class AgentState(TypedDict, total=False):
     State shared across all LangGraph nodes.
 
     This state is passed through the workflow and updated by each node.
+    All values are derived dynamically - no hardcoded dataset names or domains.
     """
 
     # Input configuration
@@ -64,7 +65,7 @@ class AgentState(TypedDict, total=False):
     iteration_count: int
     errors: List[str]
 
-    # Dataset context
+    # Dataset context - all values derived dynamically from the data
     dataset_context: Dict[str, Any]
 
 
@@ -73,7 +74,12 @@ def create_initial_state(
     profiling_path: str,
     schema_path: str = "",
 ) -> AgentState:
-    """Create initial agent state with default values."""
+    """
+    Create initial agent state with default values.
+
+    Note: dataset_context is initialized empty and will be populated
+    dynamically by the load_profiling_node based on the actual data.
+    """
     return AgentState(
         raw_data_path=raw_data_path,
         profiling_path=profiling_path,
@@ -90,9 +96,6 @@ def create_initial_state(
         output_excel_path="",
         iteration_count=0,
         errors=[],
-        dataset_context={
-            "dataset_name": "Contactors_Product_Data",
-            "domain": "Product",
-            "total_records": 0,
-        },
+        # Initialize empty - will be populated dynamically
+        dataset_context={},
     )

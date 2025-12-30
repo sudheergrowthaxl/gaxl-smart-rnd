@@ -1,4 +1,4 @@
-"""DataProfilerAgent - Loads and analyzes profiling statistics."""
+"""DataProfilerAgent - Loads and analyzes profiling statistics dynamically."""
 
 import json
 from pathlib import Path
@@ -7,10 +7,15 @@ import pandas as pd
 
 from ..models.profiling_stats import ProfilingResult, DatasetProfile
 from ..config.attribute_config import (
-    PRIORITY_ATTRIBUTES,
+    DEFAULT_ATTRIBUTE_COUNT,
+    DEFAULT_SCHEMA_PATH,
     DATATYPE_RULE_MAPPING,
     MISSING_SEVERITY_THRESHOLDS,
+    get_parent_class_from_profiling,
+    derive_dataset_name_from_path,
+    find_parent_class_attribute,
 )
+from ..config.taxonomy_filter import TaxonomyAttributeFilter, get_taxonomy_filter
 
 
 class DataProfilerAgent:
@@ -21,6 +26,8 @@ class DataProfilerAgent:
     - Loads profiling JSON from the data pipeline
     - Loads sample data from Excel for validation
     - Parses statistics into structured objects
+    - Filters priority attributes using Taxonomy Model schema
+    - Derives parent class/category from the data
     - Recommends rule types based on data characteristics
     """
 
@@ -28,6 +35,8 @@ class DataProfilerAgent:
         self,
         profiling_path: str,
         raw_data_path: Optional[str] = None,
+        schema_path: Optional[str] = None,
+        attribute_count: int = DEFAULT_ATTRIBUTE_COUNT,
     ):
         """
         Initialize the DataProfilerAgent.
@@ -35,12 +44,20 @@ class DataProfilerAgent:
         Args:
             profiling_path: Path to the profiling JSON file
             raw_data_path: Optional path to raw Excel data for sample extraction
+            schema_path: Optional path to taxonomy schema folder/file for attribute filtering
+            attribute_count: Fallback number of attributes if no taxonomy matches (default: 15)
         """
         self.profiling_path = Path(profiling_path)
         self.raw_data_path = Path(raw_data_path) if raw_data_path else None
+        self.schema_path = schema_path or DEFAULT_SCHEMA_PATH
+        self.attribute_count = attribute_count
         self.profiling_stats: Dict[str, ProfilingResult] = {}
         self.sample_data: List[Dict[str, Any]] = []
         self.raw_profiling: Dict[str, Any] = {}
+        self._parent_class: Optional[str] = None
+        self._dataset_name: Optional[str] = None
+        self._taxonomy_filter: Optional[TaxonomyAttributeFilter] = None
+        self._taxonomy_filtered_attributes: Optional[List[str]] = None
 
     def load_profiling_json(self) -> Dict[str, Any]:
         """
@@ -112,20 +129,145 @@ class DataProfilerAgent:
                     cardinality = stats.cardinality_float
                     if cardinality > 0:
                         estimated = int(total / (cardinality / 100)) if cardinality < 100 else total
-                        return max(estimated, 25000)  # Minimum based on known data
-        return 0 
+                        return max(estimated, total)
+        return 0
 
-    def get_priority_attributes(self) -> List[str]:
+    def get_dynamic_priority_attributes(self) -> List[str]:
         """
-        Return the list of priority attributes that exist in the profiling data.
+        Dynamically select the first N non-empty attributes from the profiling data.
+
+        This is a FALLBACK method used only when taxonomy filtering returns no matches.
+        Primary attribute selection should use get_taxonomy_filtered_attributes().
 
         Returns:
-            List of attribute names to process
+            List of attribute names to process (up to attribute_count)
         """
-        return [
-            attr for attr in PRIORITY_ATTRIBUTES
-            if attr in self.profiling_stats
-        ]
+        selected_attrs = []
+
+        for attr_name, stats in self.profiling_stats.items():
+            # Skip completely empty attributes
+            if stats.is_empty:
+                continue
+
+            # Skip attributes with 100% missing
+            if stats.missing_percentage >= 100:
+                continue
+
+            selected_attrs.append(attr_name)
+
+            # Stop when we have enough attributes
+            if len(selected_attrs) >= self.attribute_count:
+                break
+
+        return selected_attrs
+
+    def get_taxonomy_filter(self) -> TaxonomyAttributeFilter:
+        """
+        Get or create the TaxonomyAttributeFilter instance.
+
+        Returns:
+            TaxonomyAttributeFilter instance configured with schema path
+        """
+        if self._taxonomy_filter is None:
+            self._taxonomy_filter = TaxonomyAttributeFilter(self.schema_path)
+            self._taxonomy_filter.load_taxonomy_attributes()
+        return self._taxonomy_filter
+
+    def get_taxonomy_filtered_attributes(self, case_sensitive: bool = False, limit: int = None) -> List[str]:
+        """
+        Filter raw dataset attributes against the Taxonomy Model schema.
+
+        This is the PRIMARY method for selecting priority attributes.
+        It matches raw dataset attribute names against DISPLAY NAME values
+        from the ATTRIBUTES sheet in the Taxonomy Model Excel file.
+
+        Uses FrozenSet for O(1) lookup performance.
+
+        Args:
+            case_sensitive: Whether to match case-sensitively (default: False for flexibility)
+            limit: Maximum number of attributes to return. If None, uses self.attribute_count.
+                   Set to 0 or negative to return ALL matched attributes.
+
+        Returns:
+            List of attribute names that exist in both raw data and taxonomy schema.
+            Returns fallback (first N non-empty) if taxonomy has no matches.
+        """
+        if self._taxonomy_filtered_attributes is not None:
+            return self._taxonomy_filtered_attributes
+
+        # Determine the limit
+        max_attrs = limit if limit is not None else self.attribute_count
+
+        # Get all raw attribute names from profiling data
+        raw_attributes = list(self.profiling_stats.keys())
+
+        # Get taxonomy filter and filter attributes
+        taxonomy_filter = self.get_taxonomy_filter()
+        matching_info = taxonomy_filter.get_matching_info(raw_attributes, case_sensitive)
+
+        # Get matched attributes
+        matched_attributes = matching_info.get('matched_attributes', [])
+
+        # Filter out empty attributes from matched list
+        filtered_matched = []
+        for attr_name in matched_attributes:
+            if attr_name in self.profiling_stats:
+                stats = self.profiling_stats[attr_name]
+                # Skip empty attributes
+                if not stats.is_empty and stats.missing_percentage < 100:
+                    filtered_matched.append(attr_name)
+                    # Apply limit if specified (positive value)
+                    if max_attrs > 0 and len(filtered_matched) >= max_attrs:
+                        break
+
+        if filtered_matched:
+            total_matches = matching_info.get('matched_count', len(filtered_matched))
+            if max_attrs > 0:
+                print(f"Taxonomy filtering: Selected {len(filtered_matched)} priority attributes (limit: {max_attrs}) from {total_matches} total matches")
+            else:
+                print(f"Taxonomy filtering: {len(filtered_matched)} priority attributes matched out of {len(raw_attributes)} raw attributes")
+            self._taxonomy_filtered_attributes = filtered_matched
+        else:
+            # Fallback to first N non-empty attributes if no taxonomy matches
+            print(f"Warning: No taxonomy matches found. Using fallback (first {self.attribute_count} non-empty attributes)")
+            self._taxonomy_filtered_attributes = self.get_dynamic_priority_attributes()
+
+        return self._taxonomy_filtered_attributes
+
+    def get_priority_attributes(self, use_taxonomy: bool = True, case_sensitive: bool = False) -> List[str]:
+        """
+        Get priority attributes for rule derivation.
+
+        This is the MAIN entry point for getting attributes to process.
+        By default, uses taxonomy-based filtering for accurate attribute selection.
+
+        Args:
+            use_taxonomy: Whether to use taxonomy filtering (default: True)
+            case_sensitive: Whether taxonomy matching is case-sensitive (default: False)
+
+        Returns:
+            List of priority attribute names
+        """
+        if use_taxonomy:
+            return self.get_taxonomy_filtered_attributes(case_sensitive)
+        else:
+            return self.get_dynamic_priority_attributes()
+
+    def get_taxonomy_matching_info(self, case_sensitive: bool = False) -> Dict[str, Any]:
+        """
+        Get detailed information about taxonomy attribute matching.
+
+        Useful for debugging and reporting purposes.
+
+        Args:
+            case_sensitive: Whether to match case-sensitively
+
+        Returns:
+            Dictionary with matching statistics and details
+        """
+        raw_attributes = list(self.profiling_stats.keys())
+        taxonomy_filter = self.get_taxonomy_filter()
+        return taxonomy_filter.get_matching_info(raw_attributes, case_sensitive)
 
     def get_all_non_empty_attributes(self) -> List[str]:
         """
@@ -138,6 +280,41 @@ class DataProfilerAgent:
             attr for attr, stats in self.profiling_stats.items()
             if not stats.is_empty
         ]
+
+    def get_parent_class(self) -> str:
+        """
+        Get the parent class/category derived from the profiling data.
+
+        Returns:
+            Parent class string
+        """
+        if self._parent_class is None:
+            self._parent_class = get_parent_class_from_profiling(self.profiling_stats)
+        return self._parent_class
+
+    def get_dataset_name(self) -> str:
+        """
+        Get the dataset name derived from the file path.
+
+        Returns:
+            Dataset name string
+        """
+        if self._dataset_name is None:
+            # Try to derive from raw data path first, then profiling path
+            if self.raw_data_path:
+                self._dataset_name = derive_dataset_name_from_path(str(self.raw_data_path))
+            else:
+                self._dataset_name = derive_dataset_name_from_path(str(self.profiling_path))
+
+            # If we have a parent class, include it in the name
+            parent_class = self.get_parent_class()
+            if parent_class and parent_class != "Unknown":
+                # Clean the parent class for use in dataset name
+                clean_parent = parent_class.replace(" ", "_").replace("&", "and")
+                if clean_parent.lower() not in self._dataset_name.lower():
+                    self._dataset_name = f"{clean_parent}_Data"
+
+        return self._dataset_name
 
     def recommend_rule_types(self, stats: ProfilingResult) -> List[str]:
         """
@@ -241,18 +418,34 @@ class DataProfilerAgent:
 
         return analysis
 
-    def get_dataset_context(self) -> Dict[str, Any]:
+    def get_dataset_context(self, use_taxonomy: bool = True) -> Dict[str, Any]:
         """
         Get overall dataset context for rule derivation.
+        All values are derived dynamically - no hardcoded values.
+
+        Args:
+            use_taxonomy: Whether to use taxonomy filtering for priority attributes (default: True)
 
         Returns:
             Dictionary with dataset metadata
         """
+        # Get parent class attribute name for reference
+        parent_class_attr = find_parent_class_attribute(self.profiling_stats)
+
+        # Get priority attributes - taxonomy filtered by default
+        priority_attrs = self.get_priority_attributes(use_taxonomy=use_taxonomy)
+
+        # Get taxonomy matching info for reporting
+        taxonomy_info = self.get_taxonomy_matching_info() if use_taxonomy else {}
+
         return {
-            "dataset_name": "Contactors_Product_Data",
-            "domain": "Product",
+            "dataset_name": self.get_dataset_name(),
+            "parent_class": self.get_parent_class(),
+            "parent_class_attribute": parent_class_attr,
             "total_records": self.get_total_records(),
             "total_attributes": len(self.profiling_stats),
             "non_empty_attributes": len(self.get_all_non_empty_attributes()),
-            "priority_attributes": self.get_priority_attributes(),
+            "priority_attributes": priority_attrs,
+            "taxonomy_match_count": taxonomy_info.get('matched_count', 0),
+            "taxonomy_total_attributes": taxonomy_info.get('total_taxonomy_attributes', 0),
         }
