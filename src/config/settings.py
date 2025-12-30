@@ -32,7 +32,7 @@ class Settings(BaseSettings):
     ))
     schema_path: Path = Path(os.getenv(
         "SCHEMA_PATH",
-        "data/EDB-DQ-Shape Rules.xlsx"
+        "data/schema"  # Folder containing Taxonomy Model Excel file
     ))
     xml_template_path: Path = Path(os.getenv(
         "XML_TEMPLATE_PATH",

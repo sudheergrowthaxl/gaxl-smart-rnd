@@ -11,6 +11,7 @@ from ..agents.rule_validation_agent import RuleValidationAgent
 from ..agents.output_formatter_agent import OutputFormatterAgent
 from ..prompts.rule_derivation_prompt import get_few_shot_examples
 from ..config.settings import get_settings
+from ..config.attribute_config import DEFAULT_ATTRIBUTE_COUNT, DEFAULT_SCHEMA_PATH
 
 
 def load_profiling_node(state: AgentState) -> Dict[str, Any]:
@@ -22,14 +23,21 @@ def load_profiling_node(state: AgentState) -> Dict[str, Any]:
     - Parses statistics into structured objects
     - Loads sample data from Excel for validation
     - Calculates total record count
+    - Derives dataset name and parent class dynamically
+    - Filters priority attributes using Taxonomy Model schema
     """
     print("Loading profiling data...")
 
     settings = get_settings()
 
+    # Get schema path from state or use default
+    schema_path = state.get('schema_path', DEFAULT_SCHEMA_PATH)
+
     profiler = DataProfilerAgent(
         profiling_path=state['profiling_path'],
         raw_data_path=state['raw_data_path'],
+        schema_path=schema_path,
+        attribute_count=DEFAULT_ATTRIBUTE_COUNT,
     )
 
     # Load and parse profiling JSON
@@ -46,12 +54,16 @@ def load_profiling_node(state: AgentState) -> Dict[str, Any]:
 
     total_records = profiler.get_total_records()
 
-    # Get dataset context
-    dataset_context = profiler.get_dataset_context()
+    # Get dataset context - all values derived dynamically with taxonomy filtering
+    dataset_context = profiler.get_dataset_context(use_taxonomy=True)
     dataset_context['profiling_path'] = state['profiling_path']
+    dataset_context['schema_path'] = schema_path
 
     print(f"  Loaded {len(profiling_stats)} attributes")
     print(f"  Estimated {total_records} total records")
+    print(f"  Dataset name: {dataset_context.get('dataset_name', 'Unknown')}")
+    print(f"  Parent class: {dataset_context.get('parent_class', 'Unknown')}")
+    print(f"  Taxonomy matches: {dataset_context.get('taxonomy_match_count', 0)} out of {dataset_context.get('taxonomy_total_attributes', 0)} taxonomy attributes")
 
     return {
         "profiling_stats": {k: v.model_dump() for k, v in profiling_stats.items()},
@@ -63,33 +75,57 @@ def load_profiling_node(state: AgentState) -> Dict[str, Any]:
 
 def select_priority_attributes_node(state: AgentState) -> Dict[str, Any]:
     """
-    Select priority attributes for rule derivation.
+    Select priority attributes for rule derivation using Taxonomy Model filtering.
 
     This node:
-    - Gets the list of priority attributes from configuration
-    - Filters to only attributes present in profiling data
+    - Uses taxonomy-filtered attributes from dataset_context (computed during profiling load)
+    - Falls back to first N non-empty attributes if no taxonomy matches
     - Sets up the iteration state
     """
-    print("Selecting priority attributes...")
+    print("Selecting priority attributes using Taxonomy Model filtering...")
 
-    from ..config.attribute_config import PRIORITY_ATTRIBUTES
+    # Get taxonomy-filtered priority attributes from dataset context
+    # These were computed during load_profiling_node using TaxonomyAttributeFilter
+    dataset_context = state.get('dataset_context', {})
+    available_attrs = dataset_context.get('priority_attributes', [])
 
-    # Get attributes that exist in profiling and are not empty
-    available_attrs = []
-    for attr in PRIORITY_ATTRIBUTES:
-        if attr in state['profiling_stats']:
-            stats = state['profiling_stats'][attr]
-            # Skip completely empty attributes
-            if stats.get('datatype') != 'Empty' and stats.get('missing_percentage', 100) < 100:
-                available_attrs.append(attr)
+    # Validate that these attributes exist in profiling data and are not empty
+    profiling_stats = state.get('profiling_stats', {})
+    validated_attrs = []
 
-    print(f"  Selected {len(available_attrs)} attributes for processing")
     for attr in available_attrs:
+        if attr in profiling_stats:
+            stats = profiling_stats[attr]
+            # Skip completely empty attributes
+            if stats.get('datatype') == 'Empty':
+                continue
+            if stats.get('missing_percentage', 100) >= 100:
+                continue
+            validated_attrs.append(attr)
+
+    # Fallback: If no taxonomy-filtered attributes, use first N non-empty
+    if not validated_attrs:
+        print("  Warning: No taxonomy-matched attributes found. Using fallback (first N non-empty).")
+        for attr, stats in profiling_stats.items():
+            if stats.get('datatype') == 'Empty':
+                continue
+            if stats.get('missing_percentage', 100) >= 100:
+                continue
+            validated_attrs.append(attr)
+            if len(validated_attrs) >= DEFAULT_ATTRIBUTE_COUNT:
+                break
+
+    taxonomy_match_count = dataset_context.get('taxonomy_match_count', 0)
+    taxonomy_total = dataset_context.get('taxonomy_total_attributes', 0)
+
+    print(f"  Selected {len(validated_attrs)} priority attributes for rule derivation")
+    print(f"  Taxonomy schema: {taxonomy_total} attributes defined, {taxonomy_match_count} matched raw data")
+    for attr in validated_attrs:
         print(f"    - {attr}")
 
     return {
-        "attributes_to_process": available_attrs,
-        "current_attribute": available_attrs[0] if available_attrs else None,
+        "attributes_to_process": validated_attrs,
+        "current_attribute": validated_attrs[0] if validated_attrs else None,
         "iteration_count": 0,
     }
 
@@ -136,11 +172,14 @@ def derive_rules_node(state: AgentState) -> Dict[str, Any]:
         "recommended_rules": profiler.recommend_rule_types(profiling_result),
     }
 
-    dataset_context = state.get('dataset_context', {
-        "dataset_name": "Contactors_Product_Data",
-        "domain": "Product",
-        "total_records": state.get('total_records', 25000),
-    })
+    # Get dataset context from state - all values derived dynamically
+    dataset_context = state.get('dataset_context', {})
+
+    # Ensure we have minimum context
+    if not dataset_context.get('dataset_name'):
+        dataset_context['dataset_name'] = 'Product_Data'
+    if not dataset_context.get('total_records'):
+        dataset_context['total_records'] = state.get('total_records', 0)
 
     # Derive rules using LLM
     try:
@@ -281,6 +320,7 @@ def format_output_node(state: AgentState) -> Dict[str, Any]:
     - Creates output directory
     - Exports rules to JSON
     - Exports rules to Excel with formatting
+    - Includes Parent Class/Category in output
     """
     print("Formatting output...")
 
@@ -290,11 +330,16 @@ def format_output_node(state: AgentState) -> Dict[str, Any]:
     rules = state.get('validated_rules', [])
     validation_results = state.get('validation_results', [])
 
-    dataset_context = state.get('dataset_context', {
-        "dataset_name": "Contactors_Product_Data",
-        "total_records": state.get('total_records', 0),
-        "profiling_path": state.get('profiling_path', ''),
-    })
+    # Get dataset context - all values derived dynamically
+    dataset_context = state.get('dataset_context', {})
+
+    # Ensure we have minimum context
+    if not dataset_context.get('dataset_name'):
+        dataset_context['dataset_name'] = 'Product_Data'
+    if not dataset_context.get('total_records'):
+        dataset_context['total_records'] = state.get('total_records', 0)
+    if not dataset_context.get('profiling_path'):
+        dataset_context['profiling_path'] = state.get('profiling_path', '')
 
     # Export JSON
     json_path = formatter.export_to_json(
@@ -309,6 +354,7 @@ def format_output_node(state: AgentState) -> Dict[str, Any]:
         rules,
         validation_results,
         settings.output_excel_filename,
+        dataset_context,
     )
     print(f"  Excel output: {excel_path}")
 
@@ -318,6 +364,7 @@ def format_output_node(state: AgentState) -> Dict[str, Any]:
     print(f"    Total rules: {summary['total_rules']}")
     print(f"    Attributes covered: {summary['attribute_count']}")
     print(f"    Avg confidence: {summary['avg_confidence_score']:.2f}")
+    print(f"    Parent Class: {dataset_context.get('parent_class', 'Unknown')}")
 
     return {
         "output_json_path": json_path,
