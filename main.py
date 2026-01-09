@@ -99,7 +99,7 @@ async def run_workflow():
         "configurable": {
             "thread_id": f"dq_rule_derivation_{datetime.now().strftime('%Y%m%d_%H%M%S')}",
         },
-        "recursion_limit": 100, 
+        "recursion_limit": 250, 
     }
 
     print("\n" + "="*70)

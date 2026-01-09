@@ -12,26 +12,48 @@ Your expertise includes:
 - Regular expression pattern matching
 - Business rule inference from data patterns
 
-When deriving rules, you must:
-1. Analyze the profiling statistics carefully
-2. Generate rules that are actionable, measurable, and implementable
-3. Provide both SQL and Python/pandas implementations
-4. Set realistic thresholds based on current data quality
-5. Assign appropriate severity levels based on business impact
+CRITICAL: When deriving rules, you must:
+1. Analyze the profiling statistics carefully and derive rules based on ACTUAL DATA CHARACTERISTICS
+2. DO NOT create idealistic or theoretical rules - only derive rules that reflect the current data state
+3. If an attribute has 90%+ missing values, DO NOT create completeness rules unless data shows improvement trend
+4. For high missing percentage attributes (>80%), focus on:
+   - Validity rules for the small percentage of existing values
+   - Format/pattern rules based on actual value samples
+   - Skip completeness rules or set very lenient thresholds matching current state
+5. Generate rules that are actionable, measurable, and implementable
+6. Provide both SQL and Python/pandas implementations
+7. Set realistic thresholds based on CURRENT data quality, not ideal targets
+8. Assign appropriate severity levels based on business impact and actual data state
+
+DAMA Framework - 6 Core DQ Dimensions:
+1. **Completeness**: Data is present and not missing (NOT_NULL, NOT_EMPTY, MANDATORY, CONDITIONAL_REQUIRED)
+2. **Validity**: Data conforms to syntax and format rules (FORMAT_PATTERN, VALUE_SET, RANGE, REGEX, DATA_TYPE, UOM)
+3. **Accuracy**: Data correctly reflects real-world entities (PRECISION, STATISTICAL_BOUNDS, CROSS_FIELD_VALIDATION)
+4. **Consistency**: Data is uniform across datasets (FORMAT_CONSISTENCY, CASE_CONSISTENCY, NORMALIZE_RULE, SYNONYM_NORMALIZATION, COMPUTATION_RULE, CROSS_ATTRIBUTE_RULE, DEFAULT_VALUE, CONDITIONAL_VALIDATION, BUSINESS_RULE)
+5. **Uniqueness**: No unintended duplicates exist (PRIMARY_KEY, COMPOSITE_KEY, NEAR_DUPLICATE)
+6. **Timeliness**: Data is current and available when needed (DATE_RANGE, DATE_SEQUENCE, FRESHNESS)
+
+Advanced Rule Types to Consider:
+- **NORMALIZE_RULE**: Standardize variations/synonyms to canonical values (e.g., "On Rail", "35mm rail" → "DIN Rail")
+- **COMPUTATION_RULE**: Derive or validate values based on other attributes (e.g., if current_rating is null, type = "Auxiliary")
+- **CROSS_ATTRIBUTE_RULE**: Validate relationships between multiple attributes (e.g., if current < 9A AND frame = Small, type = "Mini")
+- **CONDITIONAL_VALIDATION**: Rules that apply only when certain conditions are met
+- **DEFAULT_VALUE**: Set default values when data is missing under specific conditions
+- **SYNONYM_NORMALIZATION**: Map multiple terms to a single standard term
 
 Output Format:
 Generate rules as a JSON array. Each rule object must include ALL of these fields:
 - rule_id: Unique identifier in format DQ_{ATTRIBUTE}_{CATEGORY}_{SEQUENCE}
 - attribute_name: Name of the attribute
 - rule_category: One of (Completeness, Validity, Accuracy, Consistency, Uniqueness, Timeliness)
-- rule_type: Specific type (NOT_NULL, VALUE_SET, RANGE, FORMAT_PATTERN, PRIMARY_KEY, etc.)
-- rule_expression: Implementable rule logic
+- rule_type: Specific type (NOT_NULL, VALUE_SET, RANGE, FORMAT_PATTERN, NORMALIZE_RULE, COMPUTATION_RULE, CROSS_ATTRIBUTE_RULE, etc.)
+- rule_expression: Implementable rule logic (for cross-attribute rules, mention all involved attributes)
 - rule_expression_sql: SQL query to find violations
 - rule_expression_python: Python/pandas code to find violations
 - severity: One of (Critical, High, Medium, Low)
 - description: Business-friendly explanation
 - threshold_percent: Acceptable failure rate (0-100)
-- derived_from: Profiling statistic used
+- derived_from: Profiling statistic used or business rule applied
 - confidence_score: Confidence level (0.0-1.0)
 - sample_valid_values: List of valid example values
 - sample_invalid_values: List of invalid example values
@@ -162,6 +184,135 @@ def get_few_shot_examples() -> List[Dict[str, Any]]:
                     "sample_invalid_values": ["0", "1", "5", "1000", "2000"]
                 }
             ]
+        },
+        {
+            "attribute_name": "zz_Dielectric Rating",
+            "profiling": {
+                "datatype": "Categorical",
+                "missing_percentage": 99.99,
+                "cardinality": "0.01%",
+                "top_values": [
+                    {"value": "2500 V (RMS) (Coil to Contacts)", "count": 2},
+                    {"value": "1500 V (RMS) (Coil to Contacts), 1000 V (RMS) (Across Open Contacts, Pole to Pole, Contacts to Frame)", "count": 1}
+                ],
+                "sparsity": "99.99%"
+            },
+            "rules": [
+                {
+                    "rule_id": "DQ_ZZ_DIELECTRIC_RATING_VALIDITY_001",
+                    "attribute_name": "zz_Dielectric Rating",
+                    "rule_category": "Validity",
+                    "rule_type": "FORMAT_PATTERN",
+                    "rule_expression": "zz_Dielectric Rating MATCHES voltage pattern format",
+                    "rule_expression_sql": "SELECT * FROM products WHERE \"zz_Dielectric Rating\" IS NOT NULL AND \"zz_Dielectric Rating\" NOT REGEXP '[0-9]+ V \\\\(RMS\\\\)'",
+                    "rule_expression_python": "df[df['zz_Dielectric Rating'].notna() & ~df['zz_Dielectric Rating'].astype(str).str.contains(r'\\d+ V \\(RMS\\)', na=False)]",
+                    "severity": "Medium",
+                    "description": "When present, dielectric rating must follow voltage format pattern (e.g., '2500 V (RMS)')",
+                    "threshold_percent": 1.0,
+                    "derived_from": "top_values pattern: voltage values in 'X V (RMS)' format with 99.99% missing",
+                    "confidence_score": 0.75,
+                    "sample_valid_values": ["2500 V (RMS) (Coil to Contacts)", "1500 V (RMS) (Coil to Contacts), 1000 V (RMS) (Across Open Contacts, Pole to Pole, Contacts to Frame)"],
+                    "sample_invalid_values": ["2500", "V", "2500V", "invalid"]
+                }
+            ]
+        },
+        {
+            "attribute_name": "zz_Mounting Type",
+            "profiling": {
+                "datatype": "Categorical",
+                "missing_percentage": 45.2,
+                "cardinality": "0.12%",
+                "top_values": [
+                    {"value": "On Rail", "count": 3420},
+                    {"value": "35mm rail", "count": 2108},
+                    {"value": "DIN Rail", "count": 1956},
+                    {"value": "Screw mount", "count": 1234},
+                    {"value": "Bolt mount", "count": 892},
+                    {"value": "Panel Mount", "count": 456}
+                ]
+            },
+            "rules": [
+                {
+                    "rule_id": "DQ_ZZ_MOUNTING_TYPE_CONSISTENCY_001",
+                    "attribute_name": "zz_Mounting Type",
+                    "rule_category": "Consistency",
+                    "rule_type": "NORMALIZE_RULE",
+                    "rule_expression": "Normalize mounting type variations to standard values: 'On Rail', '35mm rail' → 'DIN Rail'; 'Screw mount', 'Bolt mount' → 'Panel Mount'",
+                    "rule_expression_sql": "SELECT * FROM products WHERE \"zz_Mounting Type\" IN ('On Rail', '35mm rail') AND \"zz_Mounting Type\" != 'DIN Rail' UNION SELECT * FROM products WHERE \"zz_Mounting Type\" IN ('Screw mount', 'Bolt mount') AND \"zz_Mounting Type\" != 'Panel Mount'",
+                    "rule_expression_python": "df[((df['zz_Mounting Type'].isin(['On Rail', '35mm rail'])) & (df['zz_Mounting Type'] != 'DIN Rail')) | ((df['zz_Mounting Type'].isin(['Screw mount', 'Bolt mount'])) & (df['zz_Mounting Type'] != 'Panel Mount'))]",
+                    "severity": "Medium",
+                    "description": "Mounting type synonyms must be normalized to standard values for consistency",
+                    "threshold_percent": 5.0,
+                    "derived_from": "top_values showing multiple synonyms: 'On Rail' (3420), '35mm rail' (2108), 'DIN Rail' (1956) should be unified",
+                    "confidence_score": 0.92,
+                    "sample_valid_values": ["DIN Rail", "Panel Mount", "Chassis Mount"],
+                    "sample_invalid_values": ["On Rail", "35mm rail", "Screw mount", "Bolt mount"]
+                },
+                {
+                    "rule_id": "DQ_ZZ_MOUNTING_TYPE_COMPLETENESS_001",
+                    "attribute_name": "zz_Mounting Type",
+                    "rule_category": "Completeness",
+                    "rule_type": "NOT_NULL",
+                    "rule_expression": "zz_Mounting Type IS NOT NULL",
+                    "rule_expression_sql": "SELECT * FROM products WHERE \"zz_Mounting Type\" IS NULL",
+                    "rule_expression_python": "df[df['zz_Mounting Type'].isna()]",
+                    "severity": "High",
+                    "description": "Mounting type should be specified for proper installation guidance",
+                    "threshold_percent": 48.0,
+                    "derived_from": "missing_percentage: 45.2% (threshold set to current state + 3%)",
+                    "confidence_score": 0.88,
+                    "sample_valid_values": ["DIN Rail", "Panel Mount", "Chassis Mount"],
+                    "sample_invalid_values": ["", None, "N/A"]
+                }
+            ]
+        },
+        {
+            "attribute_name": "zz_Type",
+            "profiling": {
+                "datatype": "Categorical",
+                "missing_percentage": 12.5,
+                "cardinality": "0.08%",
+                "top_values": [
+                    {"value": "Power Contactor", "count": 15420},
+                    {"value": "Auxiliary", "count": 4108},
+                    {"value": "Reversing Contactor", "count": 2156},
+                    {"value": "Mini Contactor", "count": 1892}
+                ]
+            },
+            "rules": [
+                {
+                    "rule_id": "DQ_ZZ_TYPE_CONSISTENCY_001",
+                    "attribute_name": "zz_Type",
+                    "rule_category": "Consistency",
+                    "rule_type": "COMPUTATION_RULE",
+                    "rule_expression": "If zz_Contact Current Rating is NULL, zz_Type should be 'Auxiliary'",
+                    "rule_expression_sql": "SELECT * FROM products WHERE \"zz_Contact Current Rating\" IS NULL AND (\"zz_Type\" IS NULL OR \"zz_Type\" != 'Auxiliary')",
+                    "rule_expression_python": "df[(df['zz_Contact Current Rating'].isna()) & ((df['zz_Type'].isna()) | (df['zz_Type'] != 'Auxiliary'))]",
+                    "severity": "High",
+                    "description": "Products without current rating should be classified as Auxiliary contactors",
+                    "threshold_percent": 2.0,
+                    "derived_from": "Business rule: Auxiliary contactors do not have current ratings",
+                    "confidence_score": 0.90,
+                    "sample_valid_values": ["Auxiliary (when current rating is null)"],
+                    "sample_invalid_values": ["Power Contactor (when current rating is null)", "null (when current rating is null)"]
+                },
+                {
+                    "rule_id": "DQ_ZZ_TYPE_CONSISTENCY_002",
+                    "attribute_name": "zz_Type",
+                    "rule_category": "Consistency",
+                    "rule_type": "CROSS_ATTRIBUTE_RULE",
+                    "rule_expression": "If zz_Contact Current Rating < 9A AND zz_Frame Size = 'Small', zz_Type should be 'Mini Contactor'",
+                    "rule_expression_sql": "SELECT * FROM products WHERE CAST(\"zz_Contact Current Rating\" AS NUMERIC) < 9 AND \"zz_Frame Size\" = 'Small' AND \"zz_Type\" != 'Mini Contactor'",
+                    "rule_expression_python": "df[(pd.to_numeric(df['zz_Contact Current Rating'], errors='coerce') < 9) & (df['zz_Frame Size'] == 'Small') & (df['zz_Type'] != 'Mini Contactor')]",
+                    "severity": "Medium",
+                    "description": "Small frame contactors with low current ratings should be classified as Mini Contactors",
+                    "threshold_percent": 3.0,
+                    "derived_from": "Business rule: Mini contactors are defined by current < 9A and small frame size",
+                    "confidence_score": 0.85,
+                    "sample_valid_values": ["Mini Contactor (when current < 9A and frame = Small)"],
+                    "sample_invalid_values": ["Power Contactor (when current < 9A and frame = Small)"]
+                }
+            ]
         }
     ]
 
@@ -241,13 +392,43 @@ def build_derivation_prompt(
 ## Instructions
 Based on the profiling statistics above, generate ALL applicable DQ rules for the attribute "{attribute_analysis['attribute_name']}".
 
-For each rule:
-1. Use the exact rule_id format: DQ_{{ATTRIBUTE_NAME}}_{{CATEGORY}}_{{SEQUENCE}}
-   - Replace spaces and special characters in attribute name with underscores
-   - Use uppercase
-2. Provide working SQL and Python expressions
-3. Set realistic thresholds based on current data quality
-4. Include sample valid and invalid values from the data
+**CRITICAL RULE DERIVATION GUIDELINES:**
+
+**1. Data-Driven Approach:**
+   - Derive rules based on ACTUAL DATA CHARACTERISTICS, not idealistic expectations
+   - For missing_percentage > 80%: NO Completeness rules, only Validity/Format rules, Low/Medium severity
+   - For missing_percentage 50-80%: Completeness threshold = current state ±5%, plus Validity rules
+   - For missing_percentage < 50%: Standard Completeness and Validity rules
+
+**2. DAMA Framework Coverage (derive rules for ALL applicable dimensions):**
+   - **Completeness**: Check if attribute should be mandatory based on missing_percentage
+   - **Validity**: Derive from top_values (VALUE_SET, RANGE, FORMAT_PATTERN, REGEX)
+   - **Consistency**: Check top_values for synonyms/variations requiring normalization
+   - **Uniqueness**: Check cardinality to identify potential keys
+   - **Accuracy**: Derive ranges/precision from numeric patterns
+   - **Timeliness**: For date fields, check recency and sequence
+
+**3. Advanced Rule Types (critically important):**
+   - **NORMALIZE_RULE**: If top_values show variations/synonyms (e.g., "On Rail", "35mm rail", "DIN Rail")
+     → Create normalization rule mapping variants to canonical value
+   - **COMPUTATION_RULE**: Infer from domain knowledge (e.g., if no current rating, type = "Auxiliary")
+     → Consider logical relationships between attributes
+   - **CROSS_ATTRIBUTE_RULE**: Identify dependencies (e.g., if current < 9A AND frame = Small → Mini Contactor)
+     → Look for patterns that span multiple attributes
+   - **CONDITIONAL_VALIDATION**: Rules that apply only in specific contexts
+   - **DEFAULT_VALUE**: When to auto-populate missing values based on other attributes
+
+**4. Rule Multiplicity:**
+   - Generate MULTIPLE rules per attribute (2-5 rules per attribute is typical)
+   - Combine Completeness + Validity + Consistency rules when applicable
+   - Don't stop at just one rule type - think comprehensively
+
+**5. Technical Requirements:**
+   - Use format: DQ_{{ATTRIBUTE_NAME}}_{{CATEGORY}}_{{SEQUENCE}}
+   - Provide working SQL and Python expressions
+   - Set realistic thresholds based on current data state
+   - Include actual sample values from profiling data
+   - Reference specific profiling statistics in derived_from
 
 **IMPORTANT:** Return ONLY a valid JSON array of rule objects. Do not include any other text.
 

@@ -41,8 +41,8 @@ class Settings(BaseSettings):
 
     # Output paths
     output_dir: Path = Path(os.getenv("OUTPUT_DIR", "output"))
-    output_json_filename: str = "dq_rules.json"
-    output_excel_filename: str = "dq_rules.xlsx"
+    output_json_filename: Path = Path(os.getenv("DQ_RULES_JSON", "dq_rules.json"))
+    output_excel_filename: Path = Path(os.getenv("DQ_RULES_EXCEL", "dq_rules.xlsx"))
 
     # Processing settings
     sample_size: int = 1000

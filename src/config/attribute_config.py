@@ -6,7 +6,7 @@ import re
 
 # Default number of attributes to select if no taxonomy filter matches
 # This is a fallback - primary filtering uses taxonomy schema
-DEFAULT_ATTRIBUTE_COUNT: int = 15
+DEFAULT_ATTRIBUTE_COUNT: int = 0
 
 # Default schema folder path for taxonomy model
 DEFAULT_SCHEMA_PATH: str = "data/schema"
