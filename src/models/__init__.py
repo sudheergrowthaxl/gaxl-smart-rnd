@@ -5,7 +5,6 @@ from .dq_rule import (
     DQRuleSet,
     RuleCategory,
     RuleType,
-    Severity,
 )
 from .profiling_stats import ProfilingResult
 from .agent_state import AgentState, ValidationResult
@@ -15,7 +14,6 @@ __all__ = [
     "DQRuleSet",
     "RuleCategory",
     "RuleType",
-    "Severity",
     "ProfilingResult",
     "AgentState",
     "ValidationResult",

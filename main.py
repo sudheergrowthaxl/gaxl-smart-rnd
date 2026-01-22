@@ -95,12 +95,20 @@ async def run_workflow():
     workflow = build_dq_workflow(use_checkpointer=True)
 
     # Configure execution
+    # Recursion limit should be at least 3x the number of attributes to process
+    # (each attribute goes through derive -> validate -> next cycle)
+    settings = get_settings()
+    recursion_limit = max(500, settings.max_iterations * 3)
+
     config = {
         "configurable": {
             "thread_id": f"dq_rule_derivation_{datetime.now().strftime('%Y%m%d_%H%M%S')}",
         },
-        "recursion_limit": 100, 
+        "recursion_limit": recursion_limit,
     }
+
+    print(f"  Attribute limit: {'No limit (all)' if settings.attribute_limit <= 0 else settings.attribute_limit}")
+    print(f"  Recursion limit: {recursion_limit}")
 
     print("\n" + "="*70)
     print("STARTING WORKFLOW EXECUTION")
@@ -130,17 +138,17 @@ async def run_workflow():
             severities = {}
             for rule in validated_rules:
                 cat = rule.rule_category
-                sev = rule.severity
+                # sev = rule.severity
                 categories[cat] = categories.get(cat, 0) + 1
-                severities[sev] = severities.get(sev, 0) + 1
+                # severities[sev] = severities.get(sev, 0) + 1
 
             print(f"\n  Rules by Category:")
             for cat, count in sorted(categories.items()):
                 print(f"    {cat}: {count}")
 
-            print(f"\n  Rules by Severity:")
-            for sev, count in sorted(severities.items(), key=lambda x: ['Critical', 'High', 'Medium', 'Low'].index(x[0]) if x[0] in ['Critical', 'High', 'Medium', 'Low'] else 99):
-                print(f"    {sev}: {count}")
+            # print(f"\n  Rules by Severity:")
+            # for sev, count in sorted(severities.items(), key=lambda x: ['Critical', 'High', 'Medium', 'Low'].index(x[0]) if x[0] in ['Critical', 'High', 'Medium', 'Low'] else 99):
+            #     print(f"    {sev}: {count}")
 
         # Print errors if any
         errors = final_state.get('errors', [])

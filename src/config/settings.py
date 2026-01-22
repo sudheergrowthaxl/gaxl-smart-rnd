@@ -41,12 +41,17 @@ class Settings(BaseSettings):
 
     # Output paths
     output_dir: Path = Path(os.getenv("OUTPUT_DIR", "output"))
-    output_json_filename: str = "dq_rules.json"
-    output_excel_filename: str = "dq_rules.xlsx"
+    output_json_filename: Path = Path(os.getenv("DQ_RULES_JSON", "dq_rules.json"))
+    output_excel_filename: Path = Path(os.getenv("DQ_RULES_EXCEL", "dq_rules.xlsx"))
 
     # Processing settings
-    sample_size: int = 1000
-    max_iterations: int = 20
+    sample_size: int = 10000
+    max_iterations: int = 200  # Increased for processing all attributes
+
+    # Attribute processing limit
+    # Set to 0 or -1 to process ALL taxonomy-matched attributes (no limit)
+    # Set to positive number to limit attributes processed
+    attribute_limit: int = int(os.getenv("ATTRIBUTE_LIMIT", "0"))  # 0 = no limit (all attributes)
 
     def get_absolute_path(self, relative_path: Path) -> Path:
         """Convert relative path to absolute path from base directory."""
