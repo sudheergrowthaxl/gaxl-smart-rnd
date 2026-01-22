@@ -8,12 +8,17 @@ from datetime import datetime
 
 class RuleCategory(str, Enum):
     """DQ Rule dimension categories."""
+    # DAMA Framework 6 Core Dimensions
     COMPLETENESS = "Completeness"
     VALIDITY = "Validity"
     ACCURACY = "Accuracy"
     CONSISTENCY = "Consistency"
     UNIQUENESS = "Uniqueness"
     TIMELINESS = "Timeliness"
+    # Additional Rule Categories (Beyond DAMA Core)
+    NORMALIZATION = "Normalization"
+    COMPUTATION = "Computation"
+    DEFAULT = "Default"
 
 
 class RuleType(str, Enum):
@@ -53,22 +58,30 @@ class RuleType(str, Enum):
     DATE_SEQUENCE = "DATE_SEQUENCE"
     FRESHNESS = "FRESHNESS"
 
+    # Normalization (Transform to standard formats)
+    NORMALIZATION = "NORMALIZATION"
+    VALUE_STANDARDIZATION = "VALUE_STANDARDIZATION"
+    UNIT_CONVERSION = "UNIT_CONVERSION"
+    FORMAT_STANDARDIZATION = "FORMAT_STANDARDIZATION"
 
-class Severity(str, Enum):
-    """Impact level if rule fails."""
-    CRITICAL = "Critical"
-    HIGH = "High"
-    MEDIUM = "Medium"
-    LOW = "Low"
+    # Computation (Cross-field validation and conditional logic)
+    COMPUTATION = "COMPUTATION"
+    CONDITIONAL_VALIDATION = "CONDITIONAL_VALIDATION"
+    DERIVED_VALUE = "DERIVED_VALUE"
+    CROSS_ATTRIBUTE_CHECK = "CROSS_ATTRIBUTE_CHECK"
+
+    # Default (Set default values based on conditions)
+    DEFAULT_VALUE = "DEFAULT_VALUE"
+    CONDITIONAL_DEFAULT = "CONDITIONAL_DEFAULT"
+    FALLBACK_VALUE = "FALLBACK_VALUE"
+
+
 
 
 class DQRule(BaseModel):
     """Data Quality Rule following the XML schema specification."""
 
-    rule_id: str = Field(
-        ...,
-        description="Unique identifier in format DQ_{ATTRIBUTE}_{CATEGORY}_{SEQUENCE}"
-    )
+    
     attribute_name: str = Field(
         ...,
         description="Name of the attribute this rule applies to"
@@ -93,20 +106,12 @@ class DQRule(BaseModel):
         ...,
         description="Python/pandas implementation"
     )
-    severity: str = Field(
-        ...,
-        description="Impact level if rule fails"
-    )
+  
     description: str = Field(
         ...,
         description="Business-friendly rule description"
     )
-    threshold_percent: float = Field(
-        ...,
-        ge=0,
-        le=100,
-        description="Acceptable failure rate percentage"
-    )
+  
     derived_from: str = Field(
         ...,
         description="Profiling statistic that led to this rule"
@@ -117,6 +122,18 @@ class DQRule(BaseModel):
         le=1,
         description="Confidence in the derived rule (0.0 to 1.0)"
     )
+    support: float = Field(
+        default=0.0,
+        ge=0,
+        le=1,
+        description="Proportion of data this rule applies to (0.0-1.0)"
+    )
+    confidence: float = Field(
+        default=0.0,
+        ge=0,
+        le=1,
+        description="Proportion of applicable data satisfying the rule (0.0-1.0)"
+    )
     sample_valid_values: List[str] = Field(
         default_factory=list,
         description="Example values that pass the rule"
@@ -126,32 +143,33 @@ class DQRule(BaseModel):
         description="Example values that would fail the rule"
     )
 
-    @field_validator('rule_id')
-    @classmethod
-    def validate_rule_id_format(cls, v: str) -> str:
-        """Validate rule ID follows the expected format."""
-        if not v.startswith("DQ_"):
-            raise ValueError("Rule ID must start with 'DQ_'")
-        return v
+   
 
     def to_dict(self) -> Dict[str, Any]:
-        """Convert to dictionary for JSON serialization."""
+        """Convert to dictionary for JSON serialization.
+
+        Note: Excludes rule_id, severity, and threshold_percent from output.
+        """
         return {
-            "rule_id": self.rule_id,
             "attribute_name": self.attribute_name,
             "rule_category": self.rule_category,
             "rule_type": self.rule_type,
             "rule_expression": self.rule_expression,
             "rule_expression_sql": self.rule_expression_sql,
             "rule_expression_python": self.rule_expression_python,
-            "severity": self.severity,
             "description": self.description,
-            "threshold_percent": self.threshold_percent,
             "derived_from": self.derived_from,
             "confidence_score": self.confidence_score,
+            "support": self.support,
+            "confidence": self.confidence,
             "sample_valid_values": self.sample_valid_values,
             "sample_invalid_values": self.sample_invalid_values,
         }
+
+    @property
+    def unique_key(self) -> str:
+        """Generate a unique key for this rule based on attribute, category, and type."""
+        return f"{self.attribute_name}_{self.rule_category}_{self.rule_type}"
 
 
 class DQRuleSet(BaseModel):
@@ -198,25 +216,20 @@ class DQRuleSet(BaseModel):
         """Get all rules for a specific attribute."""
         return [r for r in self.rules if r.attribute_name == attribute]
 
-    def get_rules_by_severity(self, severity: str) -> List[DQRule]:
-        """Get all rules with a specific severity."""
-        return [r for r in self.rules if r.severity == severity]
-
     def generate_summary(self) -> Dict[str, Any]:
         """Generate summary statistics for the ruleset."""
-        categories = ["Completeness", "Validity", "Accuracy",
-                      "Consistency", "Uniqueness", "Timeliness"]
-        severities = ["Critical", "High", "Medium", "Low"]
+        # DAMA Framework 6 Core + Additional Categories
+        categories = [
+            "Completeness", "Validity", "Accuracy",
+            "Consistency", "Uniqueness", "Timeliness",
+            "Normalization", "Computation", "Default"
+        ]
 
         self.summary = {
             "total_rules": len(self.rules),
             "rules_by_category": {
                 cat: len(self.get_rules_by_category(cat))
                 for cat in categories
-            },
-            "rules_by_severity": {
-                sev: len(self.get_rules_by_severity(sev))
-                for sev in severities
             },
             "attributes_covered": list(set(r.attribute_name for r in self.rules)),
             "avg_confidence_score": (

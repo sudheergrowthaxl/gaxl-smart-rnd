@@ -155,15 +155,7 @@ class RuleDerivationAgent:
         Returns:
             Rule dictionary with all required fields
         """
-        # Generate rule_id if missing
-        if 'rule_id' not in rule_data:
-            attr_clean = re.sub(r'[^a-zA-Z0-9]', '_', attribute_name).upper()
-            category = rule_data.get('rule_category', 'VALIDITY')[:3].upper()
-            rule_data['rule_id'] = f"DQ_{attr_clean}_{category}_{index+1:03d}"
-
-        # Ensure rule_id starts with DQ_
-        if not rule_data['rule_id'].startswith('DQ_'):
-            rule_data['rule_id'] = 'DQ_' + rule_data['rule_id']
+        
 
         # Set defaults for missing fields
         defaults = {
@@ -173,9 +165,7 @@ class RuleDerivationAgent:
             'rule_expression': f"{attribute_name} validation",
             'rule_expression_sql': f"SELECT * FROM products WHERE \"{attribute_name}\" IS NULL",
             'rule_expression_python': f"df[df['{attribute_name}'].isna()]",
-            'severity': 'Medium',
             'description': f"Validation rule for {attribute_name}",
-            'threshold_percent': 5.0,
             'derived_from': 'profiling analysis',
             'confidence_score': 0.8,
             'sample_valid_values': [],

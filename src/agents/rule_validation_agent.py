@@ -45,7 +45,6 @@ class RuleValidationAgent:
             # Handle case where attribute doesn't exist
             if failures is None:
                 return ValidationResult(
-                    rule_id=rule.rule_id,
                     pass_count=len(self.sample_data),
                     fail_count=0,
                     pass_rate=100.0,
@@ -68,7 +67,6 @@ class RuleValidationAgent:
                 sample_failures = []
 
             return ValidationResult(
-                rule_id=rule.rule_id,
                 pass_count=pass_count,
                 fail_count=fail_count,
                 pass_rate=round(pass_rate, 2),
@@ -78,7 +76,6 @@ class RuleValidationAgent:
         except Exception as e:
             # Return error result
             return ValidationResult(
-                rule_id=rule.rule_id,
                 pass_count=0,
                 fail_count=0,
                 pass_rate=0,
@@ -164,7 +161,7 @@ class RuleValidationAgent:
                     return pd.DataFrame()
 
         except Exception as e:
-            print(f"Error executing rule {rule.rule_id}: {e}")
+            print(f"Error executing rule for {rule.attribute_name}: {e}")
             return pd.DataFrame()
 
     def _extract_value_set(self, rule: DQRule) -> List[Any]:
@@ -258,69 +255,20 @@ class RuleValidationAgent:
             results.append(result)
         return results
 
-    def suggest_threshold_adjustment(
-        self,
-        rule: DQRule,
-        validation_result: ValidationResult,
-    ) -> float:
-        """
-        Suggest adjusted threshold based on validation results.
-
-        Args:
-            rule: Original DQRule
-            validation_result: Validation results
-
-        Returns:
-            Suggested threshold percentage
-        """
-        actual_fail_rate = 100 - validation_result.pass_rate
-        current_threshold = rule.threshold_percent
-
-        # If actual failures exceed threshold significantly, adjust
-        if actual_fail_rate > current_threshold * 1.5:
-            # Suggest a more realistic threshold (10% buffer above actual)
-            suggested = round(actual_fail_rate * 1.1, 1)
-            return min(suggested, 100)
-
-        # If failures are much lower than threshold, tighten it
-        if actual_fail_rate < current_threshold * 0.5 and actual_fail_rate > 0:
-            suggested = round(actual_fail_rate * 1.5, 1)
-            return max(suggested, 0.1)
-
-        return current_threshold
-
     def refine_rules(
         self,
         rules: List[DQRule],
-        validation_results: Dict[str, ValidationResult],
+        validation_results: List[ValidationResult],
     ) -> List[DQRule]:
         """
         Refine rules based on validation results.
 
         Args:
             rules: List of DQRule objects
-            validation_results: Dictionary mapping rule_id to ValidationResult
+            validation_results: List of ValidationResult objects (same order as rules)
 
         Returns:
-            List of refined DQRule objects
+            List of refined DQRule objects (unchanged since threshold adjustment is removed)
         """
-        refined_rules = []
-
-        for rule in rules:
-            if rule.rule_id in validation_results:
-                result = validation_results[rule.rule_id]
-
-                # Adjust threshold if needed
-                new_threshold = self.suggest_threshold_adjustment(rule, result)
-                if new_threshold != rule.threshold_percent:
-                    # Create new rule with adjusted threshold
-                    rule_dict = rule.to_dict()
-                    rule_dict['threshold_percent'] = new_threshold
-                    rule_dict['derived_from'] += f" (threshold adjusted from {rule.threshold_percent}%)"
-                    refined_rules.append(DQRule(**rule_dict))
-                else:
-                    refined_rules.append(rule)
-            else:
-                refined_rules.append(rule)
-
-        return refined_rules
+        # Since threshold_percent was removed, we just return the rules as-is
+        return rules

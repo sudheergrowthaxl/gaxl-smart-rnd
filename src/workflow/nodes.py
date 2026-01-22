@@ -11,7 +11,13 @@ from ..agents.rule_validation_agent import RuleValidationAgent
 from ..agents.output_formatter_agent import OutputFormatterAgent
 from ..prompts.rule_derivation_prompt import get_few_shot_examples
 from ..config.settings import get_settings
-from ..config.attribute_config import DEFAULT_ATTRIBUTE_COUNT, DEFAULT_SCHEMA_PATH
+from ..config.attribute_config import (
+    DEFAULT_ATTRIBUTE_COUNT,
+    DEFAULT_SCHEMA_PATH,
+    MAX_MISSING_THRESHOLD,
+    should_skip_for_missing,
+    meets_cardinality_threshold,
+)
 
 
 def load_profiling_node(state: AgentState) -> Dict[str, Any]:
@@ -33,11 +39,15 @@ def load_profiling_node(state: AgentState) -> Dict[str, Any]:
     # Get schema path from state or use default
     schema_path = state.get('schema_path', DEFAULT_SCHEMA_PATH)
 
+    # Determine attribute limit from settings
+    # 0 or negative means no limit (process ALL attributes)
+    attribute_limit = settings.attribute_limit if settings.attribute_limit > 0 else 0
+
     profiler = DataProfilerAgent(
         profiling_path=state['profiling_path'],
         raw_data_path=state['raw_data_path'],
         schema_path=schema_path,
-        attribute_count=DEFAULT_ATTRIBUTE_COUNT,
+        attribute_count=attribute_limit if attribute_limit > 0 else DEFAULT_ATTRIBUTE_COUNT,
     )
 
     # Load and parse profiling JSON
@@ -47,15 +57,22 @@ def load_profiling_node(state: AgentState) -> Dict[str, Any]:
     # Load sample data for validation
     try:
         sample_df = profiler.load_sample_data(sample_size=settings.sample_size)
-        sample_data = sample_df.head(100).to_dict('records') if len(sample_df) > 0 else []
+        sample_data = sample_df.head(10000).to_dict('records') if len(sample_df) > 0 else []
     except Exception as e:
         print(f"Warning: Could not load sample data: {e}")
         sample_data = []
 
     total_records = profiler.get_total_records()
 
+    # Get taxonomy-filtered attributes
+    # Pass limit=0 or negative to get ALL matched attributes (no limit)
+    taxonomy_limit = attribute_limit if attribute_limit > 0 else 0
+    priority_attrs = profiler.get_taxonomy_filtered_attributes(case_sensitive=False, limit=taxonomy_limit)
+
     # Get dataset context - all values derived dynamically with taxonomy filtering
     dataset_context = profiler.get_dataset_context(use_taxonomy=True)
+    # Override priority_attributes with the correct list (potentially unlimited)
+    dataset_context['priority_attributes'] = priority_attrs
     dataset_context['profiling_path'] = state['profiling_path']
     dataset_context['schema_path'] = schema_path
 
@@ -247,8 +264,8 @@ def validate_rules_node(state: AgentState) -> Dict[str, Any]:
         validation_results = validation_agent.validate_all_rules(current_rules)
         print(f"  Validated {len(validation_results)} rules")
 
-        for result in validation_results:
-            print(f"    {result.rule_id}: {result.pass_rate}% pass rate")
+        for i, result in enumerate(validation_results):
+            print(f"    Rule {i+1}: {result.pass_rate}% pass rate")
 
     # Move to next attribute
     attrs_to_process = state.get('attributes_to_process', [])
@@ -270,42 +287,26 @@ def refine_rules_node(state: AgentState) -> Dict[str, Any]:
     Refine and deduplicate rules based on validation results.
 
     This node:
-    - Adjusts thresholds based on validation
     - Removes duplicate rules
     - Prepares final ruleset
     """
     print("Refining rules...")
 
     all_rules = state.get('candidate_rules', [])
-    validation_results = {r.rule_id: r for r in state.get('validation_results', [])}
 
     # Filter to only DQRule objects
     all_rules = [r for r in all_rules if isinstance(r, DQRule)]
 
     refined_rules = []
-    seen_ids = set()
+    seen_keys = set()
 
     for rule in all_rules:
-        # Skip duplicates
-        if rule.rule_id in seen_ids:
+        # Skip duplicates using unique_key (attribute_name + category + type)
+        key = rule.unique_key
+        if key in seen_keys:
             continue
-        seen_ids.add(rule.rule_id)
-
-        # Adjust thresholds based on validation
-        if rule.rule_id in validation_results:
-            result = validation_results[rule.rule_id]
-            actual_fail_rate = 100 - result.pass_rate
-
-            if actual_fail_rate > rule.threshold_percent * 1.5:
-                # Adjust threshold
-                rule_dict = rule.to_dict()
-                rule_dict['threshold_percent'] = min(round(actual_fail_rate * 1.1, 1), 100)
-                rule_dict['derived_from'] += f" (threshold adjusted)"
-                refined_rules.append(DQRule(**rule_dict))
-            else:
-                refined_rules.append(rule)
-        else:
-            refined_rules.append(rule)
+        seen_keys.add(key)
+        refined_rules.append(rule)
 
     print(f"  Refined {len(all_rules)} rules to {len(refined_rules)} unique rules")
 

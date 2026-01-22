@@ -27,13 +27,6 @@ class OutputFormatterAgent:
     HEADER_FILL = PatternFill(start_color="4472C4", end_color="4472C4", fill_type="solid")
     HEADER_FONT = Font(color="FFFFFF", bold=True)
 
-    SEVERITY_COLORS = {
-        "Critical": "FF6B6B",  # Red
-        "High": "FFA94D",      # Orange
-        "Medium": "FFE066",    # Yellow
-        "Low": "8CE99A",       # Green
-    }
-
     THIN_BORDER = Border(
         left=Side(style='thin'),
         right=Side(style='thin'),
@@ -139,10 +132,13 @@ class OutputFormatterAgent:
         return str(output_path)
 
     def _write_rules_sheet(self, ws, rules: List[DQRule], parent_class: str = "Unknown") -> None:
-        """Write main rules table to worksheet with Parent Class/Category column."""
+        """Write main rules table to worksheet with Parent Class/Category column.
+
+        Note: Excludes Rule ID, Severity, and Threshold % columns. Includes Support column.
+        """
         headers = [
-            "Parent Class/Category", "Rule ID", "Attribute", "Category", "Rule Type", "Expression",
-            "Severity", "Description", "Threshold %", "Confidence",
+            "Parent Class/Category", "Attribute", "Category", "Rule Type", "Expression",
+            "Description", "Support", "Confidence",
             "Derived From", "Valid Values", "Invalid Values"
         ]
 
@@ -157,33 +153,26 @@ class OutputFormatterAgent:
         # Write data rows
         for row, rule in enumerate(rules, 2):
             ws.cell(row=row, column=1, value=parent_class)  # Parent Class/Category
-            ws.cell(row=row, column=2, value=rule.rule_id)
-            ws.cell(row=row, column=3, value=rule.attribute_name)
-            ws.cell(row=row, column=4, value=rule.rule_category)
-            ws.cell(row=row, column=5, value=rule.rule_type)
-            ws.cell(row=row, column=6, value=rule.rule_expression)
-
-            # Severity with color
-            severity_cell = ws.cell(row=row, column=7, value=rule.severity)
-            color = self.SEVERITY_COLORS.get(rule.severity, "FFFFFF")
-            severity_cell.fill = PatternFill(start_color=color, end_color=color, fill_type="solid")
-
-            ws.cell(row=row, column=8, value=rule.description)
-            ws.cell(row=row, column=9, value=rule.threshold_percent)
-            ws.cell(row=row, column=10, value=rule.confidence_score)
-            ws.cell(row=row, column=11, value=rule.derived_from)
-            ws.cell(row=row, column=12, value=", ".join(rule.sample_valid_values[:5]))
-            ws.cell(row=row, column=13, value=", ".join(rule.sample_invalid_values[:5]))
+            ws.cell(row=row, column=2, value=rule.attribute_name)
+            ws.cell(row=row, column=3, value=rule.rule_category)
+            ws.cell(row=row, column=4, value=rule.rule_type)
+            ws.cell(row=row, column=5, value=rule.rule_expression)
+            ws.cell(row=row, column=6, value=rule.description)
+            ws.cell(row=row, column=7, value=rule.support)
+            ws.cell(row=row, column=8, value=rule.confidence_score)
+            ws.cell(row=row, column=9, value=rule.derived_from)
+            ws.cell(row=row, column=10, value=", ".join(rule.sample_valid_values[:5]))
+            ws.cell(row=row, column=11, value=", ".join(rule.sample_invalid_values[:5]))
 
             # Apply borders
-            for col in range(1, 14):
+            for col in range(1, 12):
                 ws.cell(row=row, column=col).border = self.THIN_BORDER
 
         # Adjust column widths
         column_widths = {
-            'A': 25, 'B': 45, 'C': 30, 'D': 15, 'E': 18, 'F': 60,
-            'G': 12, 'H': 50, 'I': 12, 'J': 12, 'K': 40,
-            'L': 30, 'M': 30
+            'A': 25, 'B': 30, 'C': 15, 'D': 18, 'E': 60,
+            'F': 50, 'G': 12, 'H': 12, 'I': 40,
+            'J': 30, 'K': 30
         }
         for col_letter, width in column_widths.items():
             ws.column_dimensions[col_letter].width = width
@@ -194,24 +183,21 @@ class OutputFormatterAgent:
     def _write_summary_sheet(self, ws, rules: List[DQRule], parent_class: str = "Unknown") -> None:
         """Write summary statistics by category."""
         categories = ["Completeness", "Validity", "Accuracy",
-                      "Consistency", "Uniqueness", "Timeliness"]
-        severities = ["Critical", "High", "Medium", "Low"]
+                      "Consistency", "Uniqueness", "Timeliness",
+                      "Normalization", "Computation", "Default"]
 
-        # Build summary data
+        # Build summary data - count rules per category
         summary = {}
         for cat in categories:
-            summary[cat] = {sev: 0 for sev in severities}
-            summary[cat]["Total"] = 0
+            summary[cat] = 0
 
         for rule in rules:
             cat = rule.rule_category
-            sev = rule.severity
-            if cat in summary and sev in summary[cat]:
-                summary[cat][sev] += 1
-                summary[cat]["Total"] += 1
+            if cat in summary:
+                summary[cat] += 1
 
         # Write headers
-        headers = ["Category"] + severities + ["Total"]
+        headers = ["Category", "Rule Count", "Avg Confidence"]
         for col, header in enumerate(headers, 1):
             cell = ws.cell(row=1, column=col, value=header)
             cell.fill = self.HEADER_FILL
@@ -220,29 +206,35 @@ class OutputFormatterAgent:
             cell.border = self.THIN_BORDER
 
         # Write data
-        for row, (cat, counts) in enumerate(summary.items(), 2):
+        for row, cat in enumerate(categories, 2):
+            count = summary[cat]
+            # Calculate avg confidence for this category
+            cat_rules = [r for r in rules if r.rule_category == cat]
+            avg_conf = sum(r.confidence_score for r in cat_rules) / len(cat_rules) if cat_rules else 0
+
             ws.cell(row=row, column=1, value=cat).border = self.THIN_BORDER
-            for col, sev in enumerate(severities, 2):
-                cell = ws.cell(row=row, column=col, value=counts[sev])
-                cell.border = self.THIN_BORDER
-                cell.alignment = Alignment(horizontal="center")
-            ws.cell(row=row, column=6, value=counts["Total"]).border = self.THIN_BORDER
+            cell_count = ws.cell(row=row, column=2, value=count)
+            cell_count.border = self.THIN_BORDER
+            cell_count.alignment = Alignment(horizontal="center")
+            cell_conf = ws.cell(row=row, column=3, value=round(avg_conf, 2))
+            cell_conf.border = self.THIN_BORDER
+            cell_conf.alignment = Alignment(horizontal="center")
 
         # Add totals row
-        total_row = len(summary) + 2
+        total_row = len(categories) + 2
         ws.cell(row=total_row, column=1, value="TOTAL").font = Font(bold=True)
-        for col, sev in enumerate(severities, 2):
-            total = sum(summary[cat][sev] for cat in categories)
-            ws.cell(row=total_row, column=col, value=total).font = Font(bold=True)
-        ws.cell(row=total_row, column=6, value=len(rules)).font = Font(bold=True)
+        ws.cell(row=total_row, column=2, value=len(rules)).font = Font(bold=True)
+        avg_total = sum(r.confidence_score for r in rules) / len(rules) if rules else 0
+        ws.cell(row=total_row, column=3, value=round(avg_total, 2)).font = Font(bold=True)
 
         # Adjust column widths
-        for col in range(1, 7):
-            ws.column_dimensions[get_column_letter(col)].width = 15
+        ws.column_dimensions['A'].width = 20
+        ws.column_dimensions['B'].width = 15
+        ws.column_dimensions['C'].width = 15
 
     def _write_validation_sheet(self, ws, validation_results: List[ValidationResult]) -> None:
         """Write validation results."""
-        headers = ["Rule ID", "Pass Count", "Fail Count", "Pass Rate %", "Sample Failures"]
+        headers = ["Pass Count", "Fail Count", "Pass Rate %", "Sample Failures"]
 
         for col, header in enumerate(headers, 1):
             cell = ws.cell(row=1, column=col, value=header)
@@ -251,12 +243,11 @@ class OutputFormatterAgent:
             cell.border = self.THIN_BORDER
 
         for row, result in enumerate(validation_results, 2):
-            ws.cell(row=row, column=1, value=result.rule_id)
-            ws.cell(row=row, column=2, value=result.pass_count)
-            ws.cell(row=row, column=3, value=result.fail_count)
+            ws.cell(row=row, column=1, value=result.pass_count)
+            ws.cell(row=row, column=2, value=result.fail_count)
 
             # Color-code pass rate
-            pass_cell = ws.cell(row=row, column=4, value=result.pass_rate)
+            pass_cell = ws.cell(row=row, column=3, value=result.pass_rate)
             if result.pass_rate >= 95:
                 pass_cell.fill = PatternFill(start_color="8CE99A", end_color="8CE99A", fill_type="solid")
             elif result.pass_rate >= 80:
@@ -266,21 +257,20 @@ class OutputFormatterAgent:
 
             # Truncate sample failures for readability
             failures_str = str(result.sample_failures)[:200]
-            ws.cell(row=row, column=5, value=failures_str)
+            ws.cell(row=row, column=4, value=failures_str)
 
-            for col in range(1, 6):
+            for col in range(1, 5):
                 ws.cell(row=row, column=col).border = self.THIN_BORDER
 
         # Adjust column widths
-        ws.column_dimensions['A'].width = 45
+        ws.column_dimensions['A'].width = 12
         ws.column_dimensions['B'].width = 12
         ws.column_dimensions['C'].width = 12
-        ws.column_dimensions['D'].width = 12
-        ws.column_dimensions['E'].width = 80
+        ws.column_dimensions['D'].width = 80
 
     def _write_sql_sheet(self, ws, rules: List[DQRule], parent_class: str = "Unknown") -> None:
         """Write SQL implementations with Parent Class/Category column."""
-        headers = ["Parent Class/Category", "Rule ID", "Attribute", "Category", "SQL Expression"]
+        headers = ["Parent Class/Category", "Attribute", "Category", "SQL Expression"]
 
         for col, header in enumerate(headers, 1):
             cell = ws.cell(row=1, column=col, value=header)
@@ -290,24 +280,22 @@ class OutputFormatterAgent:
 
         for row, rule in enumerate(rules, 2):
             ws.cell(row=row, column=1, value=parent_class)
-            ws.cell(row=row, column=2, value=rule.rule_id)
-            ws.cell(row=row, column=3, value=rule.attribute_name)
-            ws.cell(row=row, column=4, value=rule.rule_category)
-            ws.cell(row=row, column=5, value=rule.rule_expression_sql)
+            ws.cell(row=row, column=2, value=rule.attribute_name)
+            ws.cell(row=row, column=3, value=rule.rule_category)
+            ws.cell(row=row, column=4, value=rule.rule_expression_sql)
 
-            for col in range(1, 6):
+            for col in range(1, 5):
                 ws.cell(row=row, column=col).border = self.THIN_BORDER
 
         # Adjust column widths
         ws.column_dimensions['A'].width = 25
-        ws.column_dimensions['B'].width = 45
-        ws.column_dimensions['C'].width = 30
-        ws.column_dimensions['D'].width = 15
-        ws.column_dimensions['E'].width = 120
+        ws.column_dimensions['B'].width = 30
+        ws.column_dimensions['C'].width = 15
+        ws.column_dimensions['D'].width = 120
 
     def _write_python_sheet(self, ws, rules: List[DQRule], parent_class: str = "Unknown") -> None:
         """Write Python implementations with Parent Class/Category column."""
-        headers = ["Parent Class/Category", "Rule ID", "Attribute", "Category", "Python Expression"]
+        headers = ["Parent Class/Category", "Attribute", "Category", "Python Expression"]
 
         for col, header in enumerate(headers, 1):
             cell = ws.cell(row=1, column=col, value=header)
@@ -317,20 +305,18 @@ class OutputFormatterAgent:
 
         for row, rule in enumerate(rules, 2):
             ws.cell(row=row, column=1, value=parent_class)
-            ws.cell(row=row, column=2, value=rule.rule_id)
-            ws.cell(row=row, column=3, value=rule.attribute_name)
-            ws.cell(row=row, column=4, value=rule.rule_category)
-            ws.cell(row=row, column=5, value=rule.rule_expression_python)
+            ws.cell(row=row, column=2, value=rule.attribute_name)
+            ws.cell(row=row, column=3, value=rule.rule_category)
+            ws.cell(row=row, column=4, value=rule.rule_expression_python)
 
-            for col in range(1, 6):
+            for col in range(1, 5):
                 ws.cell(row=row, column=col).border = self.THIN_BORDER
 
         # Adjust column widths
         ws.column_dimensions['A'].width = 25
-        ws.column_dimensions['B'].width = 45
-        ws.column_dimensions['C'].width = 30
-        ws.column_dimensions['D'].width = 15
-        ws.column_dimensions['E'].width = 120
+        ws.column_dimensions['B'].width = 30
+        ws.column_dimensions['C'].width = 15
+        ws.column_dimensions['D'].width = 120
 
     def _write_by_attribute_sheet(self, ws, rules: List[DQRule], parent_class: str = "Unknown") -> None:
         """Write rules grouped by attribute with Parent Class/Category column."""
@@ -342,7 +328,7 @@ class OutputFormatterAgent:
                 by_attr[attr] = []
             by_attr[attr].append(rule)
 
-        headers = ["Parent Class/Category", "Attribute", "Rule Count", "Categories", "Severities", "Rule IDs"]
+        headers = ["Parent Class/Category", "Attribute", "Rule Count", "Categories", "Rule Types"]
 
         for col, header in enumerate(headers, 1):
             cell = ws.cell(row=1, column=col, value=header)
@@ -352,17 +338,15 @@ class OutputFormatterAgent:
 
         for row, (attr, attr_rules) in enumerate(sorted(by_attr.items()), 2):
             categories = list(set(r.rule_category for r in attr_rules))
-            severities = list(set(r.severity for r in attr_rules))
-            rule_ids = [r.rule_id for r in attr_rules]
+            rule_types = list(set(r.rule_type for r in attr_rules))
 
             ws.cell(row=row, column=1, value=parent_class)
             ws.cell(row=row, column=2, value=attr)
             ws.cell(row=row, column=3, value=len(attr_rules))
             ws.cell(row=row, column=4, value=", ".join(categories))
-            ws.cell(row=row, column=5, value=", ".join(severities))
-            ws.cell(row=row, column=6, value=", ".join(rule_ids))
+            ws.cell(row=row, column=5, value=", ".join(rule_types))
 
-            for col in range(1, 7):
+            for col in range(1, 6):
                 ws.cell(row=row, column=col).border = self.THIN_BORDER
 
         # Adjust column widths
@@ -370,8 +354,7 @@ class OutputFormatterAgent:
         ws.column_dimensions['B'].width = 35
         ws.column_dimensions['C'].width = 12
         ws.column_dimensions['D'].width = 40
-        ws.column_dimensions['E'].width = 25
-        ws.column_dimensions['F'].width = 80
+        ws.column_dimensions['E'].width = 50
 
     def generate_summary(self, rules: List[DQRule]) -> Dict[str, Any]:
         """
@@ -384,8 +367,8 @@ class OutputFormatterAgent:
             Summary dictionary
         """
         categories = ["Completeness", "Validity", "Accuracy",
-                      "Consistency", "Uniqueness", "Timeliness"]
-        severities = ["Critical", "High", "Medium", "Low"]
+                      "Consistency", "Uniqueness", "Timeliness",
+                      "Normalization", "Computation", "Default"]
 
         return {
             "total_rules": len(rules),
@@ -393,18 +376,10 @@ class OutputFormatterAgent:
                 cat: len([r for r in rules if r.rule_category == cat])
                 for cat in categories
             },
-            "rules_by_severity": {
-                sev: len([r for r in rules if r.severity == sev])
-                for sev in severities
-            },
             "attributes_covered": list(set(r.attribute_name for r in rules)),
             "attribute_count": len(set(r.attribute_name for r in rules)),
             "avg_confidence_score": (
                 sum(r.confidence_score for r in rules) / len(rules)
-                if rules else 0
-            ),
-            "avg_threshold": (
-                sum(r.threshold_percent for r in rules) / len(rules)
                 if rules else 0
             ),
         }

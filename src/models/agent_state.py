@@ -8,7 +8,6 @@ from pydantic import BaseModel, Field
 class ValidationResult(BaseModel):
     """Result of validating a single rule against sample data."""
 
-    rule_id: str = Field(..., description="ID of the validated rule")
     pass_count: int = Field(default=0, description="Number of records that passed")
     fail_count: int = Field(default=0, description="Number of records that failed")
     pass_rate: float = Field(default=0.0, description="Pass rate as percentage")
@@ -20,7 +19,6 @@ class ValidationResult(BaseModel):
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary."""
         return {
-            "rule_id": self.rule_id,
             "pass_count": self.pass_count,
             "fail_count": self.fail_count,
             "pass_rate": self.pass_rate,
