@@ -1,0 +1,103 @@
+{
+  "metadata": {
+    "generated_at": "2026-01-23T12:29:23.655310",
+    "generator_version": "1.0.0",
+    "data_sources": [],
+    "total_rules": 3,
+    "rules_by_category": {
+      "VALIDITY": 2,
+      "COMPLETENESS": 1
+    }
+  },
+  "attribute_matching_report": {
+    "matched_attributes": [],
+    "crosstab_only_attributes": [],
+    "rag_only_attributes": [],
+    "statistics": {}
+  },
+  "rules": [
+    {
+      "rule_id": "DQR_001",
+      "attribute": "unknown",
+      "category": "VALIDITY",
+      "subtype": "data_type",
+      "description": "Control voltage must be within the specified range for operational safety.",
+      "validation_logic": {
+        "expression": "",
+        "parameters": {},
+        "error_message": "Validation failed",
+        "severity": "ERROR"
+      },
+      "source_evidence": [
+        {
+          "source_type": "unknown",
+          "source_reference": "",
+          "excerpt": "",
+          "confidence": 0.95
+        }
+      ],
+      "business_impact": "",
+      "implementation_notes": "",
+      "created_at": "2026-01-23T12:29:23.655310"
+    },
+    {
+      "rule_id": "DQR_002",
+      "attribute": "unknown",
+      "category": "COMPLETENESS",
+      "subtype": "data_type",
+      "description": "Supply voltage must always be provided for accurate operation.",
+      "validation_logic": {
+        "expression": "",
+        "parameters": {},
+        "error_message": "Validation failed",
+        "severity": "ERROR"
+      },
+      "source_evidence": [
+        {
+          "source_type": "unknown",
+          "source_reference": "",
+          "excerpt": "",
+          "confidence": 0.9
+        }
+      ],
+      "business_impact": "",
+      "implementation_notes": "",
+      "created_at": "2026-01-23T12:29:23.655310"
+    },
+    {
+      "rule_id": "DQR_003",
+      "attribute": "unknown",
+      "category": "VALIDITY",
+      "subtype": "data_type",
+      "description": "Continuous current must be within the specified range for safety.",
+      "validation_logic": {
+        "expression": "",
+        "parameters": {},
+        "error_message": "Validation failed",
+        "severity": "ERROR"
+      },
+      "source_evidence": [
+        {
+          "source_type": "unknown",
+          "source_reference": "",
+          "excerpt": "",
+          "confidence": 0.92
+        }
+      ],
+      "business_impact": "",
+      "implementation_notes": "",
+      "created_at": "2026-01-23T12:29:23.655310"
+    }
+  ],
+  "summary": {
+    "total_rules": 3,
+    "by_category": {
+      "VALIDITY": 2,
+      "COMPLETENESS": 1
+    },
+    "by_attribute": {
+      "unknown": 3
+    },
+    "coverage_rate": 0.0
+  }
+}

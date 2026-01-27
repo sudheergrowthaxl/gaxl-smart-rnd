@@ -1,0 +1,430 @@
+{
+  "metadata": {
+    "generated_at": "2026-01-25T09:20:46.884985",
+    "generator_version": "1.0.0",
+    "data_sources": [],
+    "total_rules": 15,
+    "rules_by_category": {
+      "COMPLETENESS": 7,
+      "VALIDITY": 8
+    }
+  },
+  "attribute_matching_report": {
+    "matched_attributes": [],
+    "crosstab_only_attributes": [],
+    "rag_only_attributes": [],
+    "statistics": {}
+  },
+  "rules": [
+    {
+      "rule_id": "DQR_001",
+      "attribute": "Action",
+      "category": "COMPLETENESS",
+      "subtype": "mandatory_field",
+      "description": "Action attribute is missing 100% of the time.",
+      "validation_logic": {
+        "expression": "if record['Action'] is None: raise ValueError('Action is missing')",
+        "parameters": {
+          "derived": "Missing %: 100.0"
+        },
+        "error_message": "Action attribute must not be missing.",
+        "severity": "ERROR"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Missing %: 100.0",
+          "confidence": 0.95
+        }
+      ],
+      "business_impact": "Critical data quality issue as Action is completely missing.",
+      "implementation_notes": "Ensure Action attribute is populated in data source.",
+      "created_at": "2026-01-25T09:20:46.884985"
+    },
+    {
+      "rule_id": "DQR_002",
+      "attribute": "Type",
+      "category": "COMPLETENESS",
+      "subtype": "mandatory_field",
+      "description": "Type attribute is missing in 0.78% of records.",
+      "validation_logic": {
+        "expression": "if record['Type'] is None: raise ValueError('Type is missing')",
+        "parameters": {
+          "derived": "Missing %: 0.78"
+        },
+        "error_message": "Type attribute must not be missing.",
+        "severity": "WARNING"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Missing %: 0.78",
+          "confidence": 0.95
+        }
+      ],
+      "business_impact": "Minor impact due to small percentage of missing Type data.",
+      "implementation_notes": "Review data entry processes for Type attribute.",
+      "created_at": "2026-01-25T09:20:46.884985"
+    },
+    {
+      "rule_id": "DQR_003",
+      "attribute": "Type",
+      "category": "VALIDITY",
+      "subtype": "enumeration",
+      "description": "Type attribute should only have the value 'sku'.",
+      "validation_logic": {
+        "expression": "if record['Type'] != 'sku': raise ValueError('Invalid Type value')",
+        "parameters": {
+          "derived": "Top Values: sku"
+        },
+        "error_message": "Type attribute must be 'sku'.",
+        "severity": "ERROR"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Top Values: sku",
+          "confidence": 0.95
+        }
+      ],
+      "business_impact": "Ensures data consistency for Type attribute.",
+      "implementation_notes": "Validate Type attribute against allowed values.",
+      "created_at": "2026-01-25T09:20:46.884985"
+    },
+    {
+      "rule_id": "DQR_004",
+      "attribute": "ID",
+      "category": "VALIDITY",
+      "subtype": "data_type",
+      "description": "ID attribute should be a unique identifier.",
+      "validation_logic": {
+        "expression": "if not isinstance(record['ID'], str): raise TypeError('ID must be a string')",
+        "parameters": {
+          "derived": "Data Type: ID"
+        },
+        "error_message": "ID must be a unique string.",
+        "severity": "ERROR"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Data Type: ID",
+          "confidence": 0.95
+        }
+      ],
+      "business_impact": "Ensures each record is uniquely identifiable.",
+      "implementation_notes": "Ensure ID is generated as a unique string.",
+      "created_at": "2026-01-25T09:20:46.884985"
+    },
+    {
+      "rule_id": "DQR_005",
+      "attribute": "Name",
+      "category": "VALIDITY",
+      "subtype": "range_check",
+      "description": "Name attribute should be within the numeric range 70000087.0 to 75672390.0.",
+      "validation_logic": {
+        "expression": "if not (70000087.0 <= record['Name'] <= 75672390.0): raise ValueError('Name out of range')",
+        "parameters": {
+          "derived": "Range: 70000087.0 to 75672390.0"
+        },
+        "error_message": "Name must be within the specified range.",
+        "severity": "ERROR"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Range: 70000087.0 to 75672390.0",
+          "confidence": 0.95
+        }
+      ],
+      "business_impact": "Ensures Name attribute falls within expected numeric range.",
+      "implementation_notes": "Validate Name attribute against specified range.",
+      "created_at": "2026-01-25T09:20:46.884985"
+    },
+    {
+      "rule_id": "DQR_006",
+      "attribute": "RS Product Category",
+      "category": "COMPLETENESS",
+      "subtype": "mandatory_field",
+      "description": "RS Product Category is missing in 0.78% of records.",
+      "validation_logic": {
+        "expression": "if record['RS Product Category'] is None: raise ValueError('RS Product Category is missing')",
+        "parameters": {
+          "derived": "Missing %: 0.78"
+        },
+        "error_message": "RS Product Category must not be missing.",
+        "severity": "WARNING"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Missing %: 0.78",
+          "confidence": 0.95
+        }
+      ],
+      "business_impact": "Minor impact due to small percentage of missing data.",
+      "implementation_notes": "Ensure RS Product Category is populated.",
+      "created_at": "2026-01-25T09:20:46.884985"
+    },
+    {
+      "rule_id": "DQR_007",
+      "attribute": "RS Product Category",
+      "category": "VALIDITY",
+      "subtype": "enumeration",
+      "description": "RS Product Category should only have the value 'RS Web Taxonomy>>Industrial Controls>>Contactors & Accessories>>Contactors'.",
+      "validation_logic": {
+        "expression": "if record['RS Product Category'] != 'RS Web Taxonomy>>Industrial Controls>>Contactors & Accessories>>Contactors': raise ValueError('Invalid RS Product Category value')",
+        "parameters": {
+          "derived": "Top Values: RS Web Taxonomy>>Industrial Controls>>Contactors & Accessories>>Contactors"
+        },
+        "error_message": "RS Product Category must be 'RS Web Taxonomy>>Industrial Controls>>Contactors & Accessories>>Contactors'.",
+        "severity": "ERROR"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Top Values: RS Web Taxonomy>>Industrial Controls>>Contactors & Accessories>>Contactors",
+          "confidence": 0.95
+        }
+      ],
+      "business_impact": "Ensures consistency in product categorization.",
+      "implementation_notes": "Validate RS Product Category against allowed value.",
+      "created_at": "2026-01-25T09:20:46.884985"
+    },
+    {
+      "rule_id": "DQR_008",
+      "attribute": "zz_80 Character Description",
+      "category": "COMPLETENESS",
+      "subtype": "mandatory_field",
+      "description": "zz_80 Character Description is missing in 73.44% of records.",
+      "validation_logic": {
+        "expression": "if record['zz_80 Character Description'] is None: raise ValueError('zz_80 Character Description is missing')",
+        "parameters": {
+          "derived": "Missing %: 73.44"
+        },
+        "error_message": "zz_80 Character Description must not be missing.",
+        "severity": "ERROR"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Missing %: 73.44",
+          "confidence": 0.95
+        }
+      ],
+      "business_impact": "Significant impact due to high percentage of missing data.",
+      "implementation_notes": "Ensure zz_80 Character Description is populated.",
+      "created_at": "2026-01-25T09:20:46.884985"
+    },
+    {
+      "rule_id": "DQR_009",
+      "attribute": "dr_80 Character Description",
+      "category": "COMPLETENESS",
+      "subtype": "mandatory_field",
+      "description": "dr_80 Character Description is missing in 0.78% of records.",
+      "validation_logic": {
+        "expression": "if record['dr_80 Character Description'] is None: raise ValueError('dr_80 Character Description is missing')",
+        "parameters": {
+          "derived": "Missing %: 0.78"
+        },
+        "error_message": "dr_80 Character Description must not be missing.",
+        "severity": "WARNING"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Missing %: 0.78",
+          "confidence": 0.95
+        }
+      ],
+      "business_impact": "Minor impact due to small percentage of missing data.",
+      "implementation_notes": "Ensure dr_80 Character Description is populated.",
+      "created_at": "2026-01-25T09:20:46.884985"
+    },
+    {
+      "rule_id": "DQR_010",
+      "attribute": "Workflow Status",
+      "category": "COMPLETENESS",
+      "subtype": "mandatory_field",
+      "description": "Workflow Status is missing in 79.82% of records.",
+      "validation_logic": {
+        "expression": "if record['Workflow Status'] is None: raise ValueError('Workflow Status is missing')",
+        "parameters": {
+          "derived": "Missing %: 79.82"
+        },
+        "error_message": "Workflow Status must not be missing.",
+        "severity": "ERROR"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Missing %: 79.82",
+          "confidence": 0.95
+        }
+      ],
+      "business_impact": "Significant impact due to high percentage of missing data.",
+      "implementation_notes": "Ensure Workflow Status is populated.",
+      "created_at": "2026-01-25T09:20:46.884985"
+    },
+    {
+      "rule_id": "DQR_011",
+      "attribute": "Workflow Status",
+      "category": "VALIDITY",
+      "subtype": "enumeration",
+      "description": "Workflow Status should be either 'In Progress' or 'Completed'.",
+      "validation_logic": {
+        "expression": "if record['Workflow Status'] not in ['In Progress', 'Completed']: raise ValueError('Invalid Workflow Status value')",
+        "parameters": {
+          "derived": "Top Values: In Progress, Completed"
+        },
+        "error_message": "Workflow Status must be 'In Progress' or 'Completed'.",
+        "severity": "ERROR"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Top Values: In Progress, Completed",
+          "confidence": 0.95
+        }
+      ],
+      "business_impact": "Ensures consistency in workflow status values.",
+      "implementation_notes": "Validate Workflow Status against allowed values.",
+      "created_at": "2026-01-25T09:20:46.884985"
+    },
+    {
+      "rule_id": "DQR_012",
+      "attribute": "zz_Web Overview",
+      "category": "COMPLETENESS",
+      "subtype": "mandatory_field",
+      "description": "zz_Web Overview is missing in 57.75% of records.",
+      "validation_logic": {
+        "expression": "if record['zz_Web Overview'] is None: raise ValueError('zz_Web Overview is missing')",
+        "parameters": {
+          "derived": "Missing %: 57.75"
+        },
+        "error_message": "zz_Web Overview must not be missing.",
+        "severity": "ERROR"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Missing %: 57.75",
+          "confidence": 0.95
+        }
+      ],
+      "business_impact": "Significant impact due to high percentage of missing data.",
+      "implementation_notes": "Ensure zz_Web Overview is populated.",
+      "created_at": "2026-01-25T09:20:46.884985"
+    },
+    {
+      "rule_id": "DQR_013",
+      "attribute": "MaterialNumber",
+      "category": "VALIDITY",
+      "subtype": "range_check",
+      "description": "MaterialNumber should be within the numeric range 70000087.0 to 75672390.0.",
+      "validation_logic": {
+        "expression": "if not (70000087.0 <= record['MaterialNumber'] <= 75672390.0): raise ValueError('MaterialNumber out of range')",
+        "parameters": {
+          "derived": "Range: 70000087.0 to 75672390.0"
+        },
+        "error_message": "MaterialNumber must be within the specified range.",
+        "severity": "ERROR"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Range: 70000087.0 to 75672390.0",
+          "confidence": 0.95
+        }
+      ],
+      "business_impact": "Ensures MaterialNumber falls within expected numeric range.",
+      "implementation_notes": "Validate MaterialNumber against specified range.",
+      "created_at": "2026-01-25T09:20:46.884985"
+    },
+    {
+      "rule_id": "DQR_014",
+      "attribute": "dr_80 Character Description",
+      "category": "VALIDITY",
+      "subtype": "enumeration",
+      "description": "dr_80 Character Description should match one of the top values.",
+      "validation_logic": {
+        "expression": "if record['dr_80 Character Description'] not in ['Contactors,', 'Contactors, 3', 'Contactors, 3, AF Series']: raise ValueError('Invalid dr_80 Character Description value')",
+        "parameters": {
+          "derived": "Top Values: Contactors,, Contactors, 3, Contactors, 3, AF Series"
+        },
+        "error_message": "dr_80 Character Description must match one of the top values.",
+        "severity": "WARNING"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Top Values: Contactors,, Contactors, 3, Contactors, 3, AF Series",
+          "confidence": 0.95
+        }
+      ],
+      "business_impact": "Ensures consistency in dr_80 Character Description values.",
+      "implementation_notes": "Validate dr_80 Character Description against top values.",
+      "created_at": "2026-01-25T09:20:46.884985"
+    },
+    {
+      "rule_id": "DQR_015",
+      "attribute": "zz_80 Character Description",
+      "category": "VALIDITY",
+      "subtype": "enumeration",
+      "description": "zz_80 Character Description should match one of the top values.",
+      "validation_logic": {
+        "expression": "if record['zz_80 Character Description'] not in ['CV VAC Contactor', '8903L electrically held lighting contactor, 6 P, 6 NO, 30 A, 600 V, 110/120 V', '8903LX mechanically held lighting contactor, 8 P, 8 NO, 30 A, 600 V, 110/120 V']: raise ValueError('Invalid zz_80 Character Description value')",
+        "parameters": {
+          "derived": "Top Values: CV VAC Contactor, 8903L electrically held lighting contactor, 6 P, 6 NO, 30 A, 600 V, 110/120 V, 8903LX mechanically held lighting contactor, 8 P, 8 NO, 30 A, 600 V, 110/120 V"
+        },
+        "error_message": "zz_80 Character Description must match one of the top values.",
+        "severity": "WARNING"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Top Values: CV VAC Contactor, 8903L electrically held lighting contactor, 6 P, 6 NO, 30 A, 600 V, 110/120 V, 8903LX mechanically held lighting contactor, 8 P, 8 NO, 30 A, 600 V, 110/120 V",
+          "confidence": 0.95
+        }
+      ],
+      "business_impact": "Ensures consistency in zz_80 Character Description values.",
+      "implementation_notes": "Validate zz_80 Character Description against top values.",
+      "created_at": "2026-01-25T09:20:46.884985"
+    }
+  ],
+  "summary": {
+    "total_rules": 15,
+    "by_category": {
+      "COMPLETENESS": 7,
+      "VALIDITY": 8
+    },
+    "by_attribute": {
+      "Action": 1,
+      "Type": 2,
+      "ID": 1,
+      "Name": 1,
+      "RS Product Category": 2,
+      "zz_80 Character Description": 2,
+      "dr_80 Character Description": 2,
+      "Workflow Status": 2,
+      "zz_Web Overview": 1,
+      "MaterialNumber": 1
+    },
+    "coverage_rate": 0.0
+  }
+}

@@ -1,0 +1,4437 @@
+{
+  "metadata": {
+    "generated_at": "2026-01-27T06:36:57.960241",
+    "generator_version": "1.0.0",
+    "data_sources": [],
+    "total_rules": 145,
+    "rules_by_category": {
+      "VALIDITY": 127,
+      "COMPLETENESS": 18
+    }
+  },
+  "attribute_matching_report": {
+    "matched_attributes": [],
+    "crosstab_only_attributes": [],
+    "rag_only_attributes": [],
+    "statistics": {}
+  },
+  "rules": [
+    {
+      "rule_id": "DQR_001",
+      "attribute": "zz_Dielectric Rating",
+      "category": "VALIDITY",
+      "subtype": "data_type",
+      "description": "zz_Dielectric Rating must be of type string",
+      "validation_logic": {
+        "expression": "isinstance(value, string)",
+        "parameters": {
+          "expected_type": "string",
+          "profiled_type": "Categorical"
+        },
+        "error_message": "zz_Dielectric Rating has incorrect data type. Expected: string",
+        "severity": "WARNING"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Observed data type: Categorical",
+          "confidence": 0.9
+        }
+      ],
+      "business_impact": "Type mismatches may cause processing errors",
+      "implementation_notes": "Type validation based on profiled data type",
+      "created_at": "2026-01-27T06:36:57.961252"
+    },
+    {
+      "rule_id": "DQR_002",
+      "attribute": "zz_IP Rating",
+      "category": "VALIDITY",
+      "subtype": "enumeration",
+      "description": "zz_IP Rating must be one of the standard values: IP00, IP20, IP40, IP54, IP55, IP65, IP66, IP67",
+      "validation_logic": {
+        "expression": "value in ['IP00', 'IP20', 'IP40', 'IP54', 'IP55', 'IP65', 'IP66', 'IP67']",
+        "parameters": {
+          "valid_values": [
+            "IP00",
+            "IP20",
+            "IP40",
+            "IP54",
+            "IP55",
+            "IP65",
+            "IP66",
+            "IP67"
+          ],
+          "unit": "",
+          "standard_reference": "Built-in standard values for ip_rating"
+        },
+        "error_message": "zz_IP Rating has invalid value. Must be one of: IP00, IP20, IP40, IP54, IP55, IP65, IP66, IP67",
+        "severity": "ERROR"
+      },
+      "source_evidence": [
+        {
+          "source_type": "iec_standards",
+          "source_reference": "Built-in standard values for ip_rating",
+          "excerpt": "Standard values: IP00, IP20, IP40, IP54, IP55, IP65, IP66, IP67",
+          "confidence": 0.8
+        }
+      ],
+      "business_impact": "Non-standard values may cause compatibility or compliance issues",
+      "implementation_notes": "Validate against allowed values list. Source: IEC Standards",
+      "created_at": "2026-01-27T06:36:59.613698"
+    },
+    {
+      "rule_id": "DQR_003",
+      "attribute": "zz_Horsepower, Max, 3 Phase, at 480 V",
+      "category": "VALIDITY",
+      "subtype": "data_type",
+      "description": "zz_Horsepower, Max, 3 Phase, at 480 V must be of type string",
+      "validation_logic": {
+        "expression": "isinstance(value, string)",
+        "parameters": {
+          "expected_type": "string",
+          "profiled_type": "Categorical"
+        },
+        "error_message": "zz_Horsepower, Max, 3 Phase, at 480 V has incorrect data type. Expected: string",
+        "severity": "WARNING"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Observed data type: Categorical",
+          "confidence": 0.9
+        }
+      ],
+      "business_impact": "Type mismatches may cause processing errors",
+      "implementation_notes": "Type validation based on profiled data type",
+      "created_at": "2026-01-27T06:36:59.615232"
+    },
+    {
+      "rule_id": "DQR_004",
+      "attribute": "zz_Control Voltage",
+      "category": "VALIDITY",
+      "subtype": "enumeration",
+      "description": "zz_Control Voltage must be one of the standard values: 24, 48, 110, 120, 220, 230, 240",
+      "validation_logic": {
+        "expression": "value in [24, 48, 110, 120, 220, 230, 240]",
+        "parameters": {
+          "valid_values": [
+            24,
+            48,
+            110,
+            120,
+            220,
+            230,
+            240
+          ],
+          "unit": "V",
+          "standard_reference": "Built-in standard values for control_voltage"
+        },
+        "error_message": "zz_Control Voltage has invalid value. Must be one of: 24, 48, 110, 120, 220, 230, 240",
+        "severity": "ERROR"
+      },
+      "source_evidence": [
+        {
+          "source_type": "iec_standards",
+          "source_reference": "Built-in standard values for control_voltage",
+          "excerpt": "Standard values: 24, 48, 110, 120, 220, 230, 240",
+          "confidence": 0.8
+        }
+      ],
+      "business_impact": "Non-standard values may cause compatibility or compliance issues",
+      "implementation_notes": "Validate against allowed values list. Source: IEC Standards",
+      "created_at": "2026-01-27T06:37:01.670649"
+    },
+    {
+      "rule_id": "DQR_005",
+      "attribute": "zz_Special Features",
+      "category": "VALIDITY",
+      "subtype": "data_type",
+      "description": "zz_Special Features must be of type string",
+      "validation_logic": {
+        "expression": "isinstance(value, string)",
+        "parameters": {
+          "expected_type": "string",
+          "profiled_type": "Categorical"
+        },
+        "error_message": "zz_Special Features has incorrect data type. Expected: string",
+        "severity": "WARNING"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Observed data type: Categorical",
+          "confidence": 0.9
+        }
+      ],
+      "business_impact": "Type mismatches may cause processing errors",
+      "implementation_notes": "Type validation based on profiled data type",
+      "created_at": "2026-01-27T06:37:01.671658"
+    },
+    {
+      "rule_id": "DQR_006",
+      "attribute": "zz_Material",
+      "category": "COMPLETENESS",
+      "subtype": "threshold",
+      "description": "DEAD FIELD: zz_Material has 100.0% missing - consider removing from schema",
+      "validation_logic": {
+        "expression": "SCHEMA_REVIEW_REQUIRED",
+        "parameters": {
+          "missing_percentage": 100.0,
+          "status": "dead_field"
+        },
+        "error_message": "zz_Material is never populated - review schema",
+        "severity": "INFO"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Field is 100.0% empty - never populated",
+          "confidence": 1.0
+        }
+      ],
+      "business_impact": "Field unused - consider removing to simplify data model",
+      "implementation_notes": "Review with data stewards before removing from schema",
+      "created_at": "2026-01-27T06:37:01.672654"
+    },
+    {
+      "rule_id": "DQR_007",
+      "attribute": "zz_Material",
+      "category": "VALIDITY",
+      "subtype": "data_type",
+      "description": "zz_Material must be of type constant",
+      "validation_logic": {
+        "expression": "isinstance(value, constant)",
+        "parameters": {
+          "expected_type": "constant",
+          "profiled_type": "Constant"
+        },
+        "error_message": "zz_Material has incorrect data type. Expected: constant",
+        "severity": "WARNING"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Observed data type: Constant",
+          "confidence": 0.9
+        }
+      ],
+      "business_impact": "Type mismatches may cause processing errors",
+      "implementation_notes": "Type validation based on profiled data type",
+      "created_at": "2026-01-27T06:37:01.672654"
+    },
+    {
+      "rule_id": "DQR_008",
+      "attribute": "zz_Horsepower, Motor, Max at 115 V",
+      "category": "VALIDITY",
+      "subtype": "range_check",
+      "description": "zz_Horsepower, Motor, Max at 115 V must be between 2.0 and 10.0",
+      "validation_logic": {
+        "expression": "2.0 <= value <= 10.0",
+        "parameters": {
+          "min": 2.0,
+          "max": 10.0,
+          "unit": "",
+          "standard_reference": "Observed data range"
+        },
+        "error_message": "zz_Horsepower, Motor, Max at 115 V out of range. Must be 2.0-10.0",
+        "severity": "ERROR"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling_statistics",
+          "source_reference": "Observed data range",
+          "excerpt": "Valid range: 2.0 to 10.0",
+          "confidence": 0.85
+        }
+      ],
+      "business_impact": "Values outside range may indicate data entry errors or equipment issues",
+      "implementation_notes": "Numeric range validation. Source: Profiling Statistics",
+      "created_at": "2026-01-27T06:37:01.673693"
+    },
+    {
+      "rule_id": "DQR_009",
+      "attribute": "zz_Horsepower, Motor, Max at 115 V",
+      "category": "VALIDITY",
+      "subtype": "data_type",
+      "description": "zz_Horsepower, Motor, Max at 115 V must be of type number",
+      "validation_logic": {
+        "expression": "isinstance(value, number)",
+        "parameters": {
+          "expected_type": "number",
+          "profiled_type": "Numeric"
+        },
+        "error_message": "zz_Horsepower, Motor, Max at 115 V has incorrect data type. Expected: number",
+        "severity": "WARNING"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Observed data type: Numeric",
+          "confidence": 0.9
+        }
+      ],
+      "business_impact": "Type mismatches may cause processing errors",
+      "implementation_notes": "Type validation based on profiled data type",
+      "created_at": "2026-01-27T06:37:01.673693"
+    },
+    {
+      "rule_id": "DQR_010",
+      "attribute": "zz_Maximum Voltage",
+      "category": "VALIDITY",
+      "subtype": "enumeration",
+      "description": "zz_Maximum Voltage must be one of the standard values: 24, 48, 110, 120, 220, 230, 240, 380, 400, 415, ... (14 total)",
+      "validation_logic": {
+        "expression": "value in [24, 48, 110, 120, 220, 230, 240, 380, 400, 415, 440, 480, 500, 690]",
+        "parameters": {
+          "valid_values": [
+            24,
+            48,
+            110,
+            120,
+            220,
+            230,
+            240,
+            380,
+            400,
+            415,
+            440,
+            480,
+            500,
+            690
+          ],
+          "unit": "V",
+          "standard_reference": "Built-in standard values for voltage"
+        },
+        "error_message": "zz_Maximum Voltage has invalid value. Must be one of: 24, 48, 110, 120, 220, 230, 240, 380, 400, 415, ... (14 total)",
+        "severity": "ERROR"
+      },
+      "source_evidence": [
+        {
+          "source_type": "iec_standards",
+          "source_reference": "Built-in standard values for voltage",
+          "excerpt": "Standard values: 24, 48, 110, 120, 220, 230, 240, 380, 400, 415, ... (14 total)",
+          "confidence": 0.8
+        }
+      ],
+      "business_impact": "Non-standard values may cause compatibility or compliance issues",
+      "implementation_notes": "Validate against allowed values list. Source: IEC Standards",
+      "created_at": "2026-01-27T06:37:01.673693"
+    },
+    {
+      "rule_id": "DQR_011",
+      "attribute": "zz_Horsepower, Max, 1 Phase, at 240 V",
+      "category": "VALIDITY",
+      "subtype": "range_check",
+      "description": "zz_Horsepower, Max, 1 Phase, at 240 V must be between 1.0 and 5.0",
+      "validation_logic": {
+        "expression": "1.0 <= value <= 5.0",
+        "parameters": {
+          "min": 1.0,
+          "max": 5.0,
+          "unit": "",
+          "standard_reference": "Observed data range"
+        },
+        "error_message": "zz_Horsepower, Max, 1 Phase, at 240 V out of range. Must be 1.0-5.0",
+        "severity": "ERROR"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling_statistics",
+          "source_reference": "Observed data range",
+          "excerpt": "Valid range: 1.0 to 5.0",
+          "confidence": 0.85
+        }
+      ],
+      "business_impact": "Values outside range may indicate data entry errors or equipment issues",
+      "implementation_notes": "Numeric range validation. Source: Profiling Statistics",
+      "created_at": "2026-01-27T06:37:01.673693"
+    },
+    {
+      "rule_id": "DQR_012",
+      "attribute": "zz_Horsepower, Max, 1 Phase, at 240 V",
+      "category": "VALIDITY",
+      "subtype": "data_type",
+      "description": "zz_Horsepower, Max, 1 Phase, at 240 V must be of type number",
+      "validation_logic": {
+        "expression": "isinstance(value, number)",
+        "parameters": {
+          "expected_type": "number",
+          "profiled_type": "Numeric"
+        },
+        "error_message": "zz_Horsepower, Max, 1 Phase, at 240 V has incorrect data type. Expected: number",
+        "severity": "WARNING"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Observed data type: Numeric",
+          "confidence": 0.9
+        }
+      ],
+      "business_impact": "Type mismatches may cause processing errors",
+      "implementation_notes": "Type validation based on profiled data type",
+      "created_at": "2026-01-27T06:37:01.673693"
+    },
+    {
+      "rule_id": "DQR_013",
+      "attribute": "zz_Mounting Style",
+      "category": "VALIDITY",
+      "subtype": "data_type",
+      "description": "zz_Mounting Style must be of type string",
+      "validation_logic": {
+        "expression": "isinstance(value, string)",
+        "parameters": {
+          "expected_type": "string",
+          "profiled_type": "Categorical"
+        },
+        "error_message": "zz_Mounting Style has incorrect data type. Expected: string",
+        "severity": "WARNING"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Observed data type: Categorical",
+          "confidence": 0.9
+        }
+      ],
+      "business_impact": "Type mismatches may cause processing errors",
+      "implementation_notes": "Type validation based on profiled data type",
+      "created_at": "2026-01-27T06:37:01.675225"
+    },
+    {
+      "rule_id": "DQR_014",
+      "attribute": "zz_Mounting Diameter",
+      "category": "COMPLETENESS",
+      "subtype": "threshold",
+      "description": "DEAD FIELD: zz_Mounting Diameter has 100.0% missing - consider removing from schema",
+      "validation_logic": {
+        "expression": "SCHEMA_REVIEW_REQUIRED",
+        "parameters": {
+          "missing_percentage": 100.0,
+          "status": "dead_field"
+        },
+        "error_message": "zz_Mounting Diameter is never populated - review schema",
+        "severity": "INFO"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Field is 100.0% empty - never populated",
+          "confidence": 1.0
+        }
+      ],
+      "business_impact": "Field unused - consider removing to simplify data model",
+      "implementation_notes": "Review with data stewards before removing from schema",
+      "created_at": "2026-01-27T06:37:01.676938"
+    },
+    {
+      "rule_id": "DQR_015",
+      "attribute": "zz_Mounting Diameter",
+      "category": "VALIDITY",
+      "subtype": "data_type",
+      "description": "zz_Mounting Diameter must be of type constant",
+      "validation_logic": {
+        "expression": "isinstance(value, constant)",
+        "parameters": {
+          "expected_type": "constant",
+          "profiled_type": "Constant"
+        },
+        "error_message": "zz_Mounting Diameter has incorrect data type. Expected: constant",
+        "severity": "WARNING"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Observed data type: Constant",
+          "confidence": 0.9
+        }
+      ],
+      "business_impact": "Type mismatches may cause processing errors",
+      "implementation_notes": "Type validation based on profiled data type",
+      "created_at": "2026-01-27T06:37:01.676938"
+    },
+    {
+      "rule_id": "DQR_016",
+      "attribute": "zz_Product Type",
+      "category": "VALIDITY",
+      "subtype": "data_type",
+      "description": "zz_Product Type must be of type string",
+      "validation_logic": {
+        "expression": "isinstance(value, string)",
+        "parameters": {
+          "expected_type": "string",
+          "profiled_type": "Categorical"
+        },
+        "error_message": "zz_Product Type has incorrect data type. Expected: string",
+        "severity": "WARNING"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Observed data type: Categorical",
+          "confidence": 0.9
+        }
+      ],
+      "business_impact": "Type mismatches may cause processing errors",
+      "implementation_notes": "Type validation based on profiled data type",
+      "created_at": "2026-01-27T06:37:01.677956"
+    },
+    {
+      "rule_id": "DQR_017",
+      "attribute": "zz_Accessory Type",
+      "category": "VALIDITY",
+      "subtype": "data_type",
+      "description": "zz_Accessory Type must be of type string",
+      "validation_logic": {
+        "expression": "isinstance(value, string)",
+        "parameters": {
+          "expected_type": "string",
+          "profiled_type": "Categorical"
+        },
+        "error_message": "zz_Accessory Type has incorrect data type. Expected: string",
+        "severity": "WARNING"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Observed data type: Categorical",
+          "confidence": 0.9
+        }
+      ],
+      "business_impact": "Type mismatches may cause processing errors",
+      "implementation_notes": "Type validation based on profiled data type",
+      "created_at": "2026-01-27T06:37:01.677956"
+    },
+    {
+      "rule_id": "DQR_018",
+      "attribute": "zz_Contact Material",
+      "category": "VALIDITY",
+      "subtype": "data_type",
+      "description": "zz_Contact Material must be of type string",
+      "validation_logic": {
+        "expression": "isinstance(value, string)",
+        "parameters": {
+          "expected_type": "string",
+          "profiled_type": "Categorical"
+        },
+        "error_message": "zz_Contact Material has incorrect data type. Expected: string",
+        "severity": "WARNING"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Observed data type: Categorical",
+          "confidence": 0.9
+        }
+      ],
+      "business_impact": "Type mismatches may cause processing errors",
+      "implementation_notes": "Type validation based on profiled data type",
+      "created_at": "2026-01-27T06:37:01.678983"
+    },
+    {
+      "rule_id": "DQR_019",
+      "attribute": "zz_Options",
+      "category": "VALIDITY",
+      "subtype": "data_type",
+      "description": "zz_Options must be of type string",
+      "validation_logic": {
+        "expression": "isinstance(value, string)",
+        "parameters": {
+          "expected_type": "string",
+          "profiled_type": "Categorical"
+        },
+        "error_message": "zz_Options has incorrect data type. Expected: string",
+        "severity": "WARNING"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Observed data type: Categorical",
+          "confidence": 0.9
+        }
+      ],
+      "business_impact": "Type mismatches may cause processing errors",
+      "implementation_notes": "Type validation based on profiled data type",
+      "created_at": "2026-01-27T06:37:01.679962"
+    },
+    {
+      "rule_id": "DQR_020",
+      "attribute": "zz_Voltage Range",
+      "category": "VALIDITY",
+      "subtype": "enumeration",
+      "description": "zz_Voltage Range must be one of the standard values: 24, 48, 110, 120, 220, 230, 240, 380, 400, 415, ... (14 total)",
+      "validation_logic": {
+        "expression": "value in [24, 48, 110, 120, 220, 230, 240, 380, 400, 415, 440, 480, 500, 690]",
+        "parameters": {
+          "valid_values": [
+            24,
+            48,
+            110,
+            120,
+            220,
+            230,
+            240,
+            380,
+            400,
+            415,
+            440,
+            480,
+            500,
+            690
+          ],
+          "unit": "V",
+          "standard_reference": "Built-in standard values for voltage"
+        },
+        "error_message": "zz_Voltage Range has invalid value. Must be one of: 24, 48, 110, 120, 220, 230, 240, 380, 400, 415, ... (14 total)",
+        "severity": "ERROR"
+      },
+      "source_evidence": [
+        {
+          "source_type": "iec_standards",
+          "source_reference": "Built-in standard values for voltage",
+          "excerpt": "Standard values: 24, 48, 110, 120, 220, 230, 240, 380, 400, 415, ... (14 total)",
+          "confidence": 0.8
+        }
+      ],
+      "business_impact": "Non-standard values may cause compatibility or compliance issues",
+      "implementation_notes": "Validate against allowed values list. Source: IEC Standards",
+      "created_at": "2026-01-27T06:37:01.679962"
+    },
+    {
+      "rule_id": "DQR_021",
+      "attribute": "zz_Horsepower, Max, 3 Phase, at 240 V",
+      "category": "VALIDITY",
+      "subtype": "range_check",
+      "description": "zz_Horsepower, Max, 3 Phase, at 240 V must be between 2.0 and 10.0",
+      "validation_logic": {
+        "expression": "2.0 <= value <= 10.0",
+        "parameters": {
+          "min": 2.0,
+          "max": 10.0,
+          "unit": "",
+          "standard_reference": "Observed data range"
+        },
+        "error_message": "zz_Horsepower, Max, 3 Phase, at 240 V out of range. Must be 2.0-10.0",
+        "severity": "ERROR"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling_statistics",
+          "source_reference": "Observed data range",
+          "excerpt": "Valid range: 2.0 to 10.0",
+          "confidence": 0.85
+        }
+      ],
+      "business_impact": "Values outside range may indicate data entry errors or equipment issues",
+      "implementation_notes": "Numeric range validation. Source: Profiling Statistics",
+      "created_at": "2026-01-27T06:37:01.680960"
+    },
+    {
+      "rule_id": "DQR_022",
+      "attribute": "zz_Horsepower, Max, 3 Phase, at 240 V",
+      "category": "VALIDITY",
+      "subtype": "data_type",
+      "description": "zz_Horsepower, Max, 3 Phase, at 240 V must be of type number",
+      "validation_logic": {
+        "expression": "isinstance(value, number)",
+        "parameters": {
+          "expected_type": "number",
+          "profiled_type": "Numeric"
+        },
+        "error_message": "zz_Horsepower, Max, 3 Phase, at 240 V has incorrect data type. Expected: number",
+        "severity": "WARNING"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Observed data type: Numeric",
+          "confidence": 0.9
+        }
+      ],
+      "business_impact": "Type mismatches may cause processing errors",
+      "implementation_notes": "Type validation based on profiled data type",
+      "created_at": "2026-01-27T06:37:01.680960"
+    },
+    {
+      "rule_id": "DQR_023",
+      "attribute": "zz_Supply Voltage",
+      "category": "VALIDITY",
+      "subtype": "enumeration",
+      "description": "zz_Supply Voltage must be one of the standard values: 24, 48, 110, 120, 220, 230, 240, 380, 400, 415, ... (14 total)",
+      "validation_logic": {
+        "expression": "value in [24, 48, 110, 120, 220, 230, 240, 380, 400, 415, 440, 480, 500, 690]",
+        "parameters": {
+          "valid_values": [
+            24,
+            48,
+            110,
+            120,
+            220,
+            230,
+            240,
+            380,
+            400,
+            415,
+            440,
+            480,
+            500,
+            690
+          ],
+          "unit": "V",
+          "standard_reference": "Built-in standard values for voltage"
+        },
+        "error_message": "zz_Supply Voltage has invalid value. Must be one of: 24, 48, 110, 120, 220, 230, 240, 380, 400, 415, ... (14 total)",
+        "severity": "ERROR"
+      },
+      "source_evidence": [
+        {
+          "source_type": "iec_standards",
+          "source_reference": "Built-in standard values for voltage",
+          "excerpt": "Standard values: 24, 48, 110, 120, 220, 230, 240, 380, 400, 415, ... (14 total)",
+          "confidence": 0.8
+        }
+      ],
+      "business_impact": "Non-standard values may cause compatibility or compliance issues",
+      "implementation_notes": "Validate against allowed values list. Source: IEC Standards",
+      "created_at": "2026-01-27T06:37:01.681959"
+    },
+    {
+      "rule_id": "DQR_024",
+      "attribute": "zz_Continuous Current",
+      "category": "VALIDITY",
+      "subtype": "enumeration",
+      "description": "zz_Continuous Current must be one of the standard values: 6, 9, 12, 16, 25, 32, 40, 50, 65, 80, ... (25 total)",
+      "validation_logic": {
+        "expression": "value in [6, 9, 12, 16, 25, 32, 40, 50, 65, 80, 95, 115, 145, 170, 205, 250, 300, 400, 500, 630, 800, 1000, 1250, 1600, 2050]",
+        "parameters": {
+          "valid_values": [
+            6,
+            9,
+            12,
+            16,
+            25,
+            32,
+            40,
+            50,
+            65,
+            80,
+            95,
+            115,
+            145,
+            170,
+            205,
+            250,
+            300,
+            400,
+            500,
+            630,
+            800,
+            1000,
+            1250,
+            1600,
+            2050
+          ],
+          "unit": "A",
+          "standard_reference": "Built-in standard values for current"
+        },
+        "error_message": "zz_Continuous Current has invalid value. Must be one of: 6, 9, 12, 16, 25, 32, 40, 50, 65, 80, ... (25 total)",
+        "severity": "ERROR"
+      },
+      "source_evidence": [
+        {
+          "source_type": "iec_standards",
+          "source_reference": "Built-in standard values for current",
+          "excerpt": "Standard values: 6, 9, 12, 16, 25, 32, 40, 50, 65, 80, ... (25 total)",
+          "confidence": 0.8
+        }
+      ],
+      "business_impact": "Non-standard values may cause compatibility or compliance issues",
+      "implementation_notes": "Validate against allowed values list. Source: IEC Standards",
+      "created_at": "2026-01-27T06:37:01.681959"
+    },
+    {
+      "rule_id": "DQR_025",
+      "attribute": "zz_Horsepower, Max, 3 Phase, at 575 V",
+      "category": "VALIDITY",
+      "subtype": "range_check",
+      "description": "zz_Horsepower, Max, 3 Phase, at 575 V must be between 3.0 and 200.0",
+      "validation_logic": {
+        "expression": "3.0 <= value <= 200.0",
+        "parameters": {
+          "min": 3.0,
+          "max": 200.0,
+          "unit": "",
+          "standard_reference": "Observed data range"
+        },
+        "error_message": "zz_Horsepower, Max, 3 Phase, at 575 V out of range. Must be 3.0-200.0",
+        "severity": "ERROR"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling_statistics",
+          "source_reference": "Observed data range",
+          "excerpt": "Valid range: 3.0 to 200.0",
+          "confidence": 0.85
+        }
+      ],
+      "business_impact": "Values outside range may indicate data entry errors or equipment issues",
+      "implementation_notes": "Numeric range validation. Source: Profiling Statistics",
+      "created_at": "2026-01-27T06:37:01.682962"
+    },
+    {
+      "rule_id": "DQR_026",
+      "attribute": "zz_Horsepower, Max, 3 Phase, at 575 V",
+      "category": "VALIDITY",
+      "subtype": "data_type",
+      "description": "zz_Horsepower, Max, 3 Phase, at 575 V must be of type number",
+      "validation_logic": {
+        "expression": "isinstance(value, number)",
+        "parameters": {
+          "expected_type": "number",
+          "profiled_type": "Numeric"
+        },
+        "error_message": "zz_Horsepower, Max, 3 Phase, at 575 V has incorrect data type. Expected: number",
+        "severity": "WARNING"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Observed data type: Numeric",
+          "confidence": 0.9
+        }
+      ],
+      "business_impact": "Type mismatches may cause processing errors",
+      "implementation_notes": "Type validation based on profiled data type",
+      "created_at": "2026-01-27T06:37:01.682962"
+    },
+    {
+      "rule_id": "DQR_027",
+      "attribute": "zz_Auxiliary Contact",
+      "category": "VALIDITY",
+      "subtype": "data_type",
+      "description": "zz_Auxiliary Contact must be of type string",
+      "validation_logic": {
+        "expression": "isinstance(value, string)",
+        "parameters": {
+          "expected_type": "string",
+          "profiled_type": "Categorical"
+        },
+        "error_message": "zz_Auxiliary Contact has incorrect data type. Expected: string",
+        "severity": "WARNING"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Observed data type: Categorical",
+          "confidence": 0.9
+        }
+      ],
+      "business_impact": "Type mismatches may cause processing errors",
+      "implementation_notes": "Type validation based on profiled data type",
+      "created_at": "2026-01-27T06:37:04.968364"
+    },
+    {
+      "rule_id": "DQR_028",
+      "attribute": "zz_Contact Form",
+      "category": "VALIDITY",
+      "subtype": "data_type",
+      "description": "zz_Contact Form must be of type string",
+      "validation_logic": {
+        "expression": "isinstance(value, string)",
+        "parameters": {
+          "expected_type": "string",
+          "profiled_type": "Categorical"
+        },
+        "error_message": "zz_Contact Form has incorrect data type. Expected: string",
+        "severity": "WARNING"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Observed data type: Categorical",
+          "confidence": 0.9
+        }
+      ],
+      "business_impact": "Type mismatches may cause processing errors",
+      "implementation_notes": "Type validation based on profiled data type",
+      "created_at": "2026-01-27T06:37:04.969603"
+    },
+    {
+      "rule_id": "DQR_029",
+      "attribute": "zz_Horsepower, Max, 3 Phase, at 200 V",
+      "category": "VALIDITY",
+      "subtype": "range_check",
+      "description": "zz_Horsepower, Max, 3 Phase, at 200 V must be between 1.5 and 5.0",
+      "validation_logic": {
+        "expression": "1.5 <= value <= 5.0",
+        "parameters": {
+          "min": 1.5,
+          "max": 5.0,
+          "unit": "",
+          "standard_reference": "Observed data range"
+        },
+        "error_message": "zz_Horsepower, Max, 3 Phase, at 200 V out of range. Must be 1.5-5.0",
+        "severity": "ERROR"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling_statistics",
+          "source_reference": "Observed data range",
+          "excerpt": "Valid range: 1.5 to 5.0",
+          "confidence": 0.85
+        }
+      ],
+      "business_impact": "Values outside range may indicate data entry errors or equipment issues",
+      "implementation_notes": "Numeric range validation. Source: Profiling Statistics",
+      "created_at": "2026-01-27T06:37:04.970229"
+    },
+    {
+      "rule_id": "DQR_030",
+      "attribute": "zz_Horsepower, Max, 3 Phase, at 200 V",
+      "category": "VALIDITY",
+      "subtype": "data_type",
+      "description": "zz_Horsepower, Max, 3 Phase, at 200 V must be of type number",
+      "validation_logic": {
+        "expression": "isinstance(value, number)",
+        "parameters": {
+          "expected_type": "number",
+          "profiled_type": "Numeric"
+        },
+        "error_message": "zz_Horsepower, Max, 3 Phase, at 200 V has incorrect data type. Expected: number",
+        "severity": "WARNING"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Observed data type: Numeric",
+          "confidence": 0.9
+        }
+      ],
+      "business_impact": "Type mismatches may cause processing errors",
+      "implementation_notes": "Type validation based on profiled data type",
+      "created_at": "2026-01-27T06:37:04.970229"
+    },
+    {
+      "rule_id": "DQR_031",
+      "attribute": "zz_Minimum Ambient Temperature",
+      "category": "COMPLETENESS",
+      "subtype": "threshold",
+      "description": "DEAD FIELD: zz_Minimum Ambient Temperature has 100.0% missing - consider removing from schema",
+      "validation_logic": {
+        "expression": "SCHEMA_REVIEW_REQUIRED",
+        "parameters": {
+          "missing_percentage": 100.0,
+          "status": "dead_field"
+        },
+        "error_message": "zz_Minimum Ambient Temperature is never populated - review schema",
+        "severity": "INFO"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Field is 100.0% empty - never populated",
+          "confidence": 1.0
+        }
+      ],
+      "business_impact": "Field unused - consider removing to simplify data model",
+      "implementation_notes": "Review with data stewards before removing from schema",
+      "created_at": "2026-01-27T06:37:04.970838"
+    },
+    {
+      "rule_id": "DQR_032",
+      "attribute": "zz_Minimum Ambient Temperature",
+      "category": "VALIDITY",
+      "subtype": "range_check",
+      "description": "zz_Minimum Ambient Temperature must be between -25 C and 70 C",
+      "validation_logic": {
+        "expression": "-25 <= value <= 70",
+        "parameters": {
+          "min": -25,
+          "max": 70,
+          "unit": "C",
+          "standard_reference": "Built-in standard range for temperature"
+        },
+        "error_message": "zz_Minimum Ambient Temperature out of range. Must be -25-70 C",
+        "severity": "ERROR"
+      },
+      "source_evidence": [
+        {
+          "source_type": "iec_standards",
+          "source_reference": "Built-in standard range for temperature",
+          "excerpt": "Valid range: -25 to 70 C",
+          "confidence": 0.85
+        }
+      ],
+      "business_impact": "Values outside range may indicate data entry errors or equipment issues",
+      "implementation_notes": "Numeric range validation. Source: IEC Standards",
+      "created_at": "2026-01-27T06:37:08.913377"
+    },
+    {
+      "rule_id": "DQR_033",
+      "attribute": "dr_Dimensions",
+      "category": "VALIDITY",
+      "subtype": "data_type",
+      "description": "dr_Dimensions must be of type string",
+      "validation_logic": {
+        "expression": "isinstance(value, string)",
+        "parameters": {
+          "expected_type": "string",
+          "profiled_type": "Categorical"
+        },
+        "error_message": "dr_Dimensions has incorrect data type. Expected: string",
+        "severity": "WARNING"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Observed data type: Categorical",
+          "confidence": 0.9
+        }
+      ],
+      "business_impact": "Type mismatches may cause processing errors",
+      "implementation_notes": "Type validation based on profiled data type",
+      "created_at": "2026-01-27T06:37:08.913377"
+    },
+    {
+      "rule_id": "DQR_034",
+      "attribute": "zz_For Use With",
+      "category": "VALIDITY",
+      "subtype": "data_type",
+      "description": "zz_For Use With must be of type string",
+      "validation_logic": {
+        "expression": "isinstance(value, string)",
+        "parameters": {
+          "expected_type": "string",
+          "profiled_type": "Categorical"
+        },
+        "error_message": "zz_For Use With has incorrect data type. Expected: string",
+        "severity": "WARNING"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Observed data type: Categorical",
+          "confidence": 0.9
+        }
+      ],
+      "business_impact": "Type mismatches may cause processing errors",
+      "implementation_notes": "Type validation based on profiled data type",
+      "created_at": "2026-01-27T06:37:08.915218"
+    },
+    {
+      "rule_id": "DQR_035",
+      "attribute": "zz_Screw Type",
+      "category": "VALIDITY",
+      "subtype": "data_type",
+      "description": "zz_Screw Type must be of type constant",
+      "validation_logic": {
+        "expression": "isinstance(value, constant)",
+        "parameters": {
+          "expected_type": "constant",
+          "profiled_type": "Constant"
+        },
+        "error_message": "zz_Screw Type has incorrect data type. Expected: constant",
+        "severity": "WARNING"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Observed data type: Constant",
+          "confidence": 0.9
+        }
+      ],
+      "business_impact": "Type mismatches may cause processing errors",
+      "implementation_notes": "Type validation based on profiled data type",
+      "created_at": "2026-01-27T06:37:08.915218"
+    },
+    {
+      "rule_id": "DQR_036",
+      "attribute": "zz_Turn On Time",
+      "category": "COMPLETENESS",
+      "subtype": "threshold",
+      "description": "DEAD FIELD: zz_Turn On Time has 100.0% missing - consider removing from schema",
+      "validation_logic": {
+        "expression": "SCHEMA_REVIEW_REQUIRED",
+        "parameters": {
+          "missing_percentage": 100.0,
+          "status": "dead_field"
+        },
+        "error_message": "zz_Turn On Time is never populated - review schema",
+        "severity": "INFO"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Field is 100.0% empty - never populated",
+          "confidence": 1.0
+        }
+      ],
+      "business_impact": "Field unused - consider removing to simplify data model",
+      "implementation_notes": "Review with data stewards before removing from schema",
+      "created_at": "2026-01-27T06:37:08.915218"
+    },
+    {
+      "rule_id": "DQR_037",
+      "attribute": "zz_Turn On Time",
+      "category": "VALIDITY",
+      "subtype": "data_type",
+      "description": "zz_Turn On Time must be of type constant",
+      "validation_logic": {
+        "expression": "isinstance(value, constant)",
+        "parameters": {
+          "expected_type": "constant",
+          "profiled_type": "Constant"
+        },
+        "error_message": "zz_Turn On Time has incorrect data type. Expected: constant",
+        "severity": "WARNING"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Observed data type: Constant",
+          "confidence": 0.9
+        }
+      ],
+      "business_impact": "Type mismatches may cause processing errors",
+      "implementation_notes": "Type validation based on profiled data type",
+      "created_at": "2026-01-27T06:37:08.915218"
+    },
+    {
+      "rule_id": "DQR_038",
+      "attribute": "zz_Horsepower, Max, 3 Phase, at 208 V",
+      "category": "VALIDITY",
+      "subtype": "range_check",
+      "description": "zz_Horsepower, Max, 3 Phase, at 208 V must be between 1.5 and 60.0",
+      "validation_logic": {
+        "expression": "1.5 <= value <= 60.0",
+        "parameters": {
+          "min": 1.5,
+          "max": 60.0,
+          "unit": "",
+          "standard_reference": "Observed data range"
+        },
+        "error_message": "zz_Horsepower, Max, 3 Phase, at 208 V out of range. Must be 1.5-60.0",
+        "severity": "ERROR"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling_statistics",
+          "source_reference": "Observed data range",
+          "excerpt": "Valid range: 1.5 to 60.0",
+          "confidence": 0.85
+        }
+      ],
+      "business_impact": "Values outside range may indicate data entry errors or equipment issues",
+      "implementation_notes": "Numeric range validation. Source: Profiling Statistics",
+      "created_at": "2026-01-27T06:37:08.915218"
+    },
+    {
+      "rule_id": "DQR_039",
+      "attribute": "zz_Horsepower, Max, 3 Phase, at 208 V",
+      "category": "VALIDITY",
+      "subtype": "data_type",
+      "description": "zz_Horsepower, Max, 3 Phase, at 208 V must be of type number",
+      "validation_logic": {
+        "expression": "isinstance(value, number)",
+        "parameters": {
+          "expected_type": "number",
+          "profiled_type": "Numeric"
+        },
+        "error_message": "zz_Horsepower, Max, 3 Phase, at 208 V has incorrect data type. Expected: number",
+        "severity": "WARNING"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Observed data type: Numeric",
+          "confidence": 0.9
+        }
+      ],
+      "business_impact": "Type mismatches may cause processing errors",
+      "implementation_notes": "Type validation based on profiled data type",
+      "created_at": "2026-01-27T06:37:08.915218"
+    },
+    {
+      "rule_id": "DQR_040",
+      "attribute": "zz_Wire Size",
+      "category": "VALIDITY",
+      "subtype": "data_type",
+      "description": "zz_Wire Size must be of type string",
+      "validation_logic": {
+        "expression": "isinstance(value, string)",
+        "parameters": {
+          "expected_type": "string",
+          "profiled_type": "Categorical"
+        },
+        "error_message": "zz_Wire Size has incorrect data type. Expected: string",
+        "severity": "WARNING"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Observed data type: Categorical",
+          "confidence": 0.9
+        }
+      ],
+      "business_impact": "Type mismatches may cause processing errors",
+      "implementation_notes": "Type validation based on profiled data type",
+      "created_at": "2026-01-27T06:37:08.916229"
+    },
+    {
+      "rule_id": "DQR_041",
+      "attribute": "zz_Capacitance",
+      "category": "VALIDITY",
+      "subtype": "range_check",
+      "description": "zz_Capacitance must be between 10.0 and 35.0",
+      "validation_logic": {
+        "expression": "10.0 <= value <= 35.0",
+        "parameters": {
+          "min": 10.0,
+          "max": 35.0,
+          "unit": "",
+          "standard_reference": "Observed data range"
+        },
+        "error_message": "zz_Capacitance out of range. Must be 10.0-35.0",
+        "severity": "ERROR"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling_statistics",
+          "source_reference": "Observed data range",
+          "excerpt": "Valid range: 10.0 to 35.0",
+          "confidence": 0.85
+        }
+      ],
+      "business_impact": "Values outside range may indicate data entry errors or equipment issues",
+      "implementation_notes": "Numeric range validation. Source: Profiling Statistics",
+      "created_at": "2026-01-27T06:37:08.916229"
+    },
+    {
+      "rule_id": "DQR_042",
+      "attribute": "zz_Capacitance",
+      "category": "VALIDITY",
+      "subtype": "data_type",
+      "description": "zz_Capacitance must be of type number",
+      "validation_logic": {
+        "expression": "isinstance(value, number)",
+        "parameters": {
+          "expected_type": "number",
+          "profiled_type": "Numeric"
+        },
+        "error_message": "zz_Capacitance has incorrect data type. Expected: number",
+        "severity": "WARNING"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Observed data type: Numeric",
+          "confidence": 0.9
+        }
+      ],
+      "business_impact": "Type mismatches may cause processing errors",
+      "implementation_notes": "Type validation based on profiled data type",
+      "created_at": "2026-01-27T06:37:08.916229"
+    },
+    {
+      "rule_id": "DQR_043",
+      "attribute": "zz_Number of Contacts",
+      "category": "VALIDITY",
+      "subtype": "range_check",
+      "description": "zz_Number of Contacts must be between 3.0 and 4.0",
+      "validation_logic": {
+        "expression": "3.0 <= value <= 4.0",
+        "parameters": {
+          "min": 3.0,
+          "max": 4.0,
+          "unit": "",
+          "standard_reference": "Observed data range"
+        },
+        "error_message": "zz_Number of Contacts out of range. Must be 3.0-4.0",
+        "severity": "ERROR"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling_statistics",
+          "source_reference": "Observed data range",
+          "excerpt": "Valid range: 3.0 to 4.0",
+          "confidence": 0.85
+        }
+      ],
+      "business_impact": "Values outside range may indicate data entry errors or equipment issues",
+      "implementation_notes": "Numeric range validation. Source: Profiling Statistics",
+      "created_at": "2026-01-27T06:37:08.916229"
+    },
+    {
+      "rule_id": "DQR_044",
+      "attribute": "zz_Number of Contacts",
+      "category": "VALIDITY",
+      "subtype": "data_type",
+      "description": "zz_Number of Contacts must be of type number",
+      "validation_logic": {
+        "expression": "isinstance(value, number)",
+        "parameters": {
+          "expected_type": "number",
+          "profiled_type": "Numeric"
+        },
+        "error_message": "zz_Number of Contacts has incorrect data type. Expected: number",
+        "severity": "WARNING"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Observed data type: Numeric",
+          "confidence": 0.9
+        }
+      ],
+      "business_impact": "Type mismatches may cause processing errors",
+      "implementation_notes": "Type validation based on profiled data type",
+      "created_at": "2026-01-27T06:37:08.916229"
+    },
+    {
+      "rule_id": "DQR_045",
+      "attribute": "zz_Coil Resistance",
+      "category": "VALIDITY",
+      "subtype": "data_type",
+      "description": "zz_Coil Resistance must be of type string",
+      "validation_logic": {
+        "expression": "isinstance(value, string)",
+        "parameters": {
+          "expected_type": "string",
+          "profiled_type": "Categorical"
+        },
+        "error_message": "zz_Coil Resistance has incorrect data type. Expected: string",
+        "severity": "WARNING"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Observed data type: Categorical",
+          "confidence": 0.9
+        }
+      ],
+      "business_impact": "Type mismatches may cause processing errors",
+      "implementation_notes": "Type validation based on profiled data type",
+      "created_at": "2026-01-27T06:37:08.917243"
+    },
+    {
+      "rule_id": "DQR_046",
+      "attribute": "zz_Approvals",
+      "category": "VALIDITY",
+      "subtype": "data_type",
+      "description": "zz_Approvals must be of type string",
+      "validation_logic": {
+        "expression": "isinstance(value, string)",
+        "parameters": {
+          "expected_type": "string",
+          "profiled_type": "Categorical"
+        },
+        "error_message": "zz_Approvals has incorrect data type. Expected: string",
+        "severity": "WARNING"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Observed data type: Categorical",
+          "confidence": 0.9
+        }
+      ],
+      "business_impact": "Type mismatches may cause processing errors",
+      "implementation_notes": "Type validation based on profiled data type",
+      "created_at": "2026-01-27T06:37:08.917243"
+    },
+    {
+      "rule_id": "DQR_047",
+      "attribute": "zz_Number of Poles",
+      "category": "COMPLETENESS",
+      "subtype": "conditional_mandatory",
+      "description": "zz_Number of Poles is conditionally required (55.1% missing)",
+      "validation_logic": {
+        "expression": "value is not None and value != ''",
+        "parameters": {
+          "missing_percentage": 55.09,
+          "threshold_type": "conditional_mandatory"
+        },
+        "error_message": "zz_Number of Poles is required but missing",
+        "severity": "INFO"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Missing percentage: 55.1%",
+          "confidence": 0.95
+        }
+      ],
+      "business_impact": "Optional data missing - limited impact",
+      "implementation_notes": "Check for null/empty values. Current fill rate: 44.9%",
+      "created_at": "2026-01-27T06:37:08.917243"
+    },
+    {
+      "rule_id": "DQR_048",
+      "attribute": "zz_Number of Poles",
+      "category": "VALIDITY",
+      "subtype": "data_type",
+      "description": "zz_Number of Poles must be of type string",
+      "validation_logic": {
+        "expression": "isinstance(value, string)",
+        "parameters": {
+          "expected_type": "string",
+          "profiled_type": "Categorical"
+        },
+        "error_message": "zz_Number of Poles has incorrect data type. Expected: string",
+        "severity": "WARNING"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Observed data type: Categorical",
+          "confidence": 0.9
+        }
+      ],
+      "business_impact": "Type mismatches may cause processing errors",
+      "implementation_notes": "Type validation based on profiled data type",
+      "created_at": "2026-01-27T06:37:08.917243"
+    },
+    {
+      "rule_id": "DQR_049",
+      "attribute": "zz_Contacts",
+      "category": "VALIDITY",
+      "subtype": "data_type",
+      "description": "zz_Contacts must be of type constant",
+      "validation_logic": {
+        "expression": "isinstance(value, constant)",
+        "parameters": {
+          "expected_type": "constant",
+          "profiled_type": "Constant"
+        },
+        "error_message": "zz_Contacts has incorrect data type. Expected: constant",
+        "severity": "WARNING"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Observed data type: Constant",
+          "confidence": 0.9
+        }
+      ],
+      "business_impact": "Type mismatches may cause processing errors",
+      "implementation_notes": "Type validation based on profiled data type",
+      "created_at": "2026-01-27T06:37:08.917243"
+    },
+    {
+      "rule_id": "DQR_050",
+      "attribute": "zz_Terminal Type",
+      "category": "VALIDITY",
+      "subtype": "data_type",
+      "description": "zz_Terminal Type must be of type string",
+      "validation_logic": {
+        "expression": "isinstance(value, string)",
+        "parameters": {
+          "expected_type": "string",
+          "profiled_type": "Categorical"
+        },
+        "error_message": "zz_Terminal Type has incorrect data type. Expected: string",
+        "severity": "WARNING"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Observed data type: Categorical",
+          "confidence": 0.9
+        }
+      ],
+      "business_impact": "Type mismatches may cause processing errors",
+      "implementation_notes": "Type validation based on profiled data type",
+      "created_at": "2026-01-27T06:37:08.917243"
+    },
+    {
+      "rule_id": "DQR_051",
+      "attribute": "zz_Size",
+      "category": "VALIDITY",
+      "subtype": "data_type",
+      "description": "zz_Size must be of type string",
+      "validation_logic": {
+        "expression": "isinstance(value, string)",
+        "parameters": {
+          "expected_type": "string",
+          "profiled_type": "Categorical"
+        },
+        "error_message": "zz_Size has incorrect data type. Expected: string",
+        "severity": "WARNING"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Observed data type: Categorical",
+          "confidence": 0.9
+        }
+      ],
+      "business_impact": "Type mismatches may cause processing errors",
+      "implementation_notes": "Type validation based on profiled data type",
+      "created_at": "2026-01-27T06:37:08.918242"
+    },
+    {
+      "rule_id": "DQR_052",
+      "attribute": "zz_Terminals",
+      "category": "VALIDITY",
+      "subtype": "data_type",
+      "description": "zz_Terminals must be of type string",
+      "validation_logic": {
+        "expression": "isinstance(value, string)",
+        "parameters": {
+          "expected_type": "string",
+          "profiled_type": "Categorical"
+        },
+        "error_message": "zz_Terminals has incorrect data type. Expected: string",
+        "severity": "WARNING"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Observed data type: Categorical",
+          "confidence": 0.9
+        }
+      ],
+      "business_impact": "Type mismatches may cause processing errors",
+      "implementation_notes": "Type validation based on profiled data type",
+      "created_at": "2026-01-27T06:37:08.918242"
+    },
+    {
+      "rule_id": "DQR_053",
+      "attribute": "zz_Weight",
+      "category": "VALIDITY",
+      "subtype": "range_check",
+      "description": "zz_Weight must be between 0.01 and 382.0",
+      "validation_logic": {
+        "expression": "0.01 <= value <= 382.0",
+        "parameters": {
+          "min": 0.01,
+          "max": 382.0,
+          "unit": "",
+          "standard_reference": "Observed data range"
+        },
+        "error_message": "zz_Weight out of range. Must be 0.01-382.0",
+        "severity": "ERROR"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling_statistics",
+          "source_reference": "Observed data range",
+          "excerpt": "Valid range: 0.01 to 382.0",
+          "confidence": 0.85
+        }
+      ],
+      "business_impact": "Values outside range may indicate data entry errors or equipment issues",
+      "implementation_notes": "Numeric range validation. Source: Profiling Statistics",
+      "created_at": "2026-01-27T06:37:08.918242"
+    },
+    {
+      "rule_id": "DQR_054",
+      "attribute": "zz_Weight",
+      "category": "VALIDITY",
+      "subtype": "data_type",
+      "description": "zz_Weight must be of type number",
+      "validation_logic": {
+        "expression": "isinstance(value, number)",
+        "parameters": {
+          "expected_type": "number",
+          "profiled_type": "Numeric"
+        },
+        "error_message": "zz_Weight has incorrect data type. Expected: number",
+        "severity": "WARNING"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Observed data type: Numeric",
+          "confidence": 0.9
+        }
+      ],
+      "business_impact": "Type mismatches may cause processing errors",
+      "implementation_notes": "Type validation based on profiled data type",
+      "created_at": "2026-01-27T06:37:08.918242"
+    },
+    {
+      "rule_id": "DQR_055",
+      "attribute": "zz_Family Name",
+      "category": "VALIDITY",
+      "subtype": "data_type",
+      "description": "zz_Family Name must be of type string",
+      "validation_logic": {
+        "expression": "isinstance(value, string)",
+        "parameters": {
+          "expected_type": "string",
+          "profiled_type": "Categorical"
+        },
+        "error_message": "zz_Family Name has incorrect data type. Expected: string",
+        "severity": "WARNING"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Observed data type: Categorical",
+          "confidence": 0.9
+        }
+      ],
+      "business_impact": "Type mismatches may cause processing errors",
+      "implementation_notes": "Type validation based on profiled data type",
+      "created_at": "2026-01-27T06:37:08.918242"
+    },
+    {
+      "rule_id": "DQR_056",
+      "attribute": "zz_Turn Off Time",
+      "category": "COMPLETENESS",
+      "subtype": "threshold",
+      "description": "DEAD FIELD: zz_Turn Off Time has 100.0% missing - consider removing from schema",
+      "validation_logic": {
+        "expression": "SCHEMA_REVIEW_REQUIRED",
+        "parameters": {
+          "missing_percentage": 100.0,
+          "status": "dead_field"
+        },
+        "error_message": "zz_Turn Off Time is never populated - review schema",
+        "severity": "INFO"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Field is 100.0% empty - never populated",
+          "confidence": 1.0
+        }
+      ],
+      "business_impact": "Field unused - consider removing to simplify data model",
+      "implementation_notes": "Review with data stewards before removing from schema",
+      "created_at": "2026-01-27T06:37:08.919239"
+    },
+    {
+      "rule_id": "DQR_057",
+      "attribute": "zz_Turn Off Time",
+      "category": "VALIDITY",
+      "subtype": "data_type",
+      "description": "zz_Turn Off Time must be of type constant",
+      "validation_logic": {
+        "expression": "isinstance(value, constant)",
+        "parameters": {
+          "expected_type": "constant",
+          "profiled_type": "Constant"
+        },
+        "error_message": "zz_Turn Off Time has incorrect data type. Expected: constant",
+        "severity": "WARNING"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Observed data type: Constant",
+          "confidence": 0.9
+        }
+      ],
+      "business_impact": "Type mismatches may cause processing errors",
+      "implementation_notes": "Type validation based on profiled data type",
+      "created_at": "2026-01-27T06:37:08.919239"
+    },
+    {
+      "rule_id": "DQR_058",
+      "attribute": "zz_Type",
+      "category": "COMPLETENESS",
+      "subtype": "conditional_mandatory",
+      "description": "zz_Type is conditionally required (62.3% missing)",
+      "validation_logic": {
+        "expression": "value is not None and value != ''",
+        "parameters": {
+          "missing_percentage": 62.26,
+          "threshold_type": "conditional_mandatory"
+        },
+        "error_message": "zz_Type is required but missing",
+        "severity": "INFO"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Missing percentage: 62.3%",
+          "confidence": 0.95
+        }
+      ],
+      "business_impact": "Optional data missing - limited impact",
+      "implementation_notes": "Check for null/empty values. Current fill rate: 37.7%",
+      "created_at": "2026-01-27T06:37:08.919239"
+    },
+    {
+      "rule_id": "DQR_059",
+      "attribute": "zz_Type",
+      "category": "VALIDITY",
+      "subtype": "data_type",
+      "description": "zz_Type must be of type string",
+      "validation_logic": {
+        "expression": "isinstance(value, string)",
+        "parameters": {
+          "expected_type": "string",
+          "profiled_type": "Categorical"
+        },
+        "error_message": "zz_Type has incorrect data type. Expected: string",
+        "severity": "WARNING"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Observed data type: Categorical",
+          "confidence": 0.9
+        }
+      ],
+      "business_impact": "Type mismatches may cause processing errors",
+      "implementation_notes": "Type validation based on profiled data type",
+      "created_at": "2026-01-27T06:37:08.919239"
+    },
+    {
+      "rule_id": "DQR_060",
+      "attribute": "zz_Horsepower, Max, 1 Phase, at 230 V",
+      "category": "VALIDITY",
+      "subtype": "range_check",
+      "description": "zz_Horsepower, Max, 1 Phase, at 230 V must be between 0.75 and 30.0",
+      "validation_logic": {
+        "expression": "0.75 <= value <= 30.0",
+        "parameters": {
+          "min": 0.75,
+          "max": 30.0,
+          "unit": "",
+          "standard_reference": "Observed data range"
+        },
+        "error_message": "zz_Horsepower, Max, 1 Phase, at 230 V out of range. Must be 0.75-30.0",
+        "severity": "ERROR"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling_statistics",
+          "source_reference": "Observed data range",
+          "excerpt": "Valid range: 0.75 to 30.0",
+          "confidence": 0.85
+        }
+      ],
+      "business_impact": "Values outside range may indicate data entry errors or equipment issues",
+      "implementation_notes": "Numeric range validation. Source: Profiling Statistics",
+      "created_at": "2026-01-27T06:37:08.919239"
+    },
+    {
+      "rule_id": "DQR_061",
+      "attribute": "zz_Horsepower, Max, 1 Phase, at 230 V",
+      "category": "VALIDITY",
+      "subtype": "data_type",
+      "description": "zz_Horsepower, Max, 1 Phase, at 230 V must be of type number",
+      "validation_logic": {
+        "expression": "isinstance(value, number)",
+        "parameters": {
+          "expected_type": "number",
+          "profiled_type": "Numeric"
+        },
+        "error_message": "zz_Horsepower, Max, 1 Phase, at 230 V has incorrect data type. Expected: number",
+        "severity": "WARNING"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Observed data type: Numeric",
+          "confidence": 0.9
+        }
+      ],
+      "business_impact": "Type mismatches may cause processing errors",
+      "implementation_notes": "Type validation based on profiled data type",
+      "created_at": "2026-01-27T06:37:08.919239"
+    },
+    {
+      "rule_id": "DQR_062",
+      "attribute": "zz_Operating Voltage",
+      "category": "VALIDITY",
+      "subtype": "enumeration",
+      "description": "zz_Operating Voltage must be one of the standard values: 24, 48, 110, 120, 220, 230, 240, 380, 400, 415, ... (14 total)",
+      "validation_logic": {
+        "expression": "value in [24, 48, 110, 120, 220, 230, 240, 380, 400, 415, 440, 480, 500, 690]",
+        "parameters": {
+          "valid_values": [
+            24,
+            48,
+            110,
+            120,
+            220,
+            230,
+            240,
+            380,
+            400,
+            415,
+            440,
+            480,
+            500,
+            690
+          ],
+          "unit": "V",
+          "standard_reference": "Built-in standard values for voltage"
+        },
+        "error_message": "zz_Operating Voltage has invalid value. Must be one of: 24, 48, 110, 120, 220, 230, 240, 380, 400, 415, ... (14 total)",
+        "severity": "ERROR"
+      },
+      "source_evidence": [
+        {
+          "source_type": "iec_standards",
+          "source_reference": "Built-in standard values for voltage",
+          "excerpt": "Standard values: 24, 48, 110, 120, 220, 230, 240, 380, 400, 415, ... (14 total)",
+          "confidence": 0.8
+        }
+      ],
+      "business_impact": "Non-standard values may cause compatibility or compliance issues",
+      "implementation_notes": "Validate against allowed values list. Source: IEC Standards",
+      "created_at": "2026-01-27T06:37:08.920229"
+    },
+    {
+      "rule_id": "DQR_063",
+      "attribute": "zz_Temperature Range",
+      "category": "VALIDITY",
+      "subtype": "range_check",
+      "description": "zz_Temperature Range must be between -25 C and 70 C",
+      "validation_logic": {
+        "expression": "-25 <= value <= 70",
+        "parameters": {
+          "min": -25,
+          "max": 70,
+          "unit": "C",
+          "standard_reference": "Built-in standard range for temperature"
+        },
+        "error_message": "zz_Temperature Range out of range. Must be -25-70 C",
+        "severity": "ERROR"
+      },
+      "source_evidence": [
+        {
+          "source_type": "iec_standards",
+          "source_reference": "Built-in standard range for temperature",
+          "excerpt": "Valid range: -25 to 70 C",
+          "confidence": 0.85
+        }
+      ],
+      "business_impact": "Values outside range may indicate data entry errors or equipment issues",
+      "implementation_notes": "Numeric range validation. Source: IEC Standards",
+      "created_at": "2026-01-27T06:37:08.920229"
+    },
+    {
+      "rule_id": "DQR_064",
+      "attribute": "zz_Horsepower, Max, 3 Phase, at 460 V",
+      "category": "VALIDITY",
+      "subtype": "range_check",
+      "description": "zz_Horsepower, Max, 3 Phase, at 460 V must be between 3.0 and 150.0",
+      "validation_logic": {
+        "expression": "3.0 <= value <= 150.0",
+        "parameters": {
+          "min": 3.0,
+          "max": 150.0,
+          "unit": "",
+          "standard_reference": "Observed data range"
+        },
+        "error_message": "zz_Horsepower, Max, 3 Phase, at 460 V out of range. Must be 3.0-150.0",
+        "severity": "ERROR"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling_statistics",
+          "source_reference": "Observed data range",
+          "excerpt": "Valid range: 3.0 to 150.0",
+          "confidence": 0.85
+        }
+      ],
+      "business_impact": "Values outside range may indicate data entry errors or equipment issues",
+      "implementation_notes": "Numeric range validation. Source: Profiling Statistics",
+      "created_at": "2026-01-27T06:37:08.920229"
+    },
+    {
+      "rule_id": "DQR_065",
+      "attribute": "zz_Horsepower, Max, 3 Phase, at 460 V",
+      "category": "VALIDITY",
+      "subtype": "data_type",
+      "description": "zz_Horsepower, Max, 3 Phase, at 460 V must be of type number",
+      "validation_logic": {
+        "expression": "isinstance(value, number)",
+        "parameters": {
+          "expected_type": "number",
+          "profiled_type": "Numeric"
+        },
+        "error_message": "zz_Horsepower, Max, 3 Phase, at 460 V has incorrect data type. Expected: number",
+        "severity": "WARNING"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Observed data type: Numeric",
+          "confidence": 0.9
+        }
+      ],
+      "business_impact": "Type mismatches may cause processing errors",
+      "implementation_notes": "Type validation based on profiled data type",
+      "created_at": "2026-01-27T06:37:08.920229"
+    },
+    {
+      "rule_id": "DQR_066",
+      "attribute": "zz_Horsepower, Max, 3 Phase, at 230 V",
+      "category": "VALIDITY",
+      "subtype": "data_type",
+      "description": "zz_Horsepower, Max, 3 Phase, at 230 V must be of type string",
+      "validation_logic": {
+        "expression": "isinstance(value, string)",
+        "parameters": {
+          "expected_type": "string",
+          "profiled_type": "Categorical"
+        },
+        "error_message": "zz_Horsepower, Max, 3 Phase, at 230 V has incorrect data type. Expected: string",
+        "severity": "WARNING"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Observed data type: Categorical",
+          "confidence": 0.9
+        }
+      ],
+      "business_impact": "Type mismatches may cause processing errors",
+      "implementation_notes": "Type validation based on profiled data type",
+      "created_at": "2026-01-27T06:37:08.921353"
+    },
+    {
+      "rule_id": "DQR_067",
+      "attribute": "zz_Connection",
+      "category": "VALIDITY",
+      "subtype": "data_type",
+      "description": "zz_Connection must be of type string",
+      "validation_logic": {
+        "expression": "isinstance(value, string)",
+        "parameters": {
+          "expected_type": "string",
+          "profiled_type": "Categorical"
+        },
+        "error_message": "zz_Connection has incorrect data type. Expected: string",
+        "severity": "WARNING"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Observed data type: Categorical",
+          "confidence": 0.9
+        }
+      ],
+      "business_impact": "Type mismatches may cause processing errors",
+      "implementation_notes": "Type validation based on profiled data type",
+      "created_at": "2026-01-27T06:37:08.921353"
+    },
+    {
+      "rule_id": "DQR_068",
+      "attribute": "zz_Standards",
+      "category": "VALIDITY",
+      "subtype": "data_type",
+      "description": "zz_Standards must be of type string",
+      "validation_logic": {
+        "expression": "isinstance(value, string)",
+        "parameters": {
+          "expected_type": "string",
+          "profiled_type": "Categorical"
+        },
+        "error_message": "zz_Standards has incorrect data type. Expected: string",
+        "severity": "WARNING"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Observed data type: Categorical",
+          "confidence": 0.9
+        }
+      ],
+      "business_impact": "Type mismatches may cause processing errors",
+      "implementation_notes": "Type validation based on profiled data type",
+      "created_at": "2026-01-27T06:37:08.922344"
+    },
+    {
+      "rule_id": "DQR_069",
+      "attribute": "zz_Phase",
+      "category": "VALIDITY",
+      "subtype": "range_check",
+      "description": "zz_Phase must be between 1.0 and 3.0",
+      "validation_logic": {
+        "expression": "1.0 <= value <= 3.0",
+        "parameters": {
+          "min": 1.0,
+          "max": 3.0,
+          "unit": "",
+          "standard_reference": "Observed data range"
+        },
+        "error_message": "zz_Phase out of range. Must be 1.0-3.0",
+        "severity": "ERROR"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling_statistics",
+          "source_reference": "Observed data range",
+          "excerpt": "Valid range: 1.0 to 3.0",
+          "confidence": 0.85
+        }
+      ],
+      "business_impact": "Values outside range may indicate data entry errors or equipment issues",
+      "implementation_notes": "Numeric range validation. Source: Profiling Statistics",
+      "created_at": "2026-01-27T06:37:08.922344"
+    },
+    {
+      "rule_id": "DQR_070",
+      "attribute": "zz_Phase",
+      "category": "VALIDITY",
+      "subtype": "data_type",
+      "description": "zz_Phase must be of type number",
+      "validation_logic": {
+        "expression": "isinstance(value, number)",
+        "parameters": {
+          "expected_type": "number",
+          "profiled_type": "Numeric"
+        },
+        "error_message": "zz_Phase has incorrect data type. Expected: number",
+        "severity": "WARNING"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Observed data type: Numeric",
+          "confidence": 0.9
+        }
+      ],
+      "business_impact": "Type mismatches may cause processing errors",
+      "implementation_notes": "Type validation based on profiled data type",
+      "created_at": "2026-01-27T06:37:08.923243"
+    },
+    {
+      "rule_id": "DQR_071",
+      "attribute": "zz_Load Voltage",
+      "category": "VALIDITY",
+      "subtype": "enumeration",
+      "description": "zz_Load Voltage must be one of the standard values: 24, 48, 110, 120, 220, 230, 240, 380, 400, 415, ... (14 total)",
+      "validation_logic": {
+        "expression": "value in [24, 48, 110, 120, 220, 230, 240, 380, 400, 415, 440, 480, 500, 690]",
+        "parameters": {
+          "valid_values": [
+            24,
+            48,
+            110,
+            120,
+            220,
+            230,
+            240,
+            380,
+            400,
+            415,
+            440,
+            480,
+            500,
+            690
+          ],
+          "unit": "V",
+          "standard_reference": "Built-in standard values for voltage"
+        },
+        "error_message": "zz_Load Voltage has invalid value. Must be one of: 24, 48, 110, 120, 220, 230, 240, 380, 400, 415, ... (14 total)",
+        "severity": "ERROR"
+      },
+      "source_evidence": [
+        {
+          "source_type": "iec_standards",
+          "source_reference": "Built-in standard values for voltage",
+          "excerpt": "Standard values: 24, 48, 110, 120, 220, 230, 240, 380, 400, 415, ... (14 total)",
+          "confidence": 0.8
+        }
+      ],
+      "business_impact": "Non-standard values may cause compatibility or compliance issues",
+      "implementation_notes": "Validate against allowed values list. Source: IEC Standards",
+      "created_at": "2026-01-27T06:37:08.923243"
+    },
+    {
+      "rule_id": "DQR_072",
+      "attribute": "zz_Termination",
+      "category": "VALIDITY",
+      "subtype": "data_type",
+      "description": "zz_Termination must be of type string",
+      "validation_logic": {
+        "expression": "isinstance(value, string)",
+        "parameters": {
+          "expected_type": "string",
+          "profiled_type": "Categorical"
+        },
+        "error_message": "zz_Termination has incorrect data type. Expected: string",
+        "severity": "WARNING"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Observed data type: Categorical",
+          "confidence": 0.9
+        }
+      ],
+      "business_impact": "Type mismatches may cause processing errors",
+      "implementation_notes": "Type validation based on profiled data type",
+      "created_at": "2026-01-27T06:37:08.923243"
+    },
+    {
+      "rule_id": "DQR_073",
+      "attribute": "zz_Enclosure Type",
+      "category": "VALIDITY",
+      "subtype": "data_type",
+      "description": "zz_Enclosure Type must be of type string",
+      "validation_logic": {
+        "expression": "isinstance(value, string)",
+        "parameters": {
+          "expected_type": "string",
+          "profiled_type": "Categorical"
+        },
+        "error_message": "zz_Enclosure Type has incorrect data type. Expected: string",
+        "severity": "WARNING"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Observed data type: Categorical",
+          "confidence": 0.9
+        }
+      ],
+      "business_impact": "Type mismatches may cause processing errors",
+      "implementation_notes": "Type validation based on profiled data type",
+      "created_at": "2026-01-27T06:37:08.923243"
+    },
+    {
+      "rule_id": "DQR_074",
+      "attribute": "zz_Surge Current",
+      "category": "VALIDITY",
+      "subtype": "enumeration",
+      "description": "zz_Surge Current must be one of the standard values: 6, 9, 12, 16, 25, 32, 40, 50, 65, 80, ... (25 total)",
+      "validation_logic": {
+        "expression": "value in [6, 9, 12, 16, 25, 32, 40, 50, 65, 80, 95, 115, 145, 170, 205, 250, 300, 400, 500, 630, 800, 1000, 1250, 1600, 2050]",
+        "parameters": {
+          "valid_values": [
+            6,
+            9,
+            12,
+            16,
+            25,
+            32,
+            40,
+            50,
+            65,
+            80,
+            95,
+            115,
+            145,
+            170,
+            205,
+            250,
+            300,
+            400,
+            500,
+            630,
+            800,
+            1000,
+            1250,
+            1600,
+            2050
+          ],
+          "unit": "A",
+          "standard_reference": "Built-in standard values for current"
+        },
+        "error_message": "zz_Surge Current has invalid value. Must be one of: 6, 9, 12, 16, 25, 32, 40, 50, 65, 80, ... (25 total)",
+        "severity": "ERROR"
+      },
+      "source_evidence": [
+        {
+          "source_type": "iec_standards",
+          "source_reference": "Built-in standard values for current",
+          "excerpt": "Standard values: 6, 9, 12, 16, 25, 32, 40, 50, 65, 80, ... (25 total)",
+          "confidence": 0.8
+        }
+      ],
+      "business_impact": "Non-standard values may cause compatibility or compliance issues",
+      "implementation_notes": "Validate against allowed values list. Source: IEC Standards",
+      "created_at": "2026-01-27T06:37:08.923243"
+    },
+    {
+      "rule_id": "DQR_075",
+      "attribute": "zz_Connection Type",
+      "category": "VALIDITY",
+      "subtype": "data_type",
+      "description": "zz_Connection Type must be of type constant",
+      "validation_logic": {
+        "expression": "isinstance(value, constant)",
+        "parameters": {
+          "expected_type": "constant",
+          "profiled_type": "Constant"
+        },
+        "error_message": "zz_Connection Type has incorrect data type. Expected: constant",
+        "severity": "WARNING"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Observed data type: Constant",
+          "confidence": 0.9
+        }
+      ],
+      "business_impact": "Type mismatches may cause processing errors",
+      "implementation_notes": "Type validation based on profiled data type",
+      "created_at": "2026-01-27T06:37:08.923243"
+    },
+    {
+      "rule_id": "DQR_076",
+      "attribute": "zz_Temperature Operating Range",
+      "category": "VALIDITY",
+      "subtype": "range_check",
+      "description": "zz_Temperature Operating Range must be between -25 C and 70 C",
+      "validation_logic": {
+        "expression": "-25 <= value <= 70",
+        "parameters": {
+          "min": -25,
+          "max": 70,
+          "unit": "C",
+          "standard_reference": "Built-in standard range for temperature"
+        },
+        "error_message": "zz_Temperature Operating Range out of range. Must be -25-70 C",
+        "severity": "ERROR"
+      },
+      "source_evidence": [
+        {
+          "source_type": "iec_standards",
+          "source_reference": "Built-in standard range for temperature",
+          "excerpt": "Valid range: -25 to 70 C",
+          "confidence": 0.85
+        }
+      ],
+      "business_impact": "Values outside range may indicate data entry errors or equipment issues",
+      "implementation_notes": "Numeric range validation. Source: IEC Standards",
+      "created_at": "2026-01-27T06:37:08.924760"
+    },
+    {
+      "rule_id": "DQR_077",
+      "attribute": "zz_Minimum Load",
+      "category": "VALIDITY",
+      "subtype": "range_check",
+      "description": "zz_Minimum Load must be between 0.1 and 1.0",
+      "validation_logic": {
+        "expression": "0.1 <= value <= 1.0",
+        "parameters": {
+          "min": 0.1,
+          "max": 1.0,
+          "unit": "",
+          "standard_reference": "Observed data range"
+        },
+        "error_message": "zz_Minimum Load out of range. Must be 0.1-1.0",
+        "severity": "ERROR"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling_statistics",
+          "source_reference": "Observed data range",
+          "excerpt": "Valid range: 0.1 to 1.0",
+          "confidence": 0.85
+        }
+      ],
+      "business_impact": "Values outside range may indicate data entry errors or equipment issues",
+      "implementation_notes": "Numeric range validation. Source: Profiling Statistics",
+      "created_at": "2026-01-27T06:37:08.924760"
+    },
+    {
+      "rule_id": "DQR_078",
+      "attribute": "zz_Minimum Load",
+      "category": "VALIDITY",
+      "subtype": "data_type",
+      "description": "zz_Minimum Load must be of type number",
+      "validation_logic": {
+        "expression": "isinstance(value, number)",
+        "parameters": {
+          "expected_type": "number",
+          "profiled_type": "Numeric"
+        },
+        "error_message": "zz_Minimum Load has incorrect data type. Expected: number",
+        "severity": "WARNING"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Observed data type: Numeric",
+          "confidence": 0.9
+        }
+      ],
+      "business_impact": "Type mismatches may cause processing errors",
+      "implementation_notes": "Type validation based on profiled data type",
+      "created_at": "2026-01-27T06:37:08.924760"
+    },
+    {
+      "rule_id": "DQR_079",
+      "attribute": "zz_NEMA Size",
+      "category": "VALIDITY",
+      "subtype": "range_check",
+      "description": "zz_NEMA Size must be between 0.0 and 7.0",
+      "validation_logic": {
+        "expression": "0.0 <= value <= 7.0",
+        "parameters": {
+          "min": 0.0,
+          "max": 7.0,
+          "unit": "",
+          "standard_reference": "Observed data range"
+        },
+        "error_message": "zz_NEMA Size out of range. Must be 0.0-7.0",
+        "severity": "ERROR"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling_statistics",
+          "source_reference": "Observed data range",
+          "excerpt": "Valid range: 0.0 to 7.0",
+          "confidence": 0.85
+        }
+      ],
+      "business_impact": "Values outside range may indicate data entry errors or equipment issues",
+      "implementation_notes": "Numeric range validation. Source: Profiling Statistics",
+      "created_at": "2026-01-27T06:37:08.924760"
+    },
+    {
+      "rule_id": "DQR_080",
+      "attribute": "zz_NEMA Size",
+      "category": "VALIDITY",
+      "subtype": "data_type",
+      "description": "zz_NEMA Size must be of type number",
+      "validation_logic": {
+        "expression": "isinstance(value, number)",
+        "parameters": {
+          "expected_type": "number",
+          "profiled_type": "Numeric"
+        },
+        "error_message": "zz_NEMA Size has incorrect data type. Expected: number",
+        "severity": "WARNING"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Observed data type: Numeric",
+          "confidence": 0.9
+        }
+      ],
+      "business_impact": "Type mismatches may cause processing errors",
+      "implementation_notes": "Type validation based on profiled data type",
+      "created_at": "2026-01-27T06:37:08.924760"
+    },
+    {
+      "rule_id": "DQR_081",
+      "attribute": "zz_Primary Type",
+      "category": "VALIDITY",
+      "subtype": "data_type",
+      "description": "zz_Primary Type must be of type string",
+      "validation_logic": {
+        "expression": "isinstance(value, string)",
+        "parameters": {
+          "expected_type": "string",
+          "profiled_type": "Categorical"
+        },
+        "error_message": "zz_Primary Type has incorrect data type. Expected: string",
+        "severity": "WARNING"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Observed data type: Categorical",
+          "confidence": 0.9
+        }
+      ],
+      "business_impact": "Type mismatches may cause processing errors",
+      "implementation_notes": "Type validation based on profiled data type",
+      "created_at": "2026-01-27T06:37:08.925776"
+    },
+    {
+      "rule_id": "DQR_082",
+      "attribute": "zz_Number of Pins",
+      "category": "VALIDITY",
+      "subtype": "range_check",
+      "description": "zz_Number of Pins must be between 4.0 and 18.0",
+      "validation_logic": {
+        "expression": "4.0 <= value <= 18.0",
+        "parameters": {
+          "min": 4.0,
+          "max": 18.0,
+          "unit": "",
+          "standard_reference": "Observed data range"
+        },
+        "error_message": "zz_Number of Pins out of range. Must be 4.0-18.0",
+        "severity": "ERROR"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling_statistics",
+          "source_reference": "Observed data range",
+          "excerpt": "Valid range: 4.0 to 18.0",
+          "confidence": 0.85
+        }
+      ],
+      "business_impact": "Values outside range may indicate data entry errors or equipment issues",
+      "implementation_notes": "Numeric range validation. Source: Profiling Statistics",
+      "created_at": "2026-01-27T06:37:08.925776"
+    },
+    {
+      "rule_id": "DQR_083",
+      "attribute": "zz_Number of Pins",
+      "category": "VALIDITY",
+      "subtype": "data_type",
+      "description": "zz_Number of Pins must be of type number",
+      "validation_logic": {
+        "expression": "isinstance(value, number)",
+        "parameters": {
+          "expected_type": "number",
+          "profiled_type": "Numeric"
+        },
+        "error_message": "zz_Number of Pins has incorrect data type. Expected: number",
+        "severity": "WARNING"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Observed data type: Numeric",
+          "confidence": 0.9
+        }
+      ],
+      "business_impact": "Type mismatches may cause processing errors",
+      "implementation_notes": "Type validation based on profiled data type",
+      "created_at": "2026-01-27T06:37:08.925776"
+    },
+    {
+      "rule_id": "DQR_084",
+      "attribute": "zz_Storage Temperature",
+      "category": "VALIDITY",
+      "subtype": "range_check",
+      "description": "zz_Storage Temperature must be between -25 C and 70 C",
+      "validation_logic": {
+        "expression": "-25 <= value <= 70",
+        "parameters": {
+          "min": -25,
+          "max": 70,
+          "unit": "C",
+          "standard_reference": "Built-in standard range for temperature"
+        },
+        "error_message": "zz_Storage Temperature out of range. Must be -25-70 C",
+        "severity": "ERROR"
+      },
+      "source_evidence": [
+        {
+          "source_type": "iec_standards",
+          "source_reference": "Built-in standard range for temperature",
+          "excerpt": "Valid range: -25 to 70 C",
+          "confidence": 0.85
+        }
+      ],
+      "business_impact": "Values outside range may indicate data entry errors or equipment issues",
+      "implementation_notes": "Numeric range validation. Source: IEC Standards",
+      "created_at": "2026-01-27T06:37:08.927297"
+    },
+    {
+      "rule_id": "DQR_085",
+      "attribute": "zz_Contact Rating",
+      "category": "VALIDITY",
+      "subtype": "data_type",
+      "description": "zz_Contact Rating must be of type string",
+      "validation_logic": {
+        "expression": "isinstance(value, string)",
+        "parameters": {
+          "expected_type": "string",
+          "profiled_type": "Categorical"
+        },
+        "error_message": "zz_Contact Rating has incorrect data type. Expected: string",
+        "severity": "WARNING"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Observed data type: Categorical",
+          "confidence": 0.9
+        }
+      ],
+      "business_impact": "Type mismatches may cause processing errors",
+      "implementation_notes": "Type validation based on profiled data type",
+      "created_at": "2026-01-27T06:37:08.927297"
+    },
+    {
+      "rule_id": "DQR_086",
+      "attribute": "zz_Contact Current Rating",
+      "category": "COMPLETENESS",
+      "subtype": "conditional_mandatory",
+      "description": "zz_Contact Current Rating is conditionally required (66.9% missing)",
+      "validation_logic": {
+        "expression": "value is not None and value != ''",
+        "parameters": {
+          "missing_percentage": 66.93,
+          "threshold_type": "conditional_mandatory"
+        },
+        "error_message": "zz_Contact Current Rating is required but missing",
+        "severity": "INFO"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Missing percentage: 66.9%",
+          "confidence": 0.95
+        }
+      ],
+      "business_impact": "Optional data missing - limited impact",
+      "implementation_notes": "Check for null/empty values. Current fill rate: 33.1%",
+      "created_at": "2026-01-27T06:37:08.927297"
+    },
+    {
+      "rule_id": "DQR_087",
+      "attribute": "zz_Contact Current Rating",
+      "category": "VALIDITY",
+      "subtype": "enumeration",
+      "description": "zz_Contact Current Rating must be one of the standard values: 6, 9, 12, 16, 25, 32, 40, 50, 65, 80, ... (25 total)",
+      "validation_logic": {
+        "expression": "value in [6, 9, 12, 16, 25, 32, 40, 50, 65, 80, 95, 115, 145, 170, 205, 250, 300, 400, 500, 630, 800, 1000, 1250, 1600, 2050]",
+        "parameters": {
+          "valid_values": [
+            6,
+            9,
+            12,
+            16,
+            25,
+            32,
+            40,
+            50,
+            65,
+            80,
+            95,
+            115,
+            145,
+            170,
+            205,
+            250,
+            300,
+            400,
+            500,
+            630,
+            800,
+            1000,
+            1250,
+            1600,
+            2050
+          ],
+          "unit": "A",
+          "standard_reference": "Built-in standard values for current"
+        },
+        "error_message": "zz_Contact Current Rating has invalid value. Must be one of: 6, 9, 12, 16, 25, 32, 40, 50, 65, 80, ... (25 total)",
+        "severity": "ERROR"
+      },
+      "source_evidence": [
+        {
+          "source_type": "iec_standards",
+          "source_reference": "Built-in standard values for current",
+          "excerpt": "Standard values: 6, 9, 12, 16, 25, 32, 40, 50, 65, 80, ... (25 total)",
+          "confidence": 0.8
+        }
+      ],
+      "business_impact": "Non-standard values may cause compatibility or compliance issues",
+      "implementation_notes": "Validate against allowed values list. Source: IEC Standards",
+      "created_at": "2026-01-27T06:37:08.927297"
+    },
+    {
+      "rule_id": "DQR_088",
+      "attribute": "zz_Horsepower Rating",
+      "category": "VALIDITY",
+      "subtype": "data_type",
+      "description": "zz_Horsepower Rating must be of type string",
+      "validation_logic": {
+        "expression": "isinstance(value, string)",
+        "parameters": {
+          "expected_type": "string",
+          "profiled_type": "Categorical"
+        },
+        "error_message": "zz_Horsepower Rating has incorrect data type. Expected: string",
+        "severity": "WARNING"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Observed data type: Categorical",
+          "confidence": 0.9
+        }
+      ],
+      "business_impact": "Type mismatches may cause processing errors",
+      "implementation_notes": "Type validation based on profiled data type",
+      "created_at": "2026-01-27T06:37:12.047276"
+    },
+    {
+      "rule_id": "DQR_089",
+      "attribute": "zz_Contact Configuration",
+      "category": "VALIDITY",
+      "subtype": "data_type",
+      "description": "zz_Contact Configuration must be of type string",
+      "validation_logic": {
+        "expression": "isinstance(value, string)",
+        "parameters": {
+          "expected_type": "string",
+          "profiled_type": "Categorical"
+        },
+        "error_message": "zz_Contact Configuration has incorrect data type. Expected: string",
+        "severity": "WARNING"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Observed data type: Categorical",
+          "confidence": 0.9
+        }
+      ],
+      "business_impact": "Type mismatches may cause processing errors",
+      "implementation_notes": "Type validation based on profiled data type",
+      "created_at": "2026-01-27T06:37:12.048277"
+    },
+    {
+      "rule_id": "DQR_090",
+      "attribute": "zz_Number of Conductors",
+      "category": "VALIDITY",
+      "subtype": "data_type",
+      "description": "zz_Number of Conductors must be of type constant",
+      "validation_logic": {
+        "expression": "isinstance(value, constant)",
+        "parameters": {
+          "expected_type": "constant",
+          "profiled_type": "Constant"
+        },
+        "error_message": "zz_Number of Conductors has incorrect data type. Expected: constant",
+        "severity": "WARNING"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Observed data type: Constant",
+          "confidence": 0.9
+        }
+      ],
+      "business_impact": "Type mismatches may cause processing errors",
+      "implementation_notes": "Type validation based on profiled data type",
+      "created_at": "2026-01-27T06:37:12.048277"
+    },
+    {
+      "rule_id": "DQR_091",
+      "attribute": "zz_Current, Ratings",
+      "category": "VALIDITY",
+      "subtype": "enumeration",
+      "description": "zz_Current, Ratings must be one of the standard values: 6, 9, 12, 16, 25, 32, 40, 50, 65, 80, ... (25 total)",
+      "validation_logic": {
+        "expression": "value in [6, 9, 12, 16, 25, 32, 40, 50, 65, 80, 95, 115, 145, 170, 205, 250, 300, 400, 500, 630, 800, 1000, 1250, 1600, 2050]",
+        "parameters": {
+          "valid_values": [
+            6,
+            9,
+            12,
+            16,
+            25,
+            32,
+            40,
+            50,
+            65,
+            80,
+            95,
+            115,
+            145,
+            170,
+            205,
+            250,
+            300,
+            400,
+            500,
+            630,
+            800,
+            1000,
+            1250,
+            1600,
+            2050
+          ],
+          "unit": "A",
+          "standard_reference": "Built-in standard values for current"
+        },
+        "error_message": "zz_Current, Ratings has invalid value. Must be one of: 6, 9, 12, 16, 25, 32, 40, 50, 65, 80, ... (25 total)",
+        "severity": "ERROR"
+      },
+      "source_evidence": [
+        {
+          "source_type": "iec_standards",
+          "source_reference": "Built-in standard values for current",
+          "excerpt": "Standard values: 6, 9, 12, 16, 25, 32, 40, 50, 65, 80, ... (25 total)",
+          "confidence": 0.8
+        }
+      ],
+      "business_impact": "Non-standard values may cause compatibility or compliance issues",
+      "implementation_notes": "Validate against allowed values list. Source: IEC Standards",
+      "created_at": "2026-01-27T06:37:12.049275"
+    },
+    {
+      "rule_id": "DQR_092",
+      "attribute": "zz_Application",
+      "category": "VALIDITY",
+      "subtype": "data_type",
+      "description": "zz_Application must be of type string",
+      "validation_logic": {
+        "expression": "isinstance(value, string)",
+        "parameters": {
+          "expected_type": "string",
+          "profiled_type": "Categorical"
+        },
+        "error_message": "zz_Application has incorrect data type. Expected: string",
+        "severity": "WARNING"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Observed data type: Categorical",
+          "confidence": 0.9
+        }
+      ],
+      "business_impact": "Type mismatches may cause processing errors",
+      "implementation_notes": "Type validation based on profiled data type",
+      "created_at": "2026-01-27T06:37:12.050280"
+    },
+    {
+      "rule_id": "DQR_093",
+      "attribute": "zz_Color",
+      "category": "VALIDITY",
+      "subtype": "data_type",
+      "description": "zz_Color must be of type string",
+      "validation_logic": {
+        "expression": "isinstance(value, string)",
+        "parameters": {
+          "expected_type": "string",
+          "profiled_type": "Categorical"
+        },
+        "error_message": "zz_Color has incorrect data type. Expected: string",
+        "severity": "WARNING"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Observed data type: Categorical",
+          "confidence": 0.9
+        }
+      ],
+      "business_impact": "Type mismatches may cause processing errors",
+      "implementation_notes": "Type validation based on profiled data type",
+      "created_at": "2026-01-27T06:37:12.050280"
+    },
+    {
+      "rule_id": "DQR_094",
+      "attribute": "zz_Switch Type",
+      "category": "VALIDITY",
+      "subtype": "data_type",
+      "description": "zz_Switch Type must be of type string",
+      "validation_logic": {
+        "expression": "isinstance(value, string)",
+        "parameters": {
+          "expected_type": "string",
+          "profiled_type": "Categorical"
+        },
+        "error_message": "zz_Switch Type has incorrect data type. Expected: string",
+        "severity": "WARNING"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Observed data type: Categorical",
+          "confidence": 0.9
+        }
+      ],
+      "business_impact": "Type mismatches may cause processing errors",
+      "implementation_notes": "Type validation based on profiled data type",
+      "created_at": "2026-01-27T06:37:12.051273"
+    },
+    {
+      "rule_id": "DQR_095",
+      "attribute": "zz_Terminator Type",
+      "category": "VALIDITY",
+      "subtype": "data_type",
+      "description": "zz_Terminator Type must be of type string",
+      "validation_logic": {
+        "expression": "isinstance(value, string)",
+        "parameters": {
+          "expected_type": "string",
+          "profiled_type": "Categorical"
+        },
+        "error_message": "zz_Terminator Type has incorrect data type. Expected: string",
+        "severity": "WARNING"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Observed data type: Categorical",
+          "confidence": 0.9
+        }
+      ],
+      "business_impact": "Type mismatches may cause processing errors",
+      "implementation_notes": "Type validation based on profiled data type",
+      "created_at": "2026-01-27T06:37:12.051273"
+    },
+    {
+      "rule_id": "DQR_096",
+      "attribute": "zz_Jacket Color",
+      "category": "VALIDITY",
+      "subtype": "data_type",
+      "description": "zz_Jacket Color must be of type constant",
+      "validation_logic": {
+        "expression": "isinstance(value, constant)",
+        "parameters": {
+          "expected_type": "constant",
+          "profiled_type": "Constant"
+        },
+        "error_message": "zz_Jacket Color has incorrect data type. Expected: constant",
+        "severity": "WARNING"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Observed data type: Constant",
+          "confidence": 0.9
+        }
+      ],
+      "business_impact": "Type mismatches may cause processing errors",
+      "implementation_notes": "Type validation based on profiled data type",
+      "created_at": "2026-01-27T06:37:12.052273"
+    },
+    {
+      "rule_id": "DQR_097",
+      "attribute": "zz_Coil Power",
+      "category": "VALIDITY",
+      "subtype": "data_type",
+      "description": "zz_Coil Power must be of type string",
+      "validation_logic": {
+        "expression": "isinstance(value, string)",
+        "parameters": {
+          "expected_type": "string",
+          "profiled_type": "Categorical"
+        },
+        "error_message": "zz_Coil Power has incorrect data type. Expected: string",
+        "severity": "WARNING"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Observed data type: Categorical",
+          "confidence": 0.9
+        }
+      ],
+      "business_impact": "Type mismatches may cause processing errors",
+      "implementation_notes": "Type validation based on profiled data type",
+      "created_at": "2026-01-27T06:37:12.052273"
+    },
+    {
+      "rule_id": "DQR_098",
+      "attribute": "zz_Horsepower, Max, 3 Phase, at 600 V",
+      "category": "VALIDITY",
+      "subtype": "range_check",
+      "description": "zz_Horsepower, Max, 3 Phase, at 600 V must be between 7.5 and 25.0",
+      "validation_logic": {
+        "expression": "7.5 <= value <= 25.0",
+        "parameters": {
+          "min": 7.5,
+          "max": 25.0,
+          "unit": "",
+          "standard_reference": "Observed data range"
+        },
+        "error_message": "zz_Horsepower, Max, 3 Phase, at 600 V out of range. Must be 7.5-25.0",
+        "severity": "ERROR"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling_statistics",
+          "source_reference": "Observed data range",
+          "excerpt": "Valid range: 7.5 to 25.0",
+          "confidence": 0.85
+        }
+      ],
+      "business_impact": "Values outside range may indicate data entry errors or equipment issues",
+      "implementation_notes": "Numeric range validation. Source: Profiling Statistics",
+      "created_at": "2026-01-27T06:37:12.053799"
+    },
+    {
+      "rule_id": "DQR_099",
+      "attribute": "zz_Horsepower, Max, 3 Phase, at 600 V",
+      "category": "VALIDITY",
+      "subtype": "data_type",
+      "description": "zz_Horsepower, Max, 3 Phase, at 600 V must be of type number",
+      "validation_logic": {
+        "expression": "isinstance(value, number)",
+        "parameters": {
+          "expected_type": "number",
+          "profiled_type": "Numeric"
+        },
+        "error_message": "zz_Horsepower, Max, 3 Phase, at 600 V has incorrect data type. Expected: number",
+        "severity": "WARNING"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Observed data type: Numeric",
+          "confidence": 0.9
+        }
+      ],
+      "business_impact": "Type mismatches may cause processing errors",
+      "implementation_notes": "Type validation based on profiled data type",
+      "created_at": "2026-01-27T06:37:12.053799"
+    },
+    {
+      "rule_id": "DQR_100",
+      "attribute": "zz_Maximum Ambient Temperature",
+      "category": "COMPLETENESS",
+      "subtype": "threshold",
+      "description": "DEAD FIELD: zz_Maximum Ambient Temperature has 100.0% missing - consider removing from schema",
+      "validation_logic": {
+        "expression": "SCHEMA_REVIEW_REQUIRED",
+        "parameters": {
+          "missing_percentage": 100.0,
+          "status": "dead_field"
+        },
+        "error_message": "zz_Maximum Ambient Temperature is never populated - review schema",
+        "severity": "INFO"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Field is 100.0% empty - never populated",
+          "confidence": 1.0
+        }
+      ],
+      "business_impact": "Field unused - consider removing to simplify data model",
+      "implementation_notes": "Review with data stewards before removing from schema",
+      "created_at": "2026-01-27T06:37:12.053799"
+    },
+    {
+      "rule_id": "DQR_101",
+      "attribute": "zz_Maximum Ambient Temperature",
+      "category": "VALIDITY",
+      "subtype": "range_check",
+      "description": "zz_Maximum Ambient Temperature must be between -25 C and 70 C",
+      "validation_logic": {
+        "expression": "-25 <= value <= 70",
+        "parameters": {
+          "min": -25,
+          "max": 70,
+          "unit": "C",
+          "standard_reference": "Built-in standard range for temperature"
+        },
+        "error_message": "zz_Maximum Ambient Temperature out of range. Must be -25-70 C",
+        "severity": "ERROR"
+      },
+      "source_evidence": [
+        {
+          "source_type": "iec_standards",
+          "source_reference": "Built-in standard range for temperature",
+          "excerpt": "Valid range: -25 to 70 C",
+          "confidence": 0.85
+        }
+      ],
+      "business_impact": "Values outside range may indicate data entry errors or equipment issues",
+      "implementation_notes": "Numeric range validation. Source: IEC Standards",
+      "created_at": "2026-01-27T06:37:12.055415"
+    },
+    {
+      "rule_id": "DQR_102",
+      "attribute": "zz_Warranty",
+      "category": "VALIDITY",
+      "subtype": "data_type",
+      "description": "zz_Warranty must be of type string",
+      "validation_logic": {
+        "expression": "isinstance(value, string)",
+        "parameters": {
+          "expected_type": "string",
+          "profiled_type": "Categorical"
+        },
+        "error_message": "zz_Warranty has incorrect data type. Expected: string",
+        "severity": "WARNING"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Observed data type: Categorical",
+          "confidence": 0.9
+        }
+      ],
+      "business_impact": "Type mismatches may cause processing errors",
+      "implementation_notes": "Type validation based on profiled data type",
+      "created_at": "2026-01-27T06:37:12.055415"
+    },
+    {
+      "rule_id": "DQR_103",
+      "attribute": "zz_Series",
+      "category": "COMPLETENESS",
+      "subtype": "conditional_mandatory",
+      "description": "zz_Series is conditionally required (61.4% missing)",
+      "validation_logic": {
+        "expression": "value is not None and value != ''",
+        "parameters": {
+          "missing_percentage": 61.37,
+          "threshold_type": "conditional_mandatory"
+        },
+        "error_message": "zz_Series is required but missing",
+        "severity": "INFO"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Missing percentage: 61.4%",
+          "confidence": 0.95
+        }
+      ],
+      "business_impact": "Optional data missing - limited impact",
+      "implementation_notes": "Check for null/empty values. Current fill rate: 38.6%",
+      "created_at": "2026-01-27T06:37:12.056440"
+    },
+    {
+      "rule_id": "DQR_104",
+      "attribute": "zz_Series",
+      "category": "VALIDITY",
+      "subtype": "data_type",
+      "description": "zz_Series must be of type string",
+      "validation_logic": {
+        "expression": "isinstance(value, string)",
+        "parameters": {
+          "expected_type": "string",
+          "profiled_type": "Categorical"
+        },
+        "error_message": "zz_Series has incorrect data type. Expected: string",
+        "severity": "WARNING"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Observed data type: Categorical",
+          "confidence": 0.9
+        }
+      ],
+      "business_impact": "Type mismatches may cause processing errors",
+      "implementation_notes": "Type validation based on profiled data type",
+      "created_at": "2026-01-27T06:37:12.056440"
+    },
+    {
+      "rule_id": "DQR_105",
+      "attribute": "zz_Rating",
+      "category": "VALIDITY",
+      "subtype": "data_type",
+      "description": "zz_Rating must be of type string",
+      "validation_logic": {
+        "expression": "isinstance(value, string)",
+        "parameters": {
+          "expected_type": "string",
+          "profiled_type": "Categorical"
+        },
+        "error_message": "zz_Rating has incorrect data type. Expected: string",
+        "severity": "WARNING"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Observed data type: Categorical",
+          "confidence": 0.9
+        }
+      ],
+      "business_impact": "Type mismatches may cause processing errors",
+      "implementation_notes": "Type validation based on profiled data type",
+      "created_at": "2026-01-27T06:37:12.057437"
+    },
+    {
+      "rule_id": "DQR_106",
+      "attribute": "zz_Current Rating",
+      "category": "VALIDITY",
+      "subtype": "enumeration",
+      "description": "zz_Current Rating must be one of the standard values: 6, 9, 12, 16, 25, 32, 40, 50, 65, 80, ... (25 total)",
+      "validation_logic": {
+        "expression": "value in [6, 9, 12, 16, 25, 32, 40, 50, 65, 80, 95, 115, 145, 170, 205, 250, 300, 400, 500, 630, 800, 1000, 1250, 1600, 2050]",
+        "parameters": {
+          "valid_values": [
+            6,
+            9,
+            12,
+            16,
+            25,
+            32,
+            40,
+            50,
+            65,
+            80,
+            95,
+            115,
+            145,
+            170,
+            205,
+            250,
+            300,
+            400,
+            500,
+            630,
+            800,
+            1000,
+            1250,
+            1600,
+            2050
+          ],
+          "unit": "A",
+          "standard_reference": "Built-in standard values for current"
+        },
+        "error_message": "zz_Current Rating has invalid value. Must be one of: 6, 9, 12, 16, 25, 32, 40, 50, 65, 80, ... (25 total)",
+        "severity": "ERROR"
+      },
+      "source_evidence": [
+        {
+          "source_type": "iec_standards",
+          "source_reference": "Built-in standard values for current",
+          "excerpt": "Standard values: 6, 9, 12, 16, 25, 32, 40, 50, 65, 80, ... (25 total)",
+          "confidence": 0.8
+        }
+      ],
+      "business_impact": "Non-standard values may cause compatibility or compliance issues",
+      "implementation_notes": "Validate against allowed values list. Source: IEC Standards",
+      "created_at": "2026-01-27T06:37:12.058437"
+    },
+    {
+      "rule_id": "DQR_107",
+      "attribute": "zz_Maximum Operating Temperature",
+      "category": "VALIDITY",
+      "subtype": "range_check",
+      "description": "zz_Maximum Operating Temperature must be between -25 C and 70 C",
+      "validation_logic": {
+        "expression": "-25 <= value <= 70",
+        "parameters": {
+          "min": -25,
+          "max": 70,
+          "unit": "C",
+          "standard_reference": "Built-in standard range for temperature"
+        },
+        "error_message": "zz_Maximum Operating Temperature out of range. Must be -25-70 C",
+        "severity": "ERROR"
+      },
+      "source_evidence": [
+        {
+          "source_type": "iec_standards",
+          "source_reference": "Built-in standard range for temperature",
+          "excerpt": "Valid range: -25 to 70 C",
+          "confidence": 0.85
+        }
+      ],
+      "business_impact": "Values outside range may indicate data entry errors or equipment issues",
+      "implementation_notes": "Numeric range validation. Source: IEC Standards",
+      "created_at": "2026-01-27T06:37:12.059459"
+    },
+    {
+      "rule_id": "DQR_108",
+      "attribute": "zz_Resistance",
+      "category": "COMPLETENESS",
+      "subtype": "threshold",
+      "description": "DEAD FIELD: zz_Resistance has 100.0% missing - consider removing from schema",
+      "validation_logic": {
+        "expression": "SCHEMA_REVIEW_REQUIRED",
+        "parameters": {
+          "missing_percentage": 100.0,
+          "status": "dead_field"
+        },
+        "error_message": "zz_Resistance is never populated - review schema",
+        "severity": "INFO"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Field is 100.0% empty - never populated",
+          "confidence": 1.0
+        }
+      ],
+      "business_impact": "Field unused - consider removing to simplify data model",
+      "implementation_notes": "Review with data stewards before removing from schema",
+      "created_at": "2026-01-27T06:37:12.059459"
+    },
+    {
+      "rule_id": "DQR_109",
+      "attribute": "zz_Resistance",
+      "category": "VALIDITY",
+      "subtype": "data_type",
+      "description": "zz_Resistance must be of type constant",
+      "validation_logic": {
+        "expression": "isinstance(value, constant)",
+        "parameters": {
+          "expected_type": "constant",
+          "profiled_type": "Constant"
+        },
+        "error_message": "zz_Resistance has incorrect data type. Expected: constant",
+        "severity": "WARNING"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Observed data type: Constant",
+          "confidence": 0.9
+        }
+      ],
+      "business_impact": "Type mismatches may cause processing errors",
+      "implementation_notes": "Type validation based on profiled data type",
+      "created_at": "2026-01-27T06:37:12.059459"
+    },
+    {
+      "rule_id": "DQR_110",
+      "attribute": "zz_Horsepower, Motor, Max at 230 V",
+      "category": "VALIDITY",
+      "subtype": "range_check",
+      "description": "zz_Horsepower, Motor, Max at 230 V must be between 3.0 and 15.0",
+      "validation_logic": {
+        "expression": "3.0 <= value <= 15.0",
+        "parameters": {
+          "min": 3.0,
+          "max": 15.0,
+          "unit": "",
+          "standard_reference": "Observed data range"
+        },
+        "error_message": "zz_Horsepower, Motor, Max at 230 V out of range. Must be 3.0-15.0",
+        "severity": "ERROR"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling_statistics",
+          "source_reference": "Observed data range",
+          "excerpt": "Valid range: 3.0 to 15.0",
+          "confidence": 0.85
+        }
+      ],
+      "business_impact": "Values outside range may indicate data entry errors or equipment issues",
+      "implementation_notes": "Numeric range validation. Source: Profiling Statistics",
+      "created_at": "2026-01-27T06:37:12.060459"
+    },
+    {
+      "rule_id": "DQR_111",
+      "attribute": "zz_Horsepower, Motor, Max at 230 V",
+      "category": "VALIDITY",
+      "subtype": "data_type",
+      "description": "zz_Horsepower, Motor, Max at 230 V must be of type number",
+      "validation_logic": {
+        "expression": "isinstance(value, number)",
+        "parameters": {
+          "expected_type": "number",
+          "profiled_type": "Numeric"
+        },
+        "error_message": "zz_Horsepower, Motor, Max at 230 V has incorrect data type. Expected: number",
+        "severity": "WARNING"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Observed data type: Numeric",
+          "confidence": 0.9
+        }
+      ],
+      "business_impact": "Type mismatches may cause processing errors",
+      "implementation_notes": "Type validation based on profiled data type",
+      "created_at": "2026-01-27T06:37:12.060459"
+    },
+    {
+      "rule_id": "DQR_112",
+      "attribute": "zz_Body Style",
+      "category": "VALIDITY",
+      "subtype": "data_type",
+      "description": "zz_Body Style must be of type constant",
+      "validation_logic": {
+        "expression": "isinstance(value, constant)",
+        "parameters": {
+          "expected_type": "constant",
+          "profiled_type": "Constant"
+        },
+        "error_message": "zz_Body Style has incorrect data type. Expected: constant",
+        "severity": "WARNING"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Observed data type: Constant",
+          "confidence": 0.9
+        }
+      ],
+      "business_impact": "Type mismatches may cause processing errors",
+      "implementation_notes": "Type validation based on profiled data type",
+      "created_at": "2026-01-27T06:37:12.061462"
+    },
+    {
+      "rule_id": "DQR_113",
+      "attribute": "zz_Frequency",
+      "category": "VALIDITY",
+      "subtype": "enumeration",
+      "description": "zz_Frequency must be one of the standard values: 50, 60",
+      "validation_logic": {
+        "expression": "value in [50, 60]",
+        "parameters": {
+          "valid_values": [
+            50,
+            60
+          ],
+          "unit": "Hz",
+          "standard_reference": "Built-in standard values for frequency"
+        },
+        "error_message": "zz_Frequency has invalid value. Must be one of: 50, 60",
+        "severity": "ERROR"
+      },
+      "source_evidence": [
+        {
+          "source_type": "iec_standards",
+          "source_reference": "Built-in standard values for frequency",
+          "excerpt": "Standard values: 50, 60",
+          "confidence": 0.8
+        }
+      ],
+      "business_impact": "Non-standard values may cause compatibility or compliance issues",
+      "implementation_notes": "Validate against allowed values list. Source: IEC Standards",
+      "created_at": "2026-01-27T06:37:15.306816"
+    },
+    {
+      "rule_id": "DQR_114",
+      "attribute": "zz_Overall Length",
+      "category": "VALIDITY",
+      "subtype": "data_type",
+      "description": "zz_Overall Length must be of type constant",
+      "validation_logic": {
+        "expression": "isinstance(value, constant)",
+        "parameters": {
+          "expected_type": "constant",
+          "profiled_type": "Constant"
+        },
+        "error_message": "zz_Overall Length has incorrect data type. Expected: constant",
+        "severity": "WARNING"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Observed data type: Constant",
+          "confidence": 0.9
+        }
+      ],
+      "business_impact": "Type mismatches may cause processing errors",
+      "implementation_notes": "Type validation based on profiled data type",
+      "created_at": "2026-01-27T06:37:15.307988"
+    },
+    {
+      "rule_id": "DQR_115",
+      "attribute": "zz_Operating Voltage Range",
+      "category": "VALIDITY",
+      "subtype": "enumeration",
+      "description": "zz_Operating Voltage Range must be one of the standard values: 24, 48, 110, 120, 220, 230, 240, 380, 400, 415, ... (14 total)",
+      "validation_logic": {
+        "expression": "value in [24, 48, 110, 120, 220, 230, 240, 380, 400, 415, 440, 480, 500, 690]",
+        "parameters": {
+          "valid_values": [
+            24,
+            48,
+            110,
+            120,
+            220,
+            230,
+            240,
+            380,
+            400,
+            415,
+            440,
+            480,
+            500,
+            690
+          ],
+          "unit": "V",
+          "standard_reference": "Built-in standard values for voltage"
+        },
+        "error_message": "zz_Operating Voltage Range has invalid value. Must be one of: 24, 48, 110, 120, 220, 230, 240, 380, 400, 415, ... (14 total)",
+        "severity": "ERROR"
+      },
+      "source_evidence": [
+        {
+          "source_type": "iec_standards",
+          "source_reference": "Built-in standard values for voltage",
+          "excerpt": "Standard values: 24, 48, 110, 120, 220, 230, 240, 380, 400, 415, ... (14 total)",
+          "confidence": 0.8
+        }
+      ],
+      "business_impact": "Non-standard values may cause compatibility or compliance issues",
+      "implementation_notes": "Validate against allowed values list. Source: IEC Standards",
+      "created_at": "2026-01-27T06:37:15.307988"
+    },
+    {
+      "rule_id": "DQR_116",
+      "attribute": "zz_Horsepower, Max, 1 Phase, at 115 V",
+      "category": "VALIDITY",
+      "subtype": "data_type",
+      "description": "zz_Horsepower, Max, 1 Phase, at 115 V must be of type string",
+      "validation_logic": {
+        "expression": "isinstance(value, string)",
+        "parameters": {
+          "expected_type": "string",
+          "profiled_type": "Categorical"
+        },
+        "error_message": "zz_Horsepower, Max, 1 Phase, at 115 V has incorrect data type. Expected: string",
+        "severity": "WARNING"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Observed data type: Categorical",
+          "confidence": 0.9
+        }
+      ],
+      "business_impact": "Type mismatches may cause processing errors",
+      "implementation_notes": "Type validation based on profiled data type",
+      "created_at": "2026-01-27T06:37:15.307988"
+    },
+    {
+      "rule_id": "DQR_117",
+      "attribute": "zz_Horsepower, Max, 1 Phase, at 200 V",
+      "category": "VALIDITY",
+      "subtype": "range_check",
+      "description": "zz_Horsepower, Max, 1 Phase, at 200 V must be between 0.75 and 2.0",
+      "validation_logic": {
+        "expression": "0.75 <= value <= 2.0",
+        "parameters": {
+          "min": 0.75,
+          "max": 2.0,
+          "unit": "",
+          "standard_reference": "Observed data range"
+        },
+        "error_message": "zz_Horsepower, Max, 1 Phase, at 200 V out of range. Must be 0.75-2.0",
+        "severity": "ERROR"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling_statistics",
+          "source_reference": "Observed data range",
+          "excerpt": "Valid range: 0.75 to 2.0",
+          "confidence": 0.85
+        }
+      ],
+      "business_impact": "Values outside range may indicate data entry errors or equipment issues",
+      "implementation_notes": "Numeric range validation. Source: Profiling Statistics",
+      "created_at": "2026-01-27T06:37:15.309026"
+    },
+    {
+      "rule_id": "DQR_118",
+      "attribute": "zz_Horsepower, Max, 1 Phase, at 200 V",
+      "category": "VALIDITY",
+      "subtype": "data_type",
+      "description": "zz_Horsepower, Max, 1 Phase, at 200 V must be of type number",
+      "validation_logic": {
+        "expression": "isinstance(value, number)",
+        "parameters": {
+          "expected_type": "number",
+          "profiled_type": "Numeric"
+        },
+        "error_message": "zz_Horsepower, Max, 1 Phase, at 200 V has incorrect data type. Expected: number",
+        "severity": "WARNING"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Observed data type: Numeric",
+          "confidence": 0.9
+        }
+      ],
+      "business_impact": "Type mismatches may cause processing errors",
+      "implementation_notes": "Type validation based on profiled data type",
+      "created_at": "2026-01-27T06:37:15.309026"
+    },
+    {
+      "rule_id": "DQR_119",
+      "attribute": "zz_Mounting Type",
+      "category": "COMPLETENESS",
+      "subtype": "conditional_mandatory",
+      "description": "zz_Mounting Type is conditionally required (64.4% missing)",
+      "validation_logic": {
+        "expression": "value is not None and value != ''",
+        "parameters": {
+          "missing_percentage": 64.38,
+          "threshold_type": "conditional_mandatory"
+        },
+        "error_message": "zz_Mounting Type is required but missing",
+        "severity": "INFO"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Missing percentage: 64.4%",
+          "confidence": 0.95
+        }
+      ],
+      "business_impact": "Optional data missing - limited impact",
+      "implementation_notes": "Check for null/empty values. Current fill rate: 35.6%",
+      "created_at": "2026-01-27T06:37:15.309026"
+    },
+    {
+      "rule_id": "DQR_120",
+      "attribute": "zz_Mounting Type",
+      "category": "VALIDITY",
+      "subtype": "data_type",
+      "description": "zz_Mounting Type must be of type string",
+      "validation_logic": {
+        "expression": "isinstance(value, string)",
+        "parameters": {
+          "expected_type": "string",
+          "profiled_type": "Categorical"
+        },
+        "error_message": "zz_Mounting Type has incorrect data type. Expected: string",
+        "severity": "WARNING"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Observed data type: Categorical",
+          "confidence": 0.9
+        }
+      ],
+      "business_impact": "Type mismatches may cause processing errors",
+      "implementation_notes": "Type validation based on profiled data type",
+      "created_at": "2026-01-27T06:37:15.309026"
+    },
+    {
+      "rule_id": "DQR_121",
+      "attribute": "zz_Dielectric Strength",
+      "category": "VALIDITY",
+      "subtype": "data_type",
+      "description": "zz_Dielectric Strength must be of type string",
+      "validation_logic": {
+        "expression": "isinstance(value, string)",
+        "parameters": {
+          "expected_type": "string",
+          "profiled_type": "Categorical"
+        },
+        "error_message": "zz_Dielectric Strength has incorrect data type. Expected: string",
+        "severity": "WARNING"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Observed data type: Categorical",
+          "confidence": 0.9
+        }
+      ],
+      "business_impact": "Type mismatches may cause processing errors",
+      "implementation_notes": "Type validation based on profiled data type",
+      "created_at": "2026-01-27T06:37:15.309026"
+    },
+    {
+      "rule_id": "DQR_122",
+      "attribute": "zz_Relay Type",
+      "category": "VALIDITY",
+      "subtype": "data_type",
+      "description": "zz_Relay Type must be of type string",
+      "validation_logic": {
+        "expression": "isinstance(value, string)",
+        "parameters": {
+          "expected_type": "string",
+          "profiled_type": "Categorical"
+        },
+        "error_message": "zz_Relay Type has incorrect data type. Expected: string",
+        "severity": "WARNING"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Observed data type: Categorical",
+          "confidence": 0.9
+        }
+      ],
+      "business_impact": "Type mismatches may cause processing errors",
+      "implementation_notes": "Type validation based on profiled data type",
+      "created_at": "2026-01-27T06:37:15.309026"
+    },
+    {
+      "rule_id": "DQR_123",
+      "attribute": "zz_Voltage Rating",
+      "category": "VALIDITY",
+      "subtype": "enumeration",
+      "description": "zz_Voltage Rating must be one of the standard values: 24, 48, 110, 120, 220, 230, 240, 380, 400, 415, ... (14 total)",
+      "validation_logic": {
+        "expression": "value in [24, 48, 110, 120, 220, 230, 240, 380, 400, 415, 440, 480, 500, 690]",
+        "parameters": {
+          "valid_values": [
+            24,
+            48,
+            110,
+            120,
+            220,
+            230,
+            240,
+            380,
+            400,
+            415,
+            440,
+            480,
+            500,
+            690
+          ],
+          "unit": "V",
+          "standard_reference": "Built-in standard values for voltage"
+        },
+        "error_message": "zz_Voltage Rating has invalid value. Must be one of: 24, 48, 110, 120, 220, 230, 240, 380, 400, 415, ... (14 total)",
+        "severity": "ERROR"
+      },
+      "source_evidence": [
+        {
+          "source_type": "iec_standards",
+          "source_reference": "Built-in standard values for voltage",
+          "excerpt": "Standard values: 24, 48, 110, 120, 220, 230, 240, 380, 400, 415, ... (14 total)",
+          "confidence": 0.8
+        }
+      ],
+      "business_impact": "Non-standard values may cause compatibility or compliance issues",
+      "implementation_notes": "Validate against allowed values list. Source: IEC Standards",
+      "created_at": "2026-01-27T06:37:15.310539"
+    },
+    {
+      "rule_id": "DQR_124",
+      "attribute": "zz_Horsepower, Max, 1 Phase, at 208 V",
+      "category": "VALIDITY",
+      "subtype": "range_check",
+      "description": "zz_Horsepower, Max, 1 Phase, at 208 V must be between 0.5 and 30.0",
+      "validation_logic": {
+        "expression": "0.5 <= value <= 30.0",
+        "parameters": {
+          "min": 0.5,
+          "max": 30.0,
+          "unit": "",
+          "standard_reference": "Observed data range"
+        },
+        "error_message": "zz_Horsepower, Max, 1 Phase, at 208 V out of range. Must be 0.5-30.0",
+        "severity": "ERROR"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling_statistics",
+          "source_reference": "Observed data range",
+          "excerpt": "Valid range: 0.5 to 30.0",
+          "confidence": 0.85
+        }
+      ],
+      "business_impact": "Values outside range may indicate data entry errors or equipment issues",
+      "implementation_notes": "Numeric range validation. Source: Profiling Statistics",
+      "created_at": "2026-01-27T06:37:15.311052"
+    },
+    {
+      "rule_id": "DQR_125",
+      "attribute": "zz_Horsepower, Max, 1 Phase, at 208 V",
+      "category": "VALIDITY",
+      "subtype": "data_type",
+      "description": "zz_Horsepower, Max, 1 Phase, at 208 V must be of type number",
+      "validation_logic": {
+        "expression": "isinstance(value, number)",
+        "parameters": {
+          "expected_type": "number",
+          "profiled_type": "Numeric"
+        },
+        "error_message": "zz_Horsepower, Max, 1 Phase, at 208 V has incorrect data type. Expected: number",
+        "severity": "WARNING"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Observed data type: Numeric",
+          "confidence": 0.9
+        }
+      ],
+      "business_impact": "Type mismatches may cause processing errors",
+      "implementation_notes": "Type validation based on profiled data type",
+      "created_at": "2026-01-27T06:37:15.311052"
+    },
+    {
+      "rule_id": "DQR_126",
+      "attribute": "zz_Enclosure Rating",
+      "category": "VALIDITY",
+      "subtype": "data_type",
+      "description": "zz_Enclosure Rating must be of type string",
+      "validation_logic": {
+        "expression": "isinstance(value, string)",
+        "parameters": {
+          "expected_type": "string",
+          "profiled_type": "Categorical"
+        },
+        "error_message": "zz_Enclosure Rating has incorrect data type. Expected: string",
+        "severity": "WARNING"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Observed data type: Categorical",
+          "confidence": 0.9
+        }
+      ],
+      "business_impact": "Type mismatches may cause processing errors",
+      "implementation_notes": "Type validation based on profiled data type",
+      "created_at": "2026-01-27T06:37:15.311052"
+    },
+    {
+      "rule_id": "DQR_127",
+      "attribute": "zz_Stripping Length",
+      "category": "VALIDITY",
+      "subtype": "data_type",
+      "description": "zz_Stripping Length must be of type constant",
+      "validation_logic": {
+        "expression": "isinstance(value, constant)",
+        "parameters": {
+          "expected_type": "constant",
+          "profiled_type": "Constant"
+        },
+        "error_message": "zz_Stripping Length has incorrect data type. Expected: constant",
+        "severity": "WARNING"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Observed data type: Constant",
+          "confidence": 0.9
+        }
+      ],
+      "business_impact": "Type mismatches may cause processing errors",
+      "implementation_notes": "Type validation based on profiled data type",
+      "created_at": "2026-01-27T06:37:15.311052"
+    },
+    {
+      "rule_id": "DQR_128",
+      "attribute": "zz_Power Rating",
+      "category": "VALIDITY",
+      "subtype": "data_type",
+      "description": "zz_Power Rating must be of type string",
+      "validation_logic": {
+        "expression": "isinstance(value, string)",
+        "parameters": {
+          "expected_type": "string",
+          "profiled_type": "Categorical"
+        },
+        "error_message": "zz_Power Rating has incorrect data type. Expected: string",
+        "severity": "WARNING"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Observed data type: Categorical",
+          "confidence": 0.9
+        }
+      ],
+      "business_impact": "Type mismatches may cause processing errors",
+      "implementation_notes": "Type validation based on profiled data type",
+      "created_at": "2026-01-27T06:37:15.312067"
+    },
+    {
+      "rule_id": "DQR_129",
+      "attribute": "zz_Number of Positions",
+      "category": "VALIDITY",
+      "subtype": "data_type",
+      "description": "zz_Number of Positions must be of type constant",
+      "validation_logic": {
+        "expression": "isinstance(value, constant)",
+        "parameters": {
+          "expected_type": "constant",
+          "profiled_type": "Constant"
+        },
+        "error_message": "zz_Number of Positions has incorrect data type. Expected: constant",
+        "severity": "WARNING"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Observed data type: Constant",
+          "confidence": 0.9
+        }
+      ],
+      "business_impact": "Type mismatches may cause processing errors",
+      "implementation_notes": "Type validation based on profiled data type",
+      "created_at": "2026-01-27T06:37:15.312067"
+    },
+    {
+      "rule_id": "DQR_130",
+      "attribute": "zz_Load Current",
+      "category": "VALIDITY",
+      "subtype": "enumeration",
+      "description": "zz_Load Current must be one of the standard values: 6, 9, 12, 16, 25, 32, 40, 50, 65, 80, ... (25 total)",
+      "validation_logic": {
+        "expression": "value in [6, 9, 12, 16, 25, 32, 40, 50, 65, 80, 95, 115, 145, 170, 205, 250, 300, 400, 500, 630, 800, 1000, 1250, 1600, 2050]",
+        "parameters": {
+          "valid_values": [
+            6,
+            9,
+            12,
+            16,
+            25,
+            32,
+            40,
+            50,
+            65,
+            80,
+            95,
+            115,
+            145,
+            170,
+            205,
+            250,
+            300,
+            400,
+            500,
+            630,
+            800,
+            1000,
+            1250,
+            1600,
+            2050
+          ],
+          "unit": "A",
+          "standard_reference": "Built-in standard values for current"
+        },
+        "error_message": "zz_Load Current has invalid value. Must be one of: 6, 9, 12, 16, 25, 32, 40, 50, 65, 80, ... (25 total)",
+        "severity": "ERROR"
+      },
+      "source_evidence": [
+        {
+          "source_type": "iec_standards",
+          "source_reference": "Built-in standard values for current",
+          "excerpt": "Standard values: 6, 9, 12, 16, 25, 32, 40, 50, 65, 80, ... (25 total)",
+          "confidence": 0.8
+        }
+      ],
+      "business_impact": "Non-standard values may cause compatibility or compliance issues",
+      "implementation_notes": "Validate against allowed values list. Source: IEC Standards",
+      "created_at": "2026-01-27T06:37:15.313066"
+    },
+    {
+      "rule_id": "DQR_131",
+      "attribute": "zz_Input Voltage",
+      "category": "VALIDITY",
+      "subtype": "enumeration",
+      "description": "zz_Input Voltage must be one of the standard values: 24, 48, 110, 120, 220, 230, 240, 380, 400, 415, ... (14 total)",
+      "validation_logic": {
+        "expression": "value in [24, 48, 110, 120, 220, 230, 240, 380, 400, 415, 440, 480, 500, 690]",
+        "parameters": {
+          "valid_values": [
+            24,
+            48,
+            110,
+            120,
+            220,
+            230,
+            240,
+            380,
+            400,
+            415,
+            440,
+            480,
+            500,
+            690
+          ],
+          "unit": "V",
+          "standard_reference": "Built-in standard values for voltage"
+        },
+        "error_message": "zz_Input Voltage has invalid value. Must be one of: 24, 48, 110, 120, 220, 230, 240, 380, 400, 415, ... (14 total)",
+        "severity": "ERROR"
+      },
+      "source_evidence": [
+        {
+          "source_type": "iec_standards",
+          "source_reference": "Built-in standard values for voltage",
+          "excerpt": "Standard values: 24, 48, 110, 120, 220, 230, 240, 380, 400, 415, ... (14 total)",
+          "confidence": 0.8
+        }
+      ],
+      "business_impact": "Non-standard values may cause compatibility or compliance issues",
+      "implementation_notes": "Validate against allowed values list. Source: IEC Standards",
+      "created_at": "2026-01-27T06:37:15.313066"
+    },
+    {
+      "rule_id": "DQR_132",
+      "attribute": "zz_Function",
+      "category": "VALIDITY",
+      "subtype": "data_type",
+      "description": "zz_Function must be of type string",
+      "validation_logic": {
+        "expression": "isinstance(value, string)",
+        "parameters": {
+          "expected_type": "string",
+          "profiled_type": "Categorical"
+        },
+        "error_message": "zz_Function has incorrect data type. Expected: string",
+        "severity": "WARNING"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Observed data type: Categorical",
+          "confidence": 0.9
+        }
+      ],
+      "business_impact": "Type mismatches may cause processing errors",
+      "implementation_notes": "Type validation based on profiled data type",
+      "created_at": "2026-01-27T06:37:15.313066"
+    },
+    {
+      "rule_id": "DQR_133",
+      "attribute": "zz_Includes",
+      "category": "VALIDITY",
+      "subtype": "data_type",
+      "description": "zz_Includes must be of type string",
+      "validation_logic": {
+        "expression": "isinstance(value, string)",
+        "parameters": {
+          "expected_type": "string",
+          "profiled_type": "Categorical"
+        },
+        "error_message": "zz_Includes has incorrect data type. Expected: string",
+        "severity": "WARNING"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Observed data type: Categorical",
+          "confidence": 0.9
+        }
+      ],
+      "business_impact": "Type mismatches may cause processing errors",
+      "implementation_notes": "Type validation based on profiled data type",
+      "created_at": "2026-01-27T06:37:15.314079"
+    },
+    {
+      "rule_id": "DQR_134",
+      "attribute": "zz_Operating Temperature",
+      "category": "COMPLETENESS",
+      "subtype": "threshold",
+      "description": "DEAD FIELD: zz_Operating Temperature has 100.0% missing - consider removing from schema",
+      "validation_logic": {
+        "expression": "SCHEMA_REVIEW_REQUIRED",
+        "parameters": {
+          "missing_percentage": 100.0,
+          "status": "dead_field"
+        },
+        "error_message": "zz_Operating Temperature is never populated - review schema",
+        "severity": "INFO"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Field is 100.0% empty - never populated",
+          "confidence": 1.0
+        }
+      ],
+      "business_impact": "Field unused - consider removing to simplify data model",
+      "implementation_notes": "Review with data stewards before removing from schema",
+      "created_at": "2026-01-27T06:37:15.314079"
+    },
+    {
+      "rule_id": "DQR_135",
+      "attribute": "zz_Operating Temperature",
+      "category": "VALIDITY",
+      "subtype": "range_check",
+      "description": "zz_Operating Temperature must be between -25 C and 70 C",
+      "validation_logic": {
+        "expression": "-25 <= value <= 70",
+        "parameters": {
+          "min": -25,
+          "max": 70,
+          "unit": "C",
+          "standard_reference": "Built-in standard range for temperature"
+        },
+        "error_message": "zz_Operating Temperature out of range. Must be -25-70 C",
+        "severity": "ERROR"
+      },
+      "source_evidence": [
+        {
+          "source_type": "iec_standards",
+          "source_reference": "Built-in standard range for temperature",
+          "excerpt": "Valid range: -25 to 70 C",
+          "confidence": 0.85
+        }
+      ],
+      "business_impact": "Values outside range may indicate data entry errors or equipment issues",
+      "implementation_notes": "Numeric range validation. Source: IEC Standards",
+      "created_at": "2026-01-27T06:37:15.315078"
+    },
+    {
+      "rule_id": "DQR_136",
+      "attribute": "dr_Series",
+      "category": "COMPLETENESS",
+      "subtype": "conditional_mandatory",
+      "description": "dr_Series is conditionally required (61.4% missing)",
+      "validation_logic": {
+        "expression": "value is not None and value != ''",
+        "parameters": {
+          "missing_percentage": 61.37,
+          "threshold_type": "conditional_mandatory"
+        },
+        "error_message": "dr_Series is required but missing",
+        "severity": "INFO"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Missing percentage: 61.4%",
+          "confidence": 0.95
+        }
+      ],
+      "business_impact": "Optional data missing - limited impact",
+      "implementation_notes": "Check for null/empty values. Current fill rate: 38.6%",
+      "created_at": "2026-01-27T06:37:15.315078"
+    },
+    {
+      "rule_id": "DQR_137",
+      "attribute": "dr_Series",
+      "category": "VALIDITY",
+      "subtype": "data_type",
+      "description": "dr_Series must be of type string",
+      "validation_logic": {
+        "expression": "isinstance(value, string)",
+        "parameters": {
+          "expected_type": "string",
+          "profiled_type": "Categorical"
+        },
+        "error_message": "dr_Series has incorrect data type. Expected: string",
+        "severity": "WARNING"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Observed data type: Categorical",
+          "confidence": 0.9
+        }
+      ],
+      "business_impact": "Type mismatches may cause processing errors",
+      "implementation_notes": "Type validation based on profiled data type",
+      "created_at": "2026-01-27T06:37:15.315078"
+    },
+    {
+      "rule_id": "DQR_138",
+      "attribute": "zz_Socket Type",
+      "category": "COMPLETENESS",
+      "subtype": "threshold",
+      "description": "DEAD FIELD: zz_Socket Type has 100.0% missing - consider removing from schema",
+      "validation_logic": {
+        "expression": "SCHEMA_REVIEW_REQUIRED",
+        "parameters": {
+          "missing_percentage": 100.0,
+          "status": "dead_field"
+        },
+        "error_message": "zz_Socket Type is never populated - review schema",
+        "severity": "INFO"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Field is 100.0% empty - never populated",
+          "confidence": 1.0
+        }
+      ],
+      "business_impact": "Field unused - consider removing to simplify data model",
+      "implementation_notes": "Review with data stewards before removing from schema",
+      "created_at": "2026-01-27T06:37:15.315078"
+    },
+    {
+      "rule_id": "DQR_139",
+      "attribute": "zz_Socket Type",
+      "category": "VALIDITY",
+      "subtype": "data_type",
+      "description": "zz_Socket Type must be of type constant",
+      "validation_logic": {
+        "expression": "isinstance(value, constant)",
+        "parameters": {
+          "expected_type": "constant",
+          "profiled_type": "Constant"
+        },
+        "error_message": "zz_Socket Type has incorrect data type. Expected: constant",
+        "severity": "WARNING"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Observed data type: Constant",
+          "confidence": 0.9
+        }
+      ],
+      "business_impact": "Type mismatches may cause processing errors",
+      "implementation_notes": "Type validation based on profiled data type",
+      "created_at": "2026-01-27T06:37:15.315078"
+    },
+    {
+      "rule_id": "DQR_140",
+      "attribute": "zz_Minimum Operating Temperature",
+      "category": "VALIDITY",
+      "subtype": "range_check",
+      "description": "zz_Minimum Operating Temperature must be between -25 C and 70 C",
+      "validation_logic": {
+        "expression": "-25 <= value <= 70",
+        "parameters": {
+          "min": -25,
+          "max": 70,
+          "unit": "C",
+          "standard_reference": "Built-in standard range for temperature"
+        },
+        "error_message": "zz_Minimum Operating Temperature out of range. Must be -25-70 C",
+        "severity": "ERROR"
+      },
+      "source_evidence": [
+        {
+          "source_type": "iec_standards",
+          "source_reference": "Built-in standard range for temperature",
+          "excerpt": "Valid range: -25 to 70 C",
+          "confidence": 0.85
+        }
+      ],
+      "business_impact": "Values outside range may indicate data entry errors or equipment issues",
+      "implementation_notes": "Numeric range validation. Source: IEC Standards",
+      "created_at": "2026-01-27T06:37:15.316079"
+    },
+    {
+      "rule_id": "DQR_141",
+      "attribute": "zz_Leaf Node",
+      "category": "COMPLETENESS",
+      "subtype": "mandatory_field",
+      "description": "zz_Leaf Node is mandatory (only 0.8% missing in data)",
+      "validation_logic": {
+        "expression": "value is not None and value != ''",
+        "parameters": {
+          "missing_percentage": 0.78,
+          "threshold_type": "mandatory_field"
+        },
+        "error_message": "zz_Leaf Node is required but missing",
+        "severity": "ERROR"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Missing percentage: 0.8%",
+          "confidence": 0.95
+        }
+      ],
+      "business_impact": "Critical data missing - may cause process failures",
+      "implementation_notes": "Check for null/empty values. Current fill rate: 99.2%",
+      "created_at": "2026-01-27T06:37:15.316079"
+    },
+    {
+      "rule_id": "DQR_142",
+      "attribute": "zz_Leaf Node",
+      "category": "VALIDITY",
+      "subtype": "data_type",
+      "description": "zz_Leaf Node must be of type constant",
+      "validation_logic": {
+        "expression": "isinstance(value, constant)",
+        "parameters": {
+          "expected_type": "constant",
+          "profiled_type": "Constant"
+        },
+        "error_message": "zz_Leaf Node has incorrect data type. Expected: constant",
+        "severity": "WARNING"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Observed data type: Constant",
+          "confidence": 0.9
+        }
+      ],
+      "business_impact": "Type mismatches may cause processing errors",
+      "implementation_notes": "Type validation based on profiled data type",
+      "created_at": "2026-01-27T06:37:15.316079"
+    },
+    {
+      "rule_id": "DQR_143",
+      "attribute": "zz_Isolation Voltage",
+      "category": "COMPLETENESS",
+      "subtype": "threshold",
+      "description": "DEAD FIELD: zz_Isolation Voltage has 100.0% missing - consider removing from schema",
+      "validation_logic": {
+        "expression": "SCHEMA_REVIEW_REQUIRED",
+        "parameters": {
+          "missing_percentage": 100.0,
+          "status": "dead_field"
+        },
+        "error_message": "zz_Isolation Voltage is never populated - review schema",
+        "severity": "INFO"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Field is 100.0% empty - never populated",
+          "confidence": 1.0
+        }
+      ],
+      "business_impact": "Field unused - consider removing to simplify data model",
+      "implementation_notes": "Review with data stewards before removing from schema",
+      "created_at": "2026-01-27T06:37:15.317077"
+    },
+    {
+      "rule_id": "DQR_144",
+      "attribute": "zz_Isolation Voltage",
+      "category": "VALIDITY",
+      "subtype": "enumeration",
+      "description": "zz_Isolation Voltage must be one of the standard values: 24, 48, 110, 120, 220, 230, 240, 380, 400, 415, ... (14 total)",
+      "validation_logic": {
+        "expression": "value in [24, 48, 110, 120, 220, 230, 240, 380, 400, 415, 440, 480, 500, 690]",
+        "parameters": {
+          "valid_values": [
+            24,
+            48,
+            110,
+            120,
+            220,
+            230,
+            240,
+            380,
+            400,
+            415,
+            440,
+            480,
+            500,
+            690
+          ],
+          "unit": "V",
+          "standard_reference": "Built-in standard values for voltage"
+        },
+        "error_message": "zz_Isolation Voltage has invalid value. Must be one of: 24, 48, 110, 120, 220, 230, 240, 380, 400, 415, ... (14 total)",
+        "severity": "ERROR"
+      },
+      "source_evidence": [
+        {
+          "source_type": "iec_standards",
+          "source_reference": "Built-in standard values for voltage",
+          "excerpt": "Standard values: 24, 48, 110, 120, 220, 230, 240, 380, 400, 415, ... (14 total)",
+          "confidence": 0.8
+        }
+      ],
+      "business_impact": "Non-standard values may cause compatibility or compliance issues",
+      "implementation_notes": "Validate against allowed values list. Source: IEC Standards",
+      "created_at": "2026-01-27T06:37:15.317077"
+    },
+    {
+      "rule_id": "DQR_145",
+      "attribute": "zz_DimensionsNested",
+      "category": "COMPLETENESS",
+      "subtype": "threshold",
+      "description": "DEAD FIELD: zz_DimensionsNested has 100.0% missing - consider removing from schema",
+      "validation_logic": {
+        "expression": "SCHEMA_REVIEW_REQUIRED",
+        "parameters": {
+          "missing_percentage": 100.0,
+          "status": "dead_field"
+        },
+        "error_message": "zz_DimensionsNested is never populated - review schema",
+        "severity": "INFO"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Python Profiling Statistics",
+          "excerpt": "Field is 100.0% empty - never populated",
+          "confidence": 1.0
+        }
+      ],
+      "business_impact": "Field unused - consider removing to simplify data model",
+      "implementation_notes": "Review with data stewards before removing from schema",
+      "created_at": "2026-01-27T06:37:15.317077"
+    }
+  ],
+  "summary": {
+    "total_rules": 145,
+    "by_category": {
+      "VALIDITY": 127,
+      "COMPLETENESS": 18
+    },
+    "by_attribute": {
+      "zz_Dielectric Rating": 1,
+      "zz_IP Rating": 1,
+      "zz_Horsepower, Max, 3 Phase, at 480 V": 1,
+      "zz_Control Voltage": 1,
+      "zz_Special Features": 1,
+      "zz_Material": 2,
+      "zz_Horsepower, Motor, Max at 115 V": 2,
+      "zz_Maximum Voltage": 1,
+      "zz_Horsepower, Max, 1 Phase, at 240 V": 2,
+      "zz_Mounting Style": 1,
+      "zz_Mounting Diameter": 2,
+      "zz_Product Type": 1,
+      "zz_Accessory Type": 1,
+      "zz_Contact Material": 1,
+      "zz_Options": 1,
+      "zz_Voltage Range": 1,
+      "zz_Horsepower, Max, 3 Phase, at 240 V": 2,
+      "zz_Supply Voltage": 1,
+      "zz_Continuous Current": 1,
+      "zz_Horsepower, Max, 3 Phase, at 575 V": 2,
+      "zz_Auxiliary Contact": 1,
+      "zz_Contact Form": 1,
+      "zz_Horsepower, Max, 3 Phase, at 200 V": 2,
+      "zz_Minimum Ambient Temperature": 2,
+      "dr_Dimensions": 1,
+      "zz_For Use With": 1,
+      "zz_Screw Type": 1,
+      "zz_Turn On Time": 2,
+      "zz_Horsepower, Max, 3 Phase, at 208 V": 2,
+      "zz_Wire Size": 1,
+      "zz_Capacitance": 2,
+      "zz_Number of Contacts": 2,
+      "zz_Coil Resistance": 1,
+      "zz_Approvals": 1,
+      "zz_Number of Poles": 2,
+      "zz_Contacts": 1,
+      "zz_Terminal Type": 1,
+      "zz_Size": 1,
+      "zz_Terminals": 1,
+      "zz_Weight": 2,
+      "zz_Family Name": 1,
+      "zz_Turn Off Time": 2,
+      "zz_Type": 2,
+      "zz_Horsepower, Max, 1 Phase, at 230 V": 2,
+      "zz_Operating Voltage": 1,
+      "zz_Temperature Range": 1,
+      "zz_Horsepower, Max, 3 Phase, at 460 V": 2,
+      "zz_Horsepower, Max, 3 Phase, at 230 V": 1,
+      "zz_Connection": 1,
+      "zz_Standards": 1,
+      "zz_Phase": 2,
+      "zz_Load Voltage": 1,
+      "zz_Termination": 1,
+      "zz_Enclosure Type": 1,
+      "zz_Surge Current": 1,
+      "zz_Connection Type": 1,
+      "zz_Temperature Operating Range": 1,
+      "zz_Minimum Load": 2,
+      "zz_NEMA Size": 2,
+      "zz_Primary Type": 1,
+      "zz_Number of Pins": 2,
+      "zz_Storage Temperature": 1,
+      "zz_Contact Rating": 1,
+      "zz_Contact Current Rating": 2,
+      "zz_Horsepower Rating": 1,
+      "zz_Contact Configuration": 1,
+      "zz_Number of Conductors": 1,
+      "zz_Current, Ratings": 1,
+      "zz_Application": 1,
+      "zz_Color": 1,
+      "zz_Switch Type": 1,
+      "zz_Terminator Type": 1,
+      "zz_Jacket Color": 1,
+      "zz_Coil Power": 1,
+      "zz_Horsepower, Max, 3 Phase, at 600 V": 2,
+      "zz_Maximum Ambient Temperature": 2,
+      "zz_Warranty": 1,
+      "zz_Series": 2,
+      "zz_Rating": 1,
+      "zz_Current Rating": 1,
+      "zz_Maximum Operating Temperature": 1,
+      "zz_Resistance": 2,
+      "zz_Horsepower, Motor, Max at 230 V": 2,
+      "zz_Body Style": 1,
+      "zz_Frequency": 1,
+      "zz_Overall Length": 1,
+      "zz_Operating Voltage Range": 1,
+      "zz_Horsepower, Max, 1 Phase, at 115 V": 1,
+      "zz_Horsepower, Max, 1 Phase, at 200 V": 2,
+      "zz_Mounting Type": 2,
+      "zz_Dielectric Strength": 1,
+      "zz_Relay Type": 1,
+      "zz_Voltage Rating": 1,
+      "zz_Horsepower, Max, 1 Phase, at 208 V": 2,
+      "zz_Enclosure Rating": 1,
+      "zz_Stripping Length": 1,
+      "zz_Power Rating": 1,
+      "zz_Number of Positions": 1,
+      "zz_Load Current": 1,
+      "zz_Input Voltage": 1,
+      "zz_Function": 1,
+      "zz_Includes": 1,
+      "zz_Operating Temperature": 2,
+      "dr_Series": 2,
+      "zz_Socket Type": 2,
+      "zz_Minimum Operating Temperature": 1,
+      "zz_Leaf Node": 2,
+      "zz_Isolation Voltage": 2,
+      "zz_DimensionsNested": 1
+    },
+    "coverage_rate": 0.0
+  }
+}

@@ -1,0 +1,170 @@
+{
+  "metadata": {
+    "generated_at": "2026-01-23T12:37:17.650507",
+    "generator_version": "1.0.0",
+    "data_sources": [],
+    "total_rules": 5,
+    "rules_by_category": {
+      "VALIDITY": 4,
+      "COMPLETENESS": 1
+    }
+  },
+  "attribute_matching_report": {
+    "matched_attributes": [],
+    "crosstab_only_attributes": [],
+    "rag_only_attributes": [],
+    "statistics": {}
+  },
+  "rules": [
+    {
+      "rule_id": "DQR_001",
+      "attribute": "rated_current",
+      "category": "VALIDITY",
+      "subtype": "range_check",
+      "description": "Rated current must be within ABB contactor range (9A to 5000A)",
+      "validation_logic": {
+        "expression": "value >= 9 and value <= 5000",
+        "parameters": {
+          "min": 9,
+          "max": 5000,
+          "unit": "A"
+        },
+        "error_message": "Rated current must be between 9A and 5000A for ABB contactors",
+        "severity": "ERROR"
+      },
+      "source_evidence": [
+        {
+          "source_type": "document",
+          "source_reference": "ABB_Contactor_Relays.pdf",
+          "excerpt": "R contactors range from 63A to 5000A in AC and DC.",
+          "confidence": 0.95
+        }
+      ],
+      "business_impact": "Incorrect current rating may cause equipment damage or safety hazards",
+      "implementation_notes": "Ensure compliance with IEC 60947 standards",
+      "created_at": "2026-01-23T12:37:17.650507"
+    },
+    {
+      "rule_id": "DQR_002",
+      "attribute": "rated_voltage",
+      "category": "VALIDITY",
+      "subtype": "range_check",
+      "description": "Rated voltage must be within specified range for ABB contactors (up to 1000V AC or 1500V DC)",
+      "validation_logic": {
+        "expression": "value <= 1000 if type == 'AC' else value <= 1500",
+        "parameters": {
+          "max_ac": 1000,
+          "max_dc": 1500,
+          "unit": "V"
+        },
+        "error_message": "Rated voltage must not exceed 1000V AC or 1500V DC",
+        "severity": "ERROR"
+      },
+      "source_evidence": [
+        {
+          "source_type": "document",
+          "source_reference": "ABB_Contactor_Relays.pdf",
+          "excerpt": "Voltage up to 1000 V AC or 1500 V DC.",
+          "confidence": 0.95
+        }
+      ],
+      "business_impact": "Exceeding voltage limits can lead to insulation failure and safety risks",
+      "implementation_notes": "Check voltage type before validation",
+      "created_at": "2026-01-23T12:37:17.650507"
+    },
+    {
+      "rule_id": "DQR_003",
+      "attribute": "ambient_temperature",
+      "category": "VALIDITY",
+      "subtype": "range_check",
+      "description": "Ambient temperature must be within operational limits (\u03b8 \u2264 40\u00b0C for general use)",
+      "validation_logic": {
+        "expression": "value <= 40",
+        "parameters": {
+          "max": 40,
+          "unit": "\u00b0C"
+        },
+        "error_message": "Ambient temperature must not exceed 40\u00b0C for general use",
+        "severity": "WARNING"
+      },
+      "source_evidence": [
+        {
+          "source_type": "document",
+          "source_reference": "ABB_Contactor_Relays.pdf",
+          "excerpt": "Rated operational current \u03b8 \u2264 40 \u00b0C",
+          "confidence": 0.9
+        }
+      ],
+      "business_impact": "Operating outside temperature limits may reduce equipment lifespan",
+      "implementation_notes": "Monitor ambient temperature conditions regularly",
+      "created_at": "2026-01-23T12:37:17.650507"
+    },
+    {
+      "rule_id": "DQR_004",
+      "attribute": "auxiliary_contact",
+      "category": "COMPLETENESS",
+      "subtype": "mandatory_field",
+      "description": "Auxiliary contact configuration must be specified for all contactors",
+      "validation_logic": {
+        "expression": "value is not None",
+        "parameters": {},
+        "error_message": "Auxiliary contact configuration is required",
+        "severity": "ERROR"
+      },
+      "source_evidence": [
+        {
+          "source_type": "document",
+          "source_reference": "ABB_Contactor_Relays.pdf",
+          "excerpt": "Auxiliary contacts N.O. N.C. Type Order code",
+          "confidence": 0.85
+        }
+      ],
+      "business_impact": "Missing auxiliary contact information can lead to incorrect wiring and control issues",
+      "implementation_notes": "Ensure all contactor configurations include auxiliary contact details",
+      "created_at": "2026-01-23T12:37:17.650507"
+    },
+    {
+      "rule_id": "DQR_005",
+      "attribute": "coil_voltage",
+      "category": "VALIDITY",
+      "subtype": "range_check",
+      "description": "Coil voltage must be within specified control voltage range (e.g., 24V to 250V AC/DC)",
+      "validation_logic": {
+        "expression": "value >= 24 and value <= 250",
+        "parameters": {
+          "min": 24,
+          "max": 250,
+          "unit": "V"
+        },
+        "error_message": "Coil voltage must be between 24V and 250V AC/DC",
+        "severity": "ERROR"
+      },
+      "source_evidence": [
+        {
+          "source_type": "document",
+          "source_reference": "ABB_Contactor_Relays.pdf",
+          "excerpt": "control circuit: AC or DC operated with electronic coil interface accepting a wide control voltage range (e.g. 100...250 V AC and DC)",
+          "confidence": 0.92
+        }
+      ],
+      "business_impact": "Incorrect coil voltage can prevent proper operation of the contactor",
+      "implementation_notes": "Ensure coil voltage matches control circuit specifications",
+      "created_at": "2026-01-23T12:37:17.650507"
+    }
+  ],
+  "summary": {
+    "total_rules": 5,
+    "by_category": {
+      "VALIDITY": 4,
+      "COMPLETENESS": 1
+    },
+    "by_attribute": {
+      "rated_current": 1,
+      "rated_voltage": 1,
+      "ambient_temperature": 1,
+      "auxiliary_contact": 1,
+      "coil_voltage": 1
+    },
+    "coverage_rate": 0.0
+  }
+}

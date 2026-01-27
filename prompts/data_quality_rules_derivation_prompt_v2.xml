@@ -1,0 +1,1278 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+================================================================================
+DATA QUALITY RULES DERIVATION PROMPT - ENHANCED VERSION
+================================================================================
+Purpose: Derive comprehensive data quality rules for manufacturers' contactors 
+         data by synthesizing multiple contextual data sources with focus on
+         ABB contactors and relays specifications.
+Target Model: OpenAI GPT-4o
+Domain: Manufacturing Industry - Electrical Contactors & Relays (ABB)
+Version: 2.0
+================================================================================
+-->
+
+<data_quality_rules_derivation_prompt version="2.0">
+
+    <!-- ======================================================================
+         SECTION 1: SYSTEM ROLE AND OBJECTIVE
+         ====================================================================== -->
+    <system_context>
+        <role>
+            You are an expert Data Quality Architect, Manufacturing Domain Specialist,
+            and Python Developer with extensive experience in:
+            - Industrial data governance and quality management
+            - Electrical equipment specifications (contactors, relays, switchgear, motor starters)
+            - ABB product catalogs and technical documentation
+            - Ontology design and semantic data modeling
+            - Statistical data profiling and anomaly detection
+            - IEC, UL, NEMA, and other industry standards compliance
+            - Data validation rule formulation and implementation
+            - RAG (Retrieval-Augmented Generation) system architecture
+            - Vector databases and semantic search optimization
+            - Python development for data engineering pipelines
+        </role>
+
+        <primary_objective>
+            Analyze and synthesize information from FOUR distinct data sources to derive 
+            comprehensive, actionable, and machine-executable data quality rules for 
+            manufacturers' contactors and relays data. 
+            
+            CRITICAL: Only generate rules for attributes that are found in BOTH:
+            1. The Cross-Tab (Priority Attributes from Ontology)
+            2. The RAG-retrieved Technical Specifications (ABB product data)
+            
+            This intersection ensures rules are both ontology-compliant AND supported
+            by actual manufacturer specifications.
+        </primary_objective>
+
+        <secondary_objectives>
+            <objective>Identify common attributes between Cross-Tab ontology and RAG specifications</objective>
+            <objective>Generate rules ONLY for matched/intersecting attributes</objective>
+            <objective>Flag attributes present in Cross-Tab but missing in RAG specs</objective>
+            <objective>Flag attributes in RAG specs not defined in Cross-Tab ontology</objective>
+            <objective>Provide complete Python implementation code for the entire pipeline</objective>
+            <objective>Ensure RAG pipeline handles PDFs with text, tables, and images</objective>
+        </secondary_objectives>
+    </system_context>
+
+    <!-- ======================================================================
+         SECTION 2: ATTRIBUTE MATCHING STRATEGY
+         ====================================================================== -->
+    <attribute_matching_strategy>
+        <description>
+            Rules should ONLY be generated for attributes that exist in both the 
+            Cross-Tab ontology AND the RAG-retrieved ABB technical specifications.
+            This ensures practical applicability of rules to actual manufacturer data.
+        </description>
+
+        <matching_process>
+            <step order="1">
+                Extract all attribute names from Cross-Tab data (Priority Attributes)
+            </step>
+            <step order="2">
+                Extract all attribute names mentioned in RAG-retrieved specifications
+            </step>
+            <step order="3">
+                Perform fuzzy matching to handle naming variations:
+                - Case normalization (rated_current = Rated_Current = RATED_CURRENT)
+                - Underscore/space handling (rated_current = rated current)
+                - Common abbreviations (Ie = rated_current, Ue = rated_voltage)
+                - Synonym matching (poles = number_of_poles)
+            </step>
+            <step order="4">
+                Create three attribute sets:
+                - MATCHED: Present in both sources → GENERATE RULES
+                - CROSSTAB_ONLY: In ontology but not in ABB specs → REPORT ONLY
+                - RAG_ONLY: In ABB specs but not in ontology → REPORT ONLY
+            </step>
+            <step order="5">
+                Generate rules exclusively for MATCHED attributes
+            </step>
+        </matching_process>
+
+        <output_sections>
+            <section name="matched_attributes">
+                List of attributes found in both sources with mapping details
+            </section>
+            <section name="unmatched_crosstab">
+                Attributes in Cross-Tab missing from RAG (may need manual spec lookup)
+            </section>
+            <section name="unmatched_rag">
+                Attributes in RAG specs not in ontology (potential ontology gaps)
+            </section>
+        </output_sections>
+
+        <abb_specific_considerations>
+            <note>ABB technical documentation may use proprietary naming conventions</note>
+            <note>ABB product codes follow specific patterns (e.g., A9-30-10, AF09-30-10)</note>
+            <note>ABB specifications cover contactors (A, AF, AX series) and relays</note>
+            <note>Not all ontology attributes will have ABB specification data</note>
+            <mapping_hints>
+                <hint crosstab="rated_current" abb_terms="Ie, rated operational current, AC-3 current"/>
+                <hint crosstab="rated_voltage" abb_terms="Ue, rated operational voltage"/>
+                <hint crosstab="coil_voltage" abb_terms="control circuit voltage, coil voltage range"/>
+                <hint crosstab="utilization_category" abb_terms="AC-1, AC-3, AC-4, utilization category"/>
+                <hint crosstab="mechanical_durability" abb_terms="mechanical life, operations"/>
+                <hint crosstab="electrical_durability" abb_terms="electrical life, making capacity"/>
+            </mapping_hints>
+        </abb_specific_considerations>
+    </attribute_matching_strategy>
+
+    <!-- ======================================================================
+         SECTION 3: INPUT DATA SOURCES
+         ====================================================================== -->
+    <input_data_sources>
+
+        <!-- ==================== SOURCE 1: CROSS-TAB ANALYSIS ==================== -->
+        <source id="CROSSTAB" name="Customer Data Cross-Tabulation" priority="1">
+            <description>
+                Cross-tabulation matrix representing the relationships between Priority 
+                Attributes and Core Properties as defined in the Manufacturers Data Ontology.
+                This serves as the AUTHORITATIVE source for which attributes should have rules.
+            </description>
+            
+            <data_schema>
+                <field name="priority_attribute" type="string" required="true">
+                    The attribute name from the manufacturers ontology (CANONICAL NAME)
+                </field>
+                <field name="core_property" type="string" required="true">
+                    The related core property in the ontology
+                </field>
+                <field name="relationship_strength" type="float" range="0.0-1.0">
+                    Correlation or co-occurrence frequency between attribute and property
+                </field>
+                <field name="data_type" type="string" enum="string,numeric,boolean,datetime,enumeration">
+                    Expected data type for the attribute
+                </field>
+                <field name="cardinality" type="string" enum="one-to-one,one-to-many,many-to-one,many-to-many">
+                    Relationship cardinality
+                </field>
+                <field name="is_mandatory" type="boolean">
+                    Whether the attribute is required in the ontology
+                </field>
+                <field name="domain_constraints" type="string" nullable="true">
+                    Any domain-specific constraints defined in ontology
+                </field>
+                <field name="synonyms" type="array" nullable="true">
+                    Alternative names for attribute matching with RAG
+                </field>
+            </data_schema>
+
+            <data_placeholder>
+                <!-- INJECT CROSS-TAB DATA HERE -->
+                {{CROSSTAB_DATA}}
+            </data_placeholder>
+
+            <analysis_guidelines>
+                <guideline>This is the master list of attributes for rule generation</guideline>
+                <guideline>Only generate rules if attribute is also found in RAG specs</guideline>
+                <guideline>Use synonyms field for fuzzy matching with RAG attributes</guideline>
+                <guideline>Relationship strength indicates rule priority</guideline>
+            </analysis_guidelines>
+        </source>
+
+        <!-- ==================== SOURCE 2: PROFILING STATISTICS ==================== -->
+        <source id="PROFILING" name="Python Profiling Statistics" priority="2">
+            <description>
+                Statistical profiling results for the contactors dataset generated using 
+                Python data profiling tools. Provides empirical data distribution information
+                to inform rule thresholds and validation parameters.
+            </description>
+
+            <data_schema>
+                <field name="attribute_name" type="string" required="true"/>
+                <field name="total_count" type="integer"/>
+                <field name="null_count" type="integer"/>
+                <field name="completeness_pct" type="float" range="0-100"/>
+                <field name="unique_count" type="integer"/>
+                <field name="uniqueness_pct" type="float" range="0-100"/>
+                <field name="data_type_detected" type="string"/>
+                <field name="min_value" type="any" nullable="true"/>
+                <field name="max_value" type="any" nullable="true"/>
+                <field name="mean" type="float" nullable="true"/>
+                <field name="median" type="float" nullable="true"/>
+                <field name="std_deviation" type="float" nullable="true"/>
+                <field name="percentile_25" type="float" nullable="true"/>
+                <field name="percentile_75" type="float" nullable="true"/>
+                <field name="mode" type="any" nullable="true"/>
+                <field name="top_values" type="array" nullable="true"/>
+                <field name="pattern_detected" type="string" nullable="true"/>
+                <field name="outlier_count" type="integer" nullable="true"/>
+            </data_schema>
+
+            <data_placeholder>
+                <!-- INJECT PROFILING STATISTICS HERE -->
+                {{PROFILING_STATISTICS}}
+            </data_placeholder>
+
+            <analysis_guidelines>
+                <guideline>Use profiling stats ONLY for attributes matched between Cross-Tab and RAG</guideline>
+                <guideline>Profiling informs thresholds but does not determine rule creation</guideline>
+            </analysis_guidelines>
+        </source>
+
+        <!-- ==================== SOURCE 3: WIKIPEDIA DEFINITIONS ==================== -->
+        <source id="WIKIPEDIA" name="Web-Scraped Standard Definitions" priority="3">
+            <description>
+                Domain-specific definitions and standard values from Wikipedia providing
+                industry-standard terminology and valid enumeration values.
+            </description>
+
+            <data_schema>
+                <field name="term" type="string" required="true"/>
+                <field name="definition" type="string" required="true"/>
+                <field name="standard_values" type="array" nullable="true"/>
+                <field name="measurement_unit" type="string" nullable="true"/>
+                <field name="related_standards" type="array" nullable="true"/>
+                <field name="source_url" type="string"/>
+            </data_schema>
+
+            <data_placeholder>
+                <!-- INJECT WIKIPEDIA/WEB SCRAPED DATA HERE -->
+                {{WIKIPEDIA_DEFINITIONS}}
+            </data_placeholder>
+        </source>
+
+        <!-- ==================== SOURCE 4: RAG TECHNICAL SPECIFICATIONS ==================== -->
+        <source id="RAG_SPECS" name="ABB Technical Specifications via RAG" priority="4">
+            <description>
+                Technical specification data for ABB contactors and relays retrieved from 
+                a Vector Database using RAG. Source documents are ABB PDF catalogs and 
+                datasheets processed through an advanced ingestion pipeline handling
+                text, tables, and images with context-aware chunking.
+                
+                NOTE: This source is LIMITED to ABB manufacturer data and may not contain
+                all attributes defined in the Cross-Tab ontology.
+            </description>
+
+            <abb_product_scope>
+                <product_line>Contactors (A, AF, AX, AL, GAF series)</product_line>
+                <product_line>Thermal Overload Relays (TA, TF series)</product_line>
+                <product_line>Electronic Overload Relays (EF series)</product_line>
+                <product_line>Contactor Relays (N, NF series)</product_line>
+                <product_line>Capacitor Switching Contactors (UA series)</product_line>
+            </abb_product_scope>
+
+            <data_placeholder>
+                <!-- INJECT RAG-RETRIEVED ABB SPECIFICATIONS HERE -->
+                {{RAG_TECHNICAL_SPECS}}
+            </data_placeholder>
+
+            <attributes_to_extract>
+                <attribute abb_name="Ie" canonical="rated_current" unit="A"/>
+                <attribute abb_name="Ue" canonical="rated_voltage" unit="V"/>
+                <attribute abb_name="Utilization category" canonical="utilization_category"/>
+                <attribute abb_name="Number of poles" canonical="number_of_poles"/>
+                <attribute abb_name="Control circuit voltage" canonical="coil_voltage" unit="V"/>
+                <attribute abb_name="Mechanical life" canonical="mechanical_durability" unit="operations"/>
+                <attribute abb_name="Electrical life" canonical="electrical_durability" unit="operations"/>
+                <attribute abb_name="Degree of protection" canonical="ip_protection"/>
+                <attribute abb_name="Ambient temperature" canonical="ambient_temperature" unit="°C"/>
+                <attribute abb_name="Power dissipation" canonical="power_dissipation" unit="W"/>
+                <attribute abb_name="Mounting" canonical="mounting_type"/>
+                <attribute abb_name="Type designation" canonical="product_code"/>
+            </attributes_to_extract>
+        </source>
+
+    </input_data_sources>
+
+    <!-- ======================================================================
+         SECTION 4: RAG APPLICATION - DETAILED PIPELINE SPECIFICATION
+         ====================================================================== -->
+    <rag_application_specification>
+        <overview>
+            Complete specification for building a production-grade RAG system for 
+            ABB technical documentation. The pipeline must handle complex PDF structures
+            including multi-column layouts, technical tables, specification sheets,
+            diagrams with annotations, and mixed content pages.
+        </overview>
+
+        <!-- ==================== 4.1 PDF INGESTION PIPELINE ==================== -->
+        <ingestion_pipeline>
+            <description>
+                Multi-stage pipeline for extracting and processing content from ABB 
+                technical PDFs while preserving document structure and semantic relationships.
+            </description>
+
+            <stage id="1" name="Document_Preprocessing">
+                <purpose>Prepare PDFs for content extraction</purpose>
+                <tasks>
+                    <task>PDF validation and repair (fix corrupted files)</task>
+                    <task>Page classification (text-heavy, table-heavy, image-heavy, mixed)</task>
+                    <task>Layout analysis and reading order detection</task>
+                    <task>Header/footer identification and removal</task>
+                    <task>Table of contents extraction for document structure</task>
+                </tasks>
+                <tools>
+                    <tool name="PyMuPDF (fitz)">PDF parsing, layout analysis</tool>
+                    <tool name="pdf2image">Convert pages to images for OCR fallback</tool>
+                    <tool name="pdfplumber">Table detection and extraction</tool>
+                </tools>
+                <code_requirements>
+                    - Implement PDF health check and auto-repair
+                    - Create page classifier using heuristics (text density, table presence)
+                    - Extract document metadata (title, author, creation date)
+                </code_requirements>
+            </stage>
+
+            <stage id="2" name="Text_Extraction">
+                <purpose>Extract textual content with formatting preservation</purpose>
+                <tasks>
+                    <task>Multi-column text extraction with proper reading order</task>
+                    <task>Font-based hierarchy detection (headings, subheadings, body)</task>
+                    <task>Bullet point and numbered list preservation</task>
+                    <task>Special character and symbol handling (±, °, μ, Ω)</task>
+                    <task>OCR for scanned pages or image-based text</task>
+                </tasks>
+                <tools>
+                    <tool name="PyMuPDF">Primary text extraction with blocks</tool>
+                    <tool name="pytesseract">OCR for image-based pages</tool>
+                    <tool name="unstructured">Advanced document parsing</tool>
+                </tools>
+                <code_requirements>
+                    - Implement block-level text extraction with coordinates
+                    - Create reading order algorithm for multi-column layouts
+                    - Handle ABB-specific formatting (product codes, ratings)
+                    - Implement OCR pipeline with preprocessing (deskew, denoise)
+                </code_requirements>
+            </stage>
+
+            <stage id="3" name="Table_Extraction">
+                <purpose>Extract and structure tabular data from specification sheets</purpose>
+                <tasks>
+                    <task>Table boundary detection (bordered and borderless)</task>
+                    <task>Row and column structure recognition</task>
+                    <task>Header row identification</task>
+                    <task>Merged cell handling</task>
+                    <task>Table caption and context extraction</task>
+                    <task>Convert tables to structured format (JSON/DataFrame)</task>
+                </tasks>
+                <tools>
+                    <tool name="pdfplumber">Rule-based table extraction</tool>
+                    <tool name="camelot">Advanced table detection</tool>
+                    <tool name="table-transformer">ML-based table detection</tool>
+                    <tool name="img2table">Image-based table extraction</tool>
+                </tools>
+                <table_types>
+                    <type name="specification_table">
+                        Product specifications with attributes and values
+                        Example: Ie ratings across different voltages
+                    </type>
+                    <type name="selection_table">
+                        Product selection guides with multiple parameters
+                    </type>
+                    <type name="comparison_table">
+                        Feature comparison across product series
+                    </type>
+                    <type name="dimension_table">
+                        Physical dimensions and mounting specifications
+                    </type>
+                </table_types>
+                <code_requirements>
+                    - Implement hybrid table detection (rule-based + ML fallback)
+                    - Create table structure normalizer for ABB formats
+                    - Handle spanning headers and multi-level column headers
+                    - Associate tables with surrounding context (captions, descriptions)
+                    - Output tables as both structured JSON and markdown
+                </code_requirements>
+            </stage>
+
+            <stage id="4" name="Image_Processing">
+                <purpose>Extract and process images, diagrams, and charts</purpose>
+                <tasks>
+                    <task>Image extraction with quality preservation</task>
+                    <task>Diagram type classification (wiring, dimensional, schematic)</task>
+                    <task>Text extraction from images (labels, annotations)</task>
+                    <task>Chart data extraction (if applicable)</task>
+                    <task>Image captioning for semantic understanding</task>
+                </tasks>
+                <tools>
+                    <tool name="PyMuPDF">Image extraction</tool>
+                    <tool name="PIL/Pillow">Image processing</tool>
+                    <tool name="pytesseract">OCR for image text</tool>
+                    <tool name="CLIP/BLIP">Image understanding and captioning</tool>
+                </tools>
+                <image_types>
+                    <type name="wiring_diagram">Connection diagrams with terminal labels</type>
+                    <type name="dimensional_drawing">Physical dimensions with measurements</type>
+                    <type name="product_photo">Product images for identification</type>
+                    <type name="performance_curve">Graphs showing characteristics</type>
+                </image_types>
+                <code_requirements>
+                    - Extract images with associated captions and references
+                    - Implement diagram classifier using image features
+                    - OCR labels and annotations from technical diagrams
+                    - Generate textual descriptions for complex diagrams
+                    - Link images to relevant text sections
+                </code_requirements>
+            </stage>
+
+            <stage id="5" name="Metadata_Extraction">
+                <purpose>Extract document and product metadata</purpose>
+                <tasks>
+                    <task>Document metadata (title, date, version, catalog number)</task>
+                    <task>Product identifiers (type codes, order codes)</task>
+                    <task>Standard references (IEC, UL certifications)</task>
+                    <task>Section and chapter structure</task>
+                </tasks>
+                <code_requirements>
+                    - Parse ABB document naming conventions
+                    - Extract product series and model information
+                    - Identify applicable standards and certifications
+                    - Build document hierarchy for navigation
+                </code_requirements>
+            </stage>
+        </ingestion_pipeline>
+
+        <!-- ==================== 4.2 CHUNKING STRATEGY ==================== -->
+        <chunking_strategy>
+            <description>
+                Context-aware chunking optimized for technical documentation retrieval.
+                Chunks must preserve semantic coherence while maintaining retrievable size.
+            </description>
+
+            <chunking_methods>
+                <method id="1" name="Semantic_Chunking" primary="true">
+                    <description>
+                        Split text at semantic boundaries (sections, paragraphs, topics)
+                        rather than fixed character counts.
+                    </description>
+                    <parameters>
+                        <param name="target_chunk_size">512 tokens</param>
+                        <param name="max_chunk_size">1024 tokens</param>
+                        <param name="min_chunk_size">100 tokens</param>
+                        <param name="overlap_tokens">50 tokens</param>
+                    </parameters>
+                    <boundary_detection>
+                        <boundary type="hard" priority="1">Section headings (##, ###)</boundary>
+                        <boundary type="hard" priority="2">Page breaks with new topics</boundary>
+                        <boundary type="soft" priority="3">Paragraph breaks (double newline)</boundary>
+                        <boundary type="soft" priority="4">Sentence boundaries</boundary>
+                    </boundary_detection>
+                    <code_requirements>
+                        - Implement semantic boundary detector using heading patterns
+                        - Use sentence tokenizer for soft boundaries
+                        - Ensure chunks don't split mid-specification
+                        - Maintain parent-child relationships for hierarchical content
+                    </code_requirements>
+                </method>
+
+                <method id="2" name="Table_Chunking">
+                    <description>
+                        Special handling for tables to preserve structure and context.
+                    </description>
+                    <strategies>
+                        <strategy name="whole_table">
+                            Keep small tables (≤20 rows) as single chunks
+                        </strategy>
+                        <strategy name="row_groups">
+                            Split large tables by logical row groups with header repetition
+                        </strategy>
+                        <strategy name="context_enrichment">
+                            Prepend table caption and column descriptions to each chunk
+                        </strategy>
+                    </strategies>
+                    <code_requirements>
+                        - Implement table size analyzer
+                        - Create row grouping logic based on semantic breaks
+                        - Always include header row in table chunks
+                        - Add contextual preamble to table chunks
+                    </code_requirements>
+                </method>
+
+                <method id="3" name="Hierarchical_Chunking">
+                    <description>
+                        Create multi-level chunks for parent-child retrieval.
+                    </description>
+                    <levels>
+                        <level name="document">Entire document summary</level>
+                        <level name="section">Major section with all subsections</level>
+                        <level name="subsection">Individual topic or specification group</level>
+                        <level name="paragraph">Atomic content unit</level>
+                    </levels>
+                    <code_requirements>
+                        - Build document tree structure during parsing
+                        - Create summary chunks at each hierarchy level
+                        - Implement parent reference in child chunks
+                        - Enable hierarchical retrieval (get parent for context)
+                    </code_requirements>
+                </method>
+
+                <method id="4" name="Sliding_Window_With_Context">
+                    <description>
+                        Overlapping windows with contextual headers for dense content.
+                    </description>
+                    <parameters>
+                        <param name="window_size">400 tokens</param>
+                        <param name="stride">300 tokens</param>
+                        <param name="context_header">Include section path in each chunk</param>
+                    </parameters>
+                    <code_requirements>
+                        - Implement sliding window tokenizer
+                        - Prepend context header: "Section: X > Subsection: Y"
+                        - Track chunk positions for deduplication during retrieval
+                    </code_requirements>
+                </method>
+            </chunking_methods>
+
+            <chunk_enrichment>
+                <description>Add metadata and context to each chunk for better retrieval</description>
+                <enrichment_fields>
+                    <field name="chunk_id">Unique identifier (doc_id + chunk_index)</field>
+                    <field name="source_document">Original PDF filename</field>
+                    <field name="page_numbers">List of pages this chunk spans</field>
+                    <field name="section_path">Hierarchical path (Chapter > Section > Subsection)</field>
+                    <field name="content_type">text | table | mixed | image_description</field>
+                    <field name="product_codes">ABB product codes mentioned in chunk</field>
+                    <field name="attributes_mentioned">Technical attributes found in chunk</field>
+                    <field name="standards_referenced">IEC, UL standards mentioned</field>
+                    <field name="chunk_summary">Brief summary for preview</field>
+                </enrichment_fields>
+                <code_requirements>
+                    - Implement metadata extractor for each chunk
+                    - Use NER or regex for product code extraction
+                    - Create attribute mention detector
+                    - Generate chunk summaries using LLM or extractive methods
+                </code_requirements>
+            </chunk_enrichment>
+        </chunking_strategy>
+
+        <!-- ==================== 4.3 EMBEDDING AND INDEXING ==================== -->
+        <embedding_and_indexing>
+            <description>
+                Vector embedding generation and storage optimization for fast, 
+                accurate semantic search.
+            </description>
+
+            <embedding_model>
+                <primary_model>
+                    <name>text-embedding-3-small</name>
+                    <provider>OpenAI</provider>
+                    <dimensions>1536</dimensions>
+                    <max_tokens>8191</max_tokens>
+                    <use_case>General semantic similarity</use_case>
+                </primary_model>
+                <alternative_models>
+                    <model name="text-embedding-3-large" dimensions="3072">
+                        Higher accuracy, more expensive
+                    </model>
+                    <model name="sentence-transformers/all-MiniLM-L6-v2" dimensions="384">
+                        Open source, fast, good for prototyping
+                    </model>
+                    <model name="BAAI/bge-large-en-v1.5" dimensions="1024">
+                        Open source, high quality
+                    </model>
+                </alternative_models>
+            </embedding_model>
+
+            <vector_database>
+                <primary_db>
+                    <name>ChromaDB</name>
+                    <type>Embedded / Client-Server</type>
+                    <features>
+                        - Persistent storage
+                        - Metadata filtering
+                        - Multiple distance metrics
+                        - Easy Python integration
+                    </features>
+                </primary_db>
+                <alternative_dbs>
+                    <db name="Pinecone">Managed, scalable, production-ready</db>
+                    <db name="Weaviate">Hybrid search, GraphQL API</db>
+                    <db name="Qdrant">High performance, filtering</db>
+                    <db name="FAISS">Facebook's library, very fast</db>
+                    <db name="Milvus">Distributed, scalable</db>
+                </alternative_dbs>
+            </vector_database>
+
+            <indexing_configuration>
+                <collection_schema>
+                    <collection name="abb_technical_specs">
+                        <vector_field name="embedding" dimensions="1536"/>
+                        <metadata_fields>
+                            <field name="chunk_id" type="string" indexed="true"/>
+                            <field name="source_document" type="string" indexed="true"/>
+                            <field name="page_number" type="integer" indexed="true"/>
+                            <field name="section_path" type="string" indexed="true"/>
+                            <field name="content_type" type="string" indexed="true"/>
+                            <field name="product_codes" type="string[]" indexed="true"/>
+                            <field name="attributes_mentioned" type="string[]" indexed="true"/>
+                            <field name="content" type="string" indexed="false"/>
+                        </metadata_fields>
+                    </collection>
+                </collection_schema>
+                <index_settings>
+                    <distance_metric>cosine</distance_metric>
+                    <index_type>HNSW</index_type>
+                    <hnsw_config>
+                        <M>16</M>
+                        <ef_construction>100</ef_construction>
+                        <ef_search>50</ef_search>
+                    </hnsw_config>
+                </index_settings>
+                <code_requirements>
+                    - Implement batch embedding generation (avoid rate limits)
+                    - Create collection with proper schema
+                    - Implement upsert logic for incremental updates
+                    - Add deduplication based on content hash
+                </code_requirements>
+            </indexing_configuration>
+        </embedding_and_indexing>
+
+        <!-- ==================== 4.4 RETRIEVAL OPTIMIZATION ==================== -->
+        <retrieval_optimization>
+            <description>
+                Advanced retrieval strategies for accurate and relevant specification lookup.
+            </description>
+
+            <retrieval_strategies>
+                <strategy id="1" name="Hybrid_Search">
+                    <description>
+                        Combine semantic (vector) search with keyword (BM25) search
+                        for better recall on technical terms.
+                    </description>
+                    <implementation>
+                        <vector_weight>0.7</vector_weight>
+                        <keyword_weight>0.3</keyword_weight>
+                        <fusion_method>Reciprocal Rank Fusion (RRF)</fusion_method>
+                    </implementation>
+                    <code_requirements>
+                        - Implement BM25 index alongside vector index
+                        - Create RRF fusion function
+                        - Allow dynamic weight adjustment per query type
+                    </code_requirements>
+                </strategy>
+
+                <strategy id="2" name="Query_Expansion">
+                    <description>
+                        Expand user queries with synonyms and related terms for 
+                        better technical specification matching.
+                    </description>
+                    <techniques>
+                        <technique name="synonym_expansion">
+                            Add known synonyms (Ie → rated_current, rated operational current)
+                        </technique>
+                        <technique name="abbreviation_expansion">
+                            Expand abbreviations (AC-3 → AC-3 utilization category induction motors)
+                        </technique>
+                        <technique name="llm_expansion">
+                            Use LLM to generate related search terms
+                        </technique>
+                    </techniques>
+                    <code_requirements>
+                        - Build domain-specific synonym dictionary
+                        - Implement query preprocessor with expansion
+                        - Create LLM prompt for query expansion
+                    </code_requirements>
+                </strategy>
+
+                <strategy id="3" name="Filtered_Retrieval">
+                    <description>
+                        Use metadata filters to narrow search scope before vector similarity.
+                    </description>
+                    <filter_types>
+                        <filter name="product_series">Filter by ABB product series (AF, AX, etc.)</filter>
+                        <filter name="content_type">Filter for tables, specifications, etc.</filter>
+                        <filter name="attribute_type">Filter chunks mentioning specific attributes</filter>
+                    </filter_types>
+                    <code_requirements>
+                        - Implement filter builder from query analysis
+                        - Create attribute-to-filter mapping
+                        - Support AND/OR filter combinations
+                    </code_requirements>
+                </strategy>
+
+                <strategy id="4" name="Reranking">
+                    <description>
+                        Apply cross-encoder reranking to improve precision of top results.
+                    </description>
+                    <implementation>
+                        <initial_retrieval_k>20</initial_retrieval_k>
+                        <rerank_model>cross-encoder/ms-marco-MiniLM-L-6-v2</rerank_model>
+                        <final_k>5</final_k>
+                    </implementation>
+                    <code_requirements>
+                        - Implement two-stage retrieval pipeline
+                        - Load and apply cross-encoder model
+                        - Cache reranker for performance
+                    </code_requirements>
+                </strategy>
+
+                <strategy id="5" name="Multi_Query_Retrieval">
+                    <description>
+                        Generate multiple query variations and combine results
+                        for comprehensive retrieval.
+                    </description>
+                    <implementation>
+                        <query_variations>3-5 variations per original query</query_variations>
+                        <generation_method>LLM-based query reformulation</generation_method>
+                        <result_combination>Union with deduplication</result_combination>
+                    </implementation>
+                    <code_requirements>
+                        - Create query variation generator using LLM
+                        - Implement parallel retrieval for variations
+                        - Deduplicate and rank combined results
+                    </code_requirements>
+                </strategy>
+            </retrieval_strategies>
+
+            <retrieval_parameters>
+                <param name="similarity_threshold">0.75 (minimum relevance score)</param>
+                <param name="top_k">10 (chunks per query)</param>
+                <param name="max_tokens_context">4000 (total context window budget)</param>
+                <param name="diversity_factor">0.3 (MMR lambda for result diversity)</param>
+            </retrieval_parameters>
+
+            <query_templates>
+                <template name="attribute_specification">
+                    "What are the technical specifications and valid ranges for {attribute_name} 
+                    in ABB {product_series} contactors according to {standard}?"
+                </template>
+                <template name="validation_rules">
+                    "What validation rules or constraints apply to {attribute_name} 
+                    for ABB contactors? Include min/max values, units, and conditions."
+                </template>
+                <template name="cross_attribute">
+                    "What is the relationship between {attribute_1} and {attribute_2} 
+                    in ABB contactor specifications? Are there dependency rules?"
+                </template>
+            </query_templates>
+        </retrieval_optimization>
+
+        <!-- ==================== 4.5 RAG PIPELINE CODE STRUCTURE ==================== -->
+        <rag_code_structure>
+            <description>
+                Complete code structure for the RAG application implementation.
+            </description>
+
+            <project_structure>
+```
+rag_pipeline/
+├── config/
+│   ├── config.yaml              # Configuration settings
+│   └── logging_config.yaml      # Logging configuration
+├── src/
+│   ├── __init__.py
+│   ├── ingestion/
+│   │   ├── __init__.py
+│   │   ├── pdf_processor.py     # PDF parsing and preprocessing
+│   │   ├── text_extractor.py    # Text extraction with layout
+│   │   ├── table_extractor.py   # Table detection and extraction
+│   │   ├── image_processor.py   # Image extraction and OCR
+│   │   └── metadata_extractor.py # Document metadata
+│   ├── chunking/
+│   │   ├── __init__.py
+│   │   ├── semantic_chunker.py  # Semantic boundary chunking
+│   │   ├── table_chunker.py     # Table-specific chunking
+│   │   ├── hierarchical_chunker.py # Multi-level chunking
+│   │   └── chunk_enricher.py    # Metadata enrichment
+│   ├── embedding/
+│   │   ├── __init__.py
+│   │   ├── embedder.py          # Embedding generation
+│   │   └── batch_processor.py   # Batch embedding with rate limiting
+│   ├── vectordb/
+│   │   ├── __init__.py
+│   │   ├── chroma_client.py     # ChromaDB operations
+│   │   ├── collection_manager.py # Collection CRUD
+│   │   └── index_optimizer.py   # Index maintenance
+│   ├── retrieval/
+│   │   ├── __init__.py
+│   │   ├── retriever.py         # Main retrieval interface
+│   │   ├── hybrid_search.py     # Vector + BM25 hybrid
+│   │   ├── query_expander.py    # Query expansion
+│   │   ├── reranker.py          # Cross-encoder reranking
+│   │   └── filter_builder.py    # Metadata filter construction
+│   ├── utils/
+│   │   ├── __init__.py
+│   │   ├── text_utils.py        # Text processing utilities
+│   │   ├── abb_parser.py        # ABB-specific parsing
+│   │   └── validators.py        # Input validation
+│   └── pipeline.py              # Main pipeline orchestrator
+├── tests/
+│   ├── test_ingestion.py
+│   ├── test_chunking.py
+│   ├── test_retrieval.py
+│   └── test_integration.py
+├── data/
+│   ├── raw/                     # Original PDFs
+│   ├── processed/               # Extracted content
+│   └── vectordb/                # ChromaDB persistence
+├── notebooks/
+│   ├── 01_exploration.ipynb
+│   └── 02_evaluation.ipynb
+├── requirements.txt
+└── main.py                      # Entry point
+```
+            </project_structure>
+
+            <key_classes>
+                <class name="PDFProcessor">
+                    Handles PDF loading, validation, and page classification
+                </class>
+                <class name="ContentExtractor">
+                    Extracts text, tables, and images from PDF pages
+                </class>
+                <class name="SemanticChunker">
+                    Implements context-aware chunking with boundary detection
+                </class>
+                <class name="ChunkEnricher">
+                    Adds metadata and context to chunks
+                </class>
+                <class name="EmbeddingService">
+                    Generates embeddings with batching and retry logic
+                </class>
+                <class name="VectorDBClient">
+                    Manages vector database operations
+                </class>
+                <class name="HybridRetriever">
+                    Implements combined vector and keyword search
+                </class>
+                <class name="QueryProcessor">
+                    Handles query expansion and optimization
+                </class>
+                <class name="RAGPipeline">
+                    Orchestrates the complete pipeline
+                </class>
+            </key_classes>
+        </rag_code_structure>
+    </rag_application_specification>
+
+    <!-- ======================================================================
+         SECTION 5: DATA QUALITY RULE TAXONOMY
+         ====================================================================== -->
+    <rule_taxonomy>
+        <description>
+            Classification system for data quality rules. Rules are ONLY generated
+            for attributes present in both Cross-Tab AND RAG specifications.
+        </description>
+
+        <categories>
+            <category id="COMPLETENESS" name="Completeness Rules">
+                <rule_types>
+                    <type id="mandatory_field">Field must always have a non-null value</type>
+                    <type id="conditional_mandatory">Field required based on another field's value</type>
+                    <type id="completeness_threshold">Field must meet minimum fill rate</type>
+                </rule_types>
+            </category>
+
+            <category id="VALIDITY" name="Validity Rules">
+                <rule_types>
+                    <type id="data_type">Value must match expected data type</type>
+                    <type id="range_check">Numeric value must fall within bounds</type>
+                    <type id="enumeration">Value must be from allowed list</type>
+                    <type id="format_pattern">String must match pattern</type>
+                    <type id="unit_validation">Correct unit of measurement</type>
+                </rule_types>
+            </category>
+
+            <category id="CONSISTENCY" name="Consistency Rules">
+                <rule_types>
+                    <type id="cross_field">Logical relationship between fields</type>
+                    <type id="referential_integrity">Foreign key validation</type>
+                    <type id="temporal_consistency">Date/time logical order</type>
+                </rule_types>
+            </category>
+
+            <category id="ACCURACY" name="Accuracy Rules">
+                <rule_types>
+                    <type id="precision">Correct decimal places</type>
+                    <type id="tolerance">Within acceptable tolerance</type>
+                    <type id="outlier_detection">Not a statistical outlier</type>
+                </rule_types>
+            </category>
+
+            <category id="UNIQUENESS" name="Uniqueness Rules">
+                <rule_types>
+                    <type id="primary_key">Single field uniqueness</type>
+                    <type id="composite_key">Multi-field uniqueness</type>
+                </rule_types>
+            </category>
+
+            <category id="TIMELINESS" name="Timeliness Rules">
+                <rule_types>
+                    <type id="freshness">Data currency check</type>
+                    <type id="date_validity">Valid date range</type>
+                </rule_types>
+            </category>
+        </categories>
+    </rule_taxonomy>
+
+    <!-- ======================================================================
+         SECTION 6: OUTPUT SCHEMA SPECIFICATION
+         ====================================================================== -->
+    <output_schema>
+
+        <json_output>
+            <file_name>data_quality_rules.json</file_name>
+            <schema>
+{
+  "metadata": {
+    "generated_at": "ISO8601_TIMESTAMP",
+    "generator_model": "gpt-4o",
+    "schema_version": "2.0.0",
+    "domain": "abb_contactors_relays",
+    "total_rules": INTEGER,
+    "sources_analyzed": ["CROSSTAB", "PROFILING", "WIKIPEDIA", "RAG_SPECS"]
+  },
+  
+  "attribute_matching_report": {
+    "matched_attributes": [
+      {
+        "canonical_name": "rated_current",
+        "crosstab_name": "rated_current",
+        "rag_names": ["Ie", "rated operational current"],
+        "match_confidence": 0.95
+      }
+    ],
+    "crosstab_only_attributes": [
+      {
+        "attribute": "attribute_name",
+        "reason": "Not found in ABB specifications"
+      }
+    ],
+    "rag_only_attributes": [
+      {
+        "attribute": "attribute_name",
+        "recommendation": "Consider adding to ontology"
+      }
+    ],
+    "match_statistics": {
+      "total_crosstab_attributes": INTEGER,
+      "total_rag_attributes": INTEGER,
+      "matched_count": INTEGER,
+      "match_percentage": FLOAT
+    }
+  },
+  
+  "rules": [
+    {
+      "rule_id": "DQR_NNN",
+      "rule_name": "human_readable_name",
+      "category": "COMPLETENESS|VALIDITY|CONSISTENCY|ACCURACY|UNIQUENESS|TIMELINESS",
+      "rule_type": "specific_type",
+      "priority": "CRITICAL|HIGH|MEDIUM|LOW",
+      "severity": "ERROR|WARNING|INFO",
+      
+      "target": {
+        "attribute": "canonical_attribute_name",
+        "crosstab_mapping": "crosstab_attribute_name",
+        "rag_mapping": ["abb_term_1", "abb_term_2"],
+        "secondary_attributes": []
+      },
+      
+      "description": "Human-readable rule description",
+      
+      "validation_logic": {
+        "expression_type": "simple|compound|custom",
+        "operator": "eq|ne|gt|gte|lt|lte|in|not_in|between|regex|custom",
+        "operand": "VALUE_OR_PATTERN",
+        "min_value": null,
+        "max_value": null,
+        "allowed_values": [],
+        "pattern": "REGEX_PATTERN",
+        "unit": "UNIT_OF_MEASURE",
+        "custom_expression": "PYTHON_OR_SQL"
+      },
+      
+      "error_handling": {
+        "error_code": "ERR_CAT_NNN",
+        "error_message": "Error message with {placeholders}",
+        "remediation": "Fix suggestion"
+      },
+      
+      "source_evidence": [
+        {
+          "source_id": "CROSSTAB|PROFILING|WIKIPEDIA|RAG_SPECS",
+          "evidence": "Specific reference or quote",
+          "confidence": 0.0-1.0
+        }
+      ],
+      
+      "abb_specific": {
+        "applicable_series": ["AF", "AX", "A"],
+        "abb_document_reference": "Document name, page",
+        "abb_standard_compliance": ["IEC 60947-4-1"]
+      }
+    }
+  ],
+  
+  "summary": {
+    "by_category": {},
+    "by_priority": {},
+    "by_source": {},
+    "attributes_with_rules": [],
+    "coverage_percentage": FLOAT
+  }
+}
+            </schema>
+        </json_output>
+
+        <excel_output>
+            <file_name>data_quality_rules.xlsx</file_name>
+            <sheets>
+                <sheet name="Rules_Master">Complete rule listing</sheet>
+                <sheet name="Attribute_Mapping">Cross-Tab to RAG attribute mapping</sheet>
+                <sheet name="Unmatched_Attributes">Attributes without rules</sheet>
+                <sheet name="By_Category">Rules grouped by category</sheet>
+                <sheet name="Source_Traceability">Rule to source mapping</sheet>
+                <sheet name="Implementation_Checklist">Implementation tracking</sheet>
+                <sheet name="ABB_Specific">ABB product-specific rules</sheet>
+            </sheets>
+        </excel_output>
+    </output_schema>
+
+    <!-- ======================================================================
+         SECTION 7: CODE GENERATION REQUIREMENTS
+         ====================================================================== -->
+    <code_generation_requirements>
+        <description>
+            Complete Python implementation code must be generated for all components
+            of the data quality rules derivation system.
+        </description>
+
+        <code_modules>
+
+            <module name="1_RAG_Pipeline">
+                <description>Complete RAG implementation for ABB technical specs</description>
+                <files_to_generate>
+                    <file name="pdf_processor.py">
+                        - PDFProcessor class with PyMuPDF
+                        - Page classification logic
+                        - Layout analysis
+                        - Error handling for corrupted PDFs
+                    </file>
+                    <file name="text_extractor.py">
+                        - Multi-column text extraction
+                        - Reading order detection
+                        - OCR integration for scanned pages
+                    </file>
+                    <file name="table_extractor.py">
+                        - Table detection with pdfplumber
+                        - Structure normalization
+                        - Header identification
+                        - JSON/DataFrame output
+                    </file>
+                    <file name="semantic_chunker.py">
+                        - SemanticChunker class
+                        - Boundary detection
+                        - Overlap management
+                        - Chunk size optimization
+                    </file>
+                    <file name="embedder.py">
+                        - OpenAI embedding integration
+                        - Batch processing with rate limiting
+                        - Retry logic for API failures
+                    </file>
+                    <file name="vector_store.py">
+                        - ChromaDB client wrapper
+                        - Collection management
+                        - CRUD operations
+                        - Metadata filtering
+                    </file>
+                    <file name="retriever.py">
+                        - HybridRetriever class
+                        - Query expansion
+                        - Reranking implementation
+                        - Result formatting
+                    </file>
+                    <file name="rag_pipeline.py">
+                        - Main RAGPipeline orchestrator
+                        - Ingestion workflow
+                        - Query interface
+                    </file>
+                </files_to_generate>
+            </module>
+
+            <module name="2_Data_Sources">
+                <description>Services for loading all data sources</description>
+                <files_to_generate>
+                    <file name="crosstab_loader.py">
+                        - Load and parse cross-tab CSV/Excel
+                        - Validate schema
+                        - Extract attribute list
+                    </file>
+                    <file name="profiling_loader.py">
+                        - Load profiling statistics JSON
+                        - Generate profiling from DataFrame
+                        - Statistical analysis helpers
+                    </file>
+                    <file name="wikipedia_scraper.py">
+                        - Web scraping with BeautifulSoup
+                        - Definition extraction
+                        - Standard values parsing
+                        - Caching mechanism
+                    </file>
+                </files_to_generate>
+            </module>
+
+            <module name="3_Attribute_Matcher">
+                <description>Match attributes between Cross-Tab and RAG</description>
+                <files_to_generate>
+                    <file name="attribute_matcher.py">
+                        - AttributeMatcher class
+                        - Fuzzy matching with rapidfuzz
+                        - Synonym handling
+                        - ABB-specific term mapping
+                        - Match report generation
+                    </file>
+                </files_to_generate>
+            </module>
+
+            <module name="4_Rule_Generator">
+                <description>Generate data quality rules using GPT-4o</description>
+                <files_to_generate>
+                    <file name="prompt_builder.py">
+                        - Build prompts from templates
+                        - Format data sources for context
+                        - Handle token limits
+                    </file>
+                    <file name="rule_generator.py">
+                        - OpenAI GPT-4o integration
+                        - Rule generation logic
+                        - Response parsing
+                        - Validation of generated rules
+                    </file>
+                    <file name="rule_models.py">
+                        - Pydantic models for rules
+                        - Validation schemas
+                        - Serialization helpers
+                    </file>
+                </files_to_generate>
+            </module>
+
+            <module name="5_Output_Generators">
+                <description>Generate JSON and Excel outputs</description>
+                <files_to_generate>
+                    <file name="json_exporter.py">
+                        - Export rules to JSON
+                        - Schema validation
+                        - Pretty printing
+                    </file>
+                    <file name="excel_exporter.py">
+                        - Export to Excel with openpyxl
+                        - Multiple sheets
+                        - Formatting and styling
+                        - Formulas for summaries
+                    </file>
+                </files_to_generate>
+            </module>
+
+            <module name="6_Main_Application">
+                <description>Main application orchestration</description>
+                <files_to_generate>
+                    <file name="main.py">
+                        - CLI interface with argparse
+                        - Pipeline orchestration
+                        - Error handling
+                        - Logging setup
+                    </file>
+                    <file name="config.py">
+                        - Configuration management
+                        - Environment variables
+                        - Default settings
+                    </file>
+                </files_to_generate>
+            </module>
+
+        </code_modules>
+
+        <code_standards>
+            <standard>Use Python 3.10+ with type hints</standard>
+            <standard>Follow PEP 8 style guidelines</standard>
+            <standard>Include comprehensive docstrings (Google style)</standard>
+            <standard>Implement proper error handling with custom exceptions</standard>
+            <standard>Use logging instead of print statements</standard>
+            <standard>Write modular, testable code</standard>
+            <standard>Include requirements.txt with pinned versions</standard>
+            <standard>Add configuration via YAML files</standard>
+        </code_standards>
+
+        <dependencies>
+            <dependency name="openai" version=">=1.0.0">OpenAI API client</dependency>
+            <dependency name="chromadb" version=">=0.4.0">Vector database</dependency>
+            <dependency name="PyMuPDF" version=">=1.23.0">PDF processing</dependency>
+            <dependency name="pdfplumber" version=">=0.10.0">Table extraction</dependency>
+            <dependency name="pandas" version=">=2.0.0">Data manipulation</dependency>
+            <dependency name="openpyxl" version=">=3.1.0">Excel generation</dependency>
+            <dependency name="pydantic" version=">=2.0.0">Data validation</dependency>
+            <dependency name="beautifulsoup4" version=">=4.12.0">Web scraping</dependency>
+            <dependency name="rapidfuzz" version=">=3.0.0">Fuzzy matching</dependency>
+            <dependency name="sentence-transformers" version=">=2.2.0">Reranking</dependency>
+            <dependency name="tiktoken" version=">=0.5.0">Token counting</dependency>
+            <dependency name="pytesseract" version=">=0.3.10">OCR</dependency>
+            <dependency name="pyyaml" version=">=6.0">Configuration</dependency>
+            <dependency name="tqdm" version=">=4.65.0">Progress bars</dependency>
+        </dependencies>
+    </code_generation_requirements>
+
+    <!-- ======================================================================
+         SECTION 8: EXECUTION INSTRUCTIONS
+         ====================================================================== -->
+    <execution_instructions>
+        <phase name="1" title="Understand and Parse Inputs">
+            <step>Parse all four input data sources</step>
+            <step>Validate data completeness and structure</step>
+            <step>Create attribute inventories from each source</step>
+        </phase>
+
+        <phase name="2" title="Attribute Matching">
+            <step>Extract attributes from Cross-Tab (canonical names)</step>
+            <step>Extract attributes from RAG specifications (ABB terms)</step>
+            <step>Perform fuzzy matching with synonym support</step>
+            <step>Generate attribute matching report</step>
+            <step>Identify MATCHED, CROSSTAB_ONLY, and RAG_ONLY attributes</step>
+        </phase>
+
+        <phase name="3" title="Rule Generation">
+            <step>For MATCHED attributes ONLY, generate data quality rules</step>
+            <step>Use evidence from all four sources where available</step>
+            <step>Prioritize based on business criticality</step>
+            <step>Include ABB-specific validations where applicable</step>
+        </phase>
+
+        <phase name="4" title="Output Generation">
+            <step>Generate JSON output with complete schema</step>
+            <step>Generate Excel workbook with all sheets</step>
+            <step>Include attribute matching report in outputs</step>
+        </phase>
+
+        <phase name="5" title="Code Generation">
+            <step>Generate complete Python code for RAG pipeline</step>
+            <step>Generate code for all data source loaders</step>
+            <step>Generate attribute matcher implementation</step>
+            <step>Generate rule generator with GPT-4o integration</step>
+            <step>Generate output exporters (JSON, Excel)</step>
+            <step>Generate main application with CLI</step>
+            <step>Generate requirements.txt and config files</step>
+        </phase>
+    </execution_instructions>
+
+    <!-- ======================================================================
+         SECTION 9: RESPONSE FORMAT
+         ====================================================================== -->
+    <response_format>
+        <instruction>
+            Respond with a comprehensive JSON object containing:
+            1. attribute_matching_report - Detailed attribute matching results
+            2. data_quality_rules - Rules ONLY for matched attributes
+            3. generated_code - Complete Python implementation
+            4. project_structure - File and folder structure
+            
+            Ensure all code is complete, runnable, and well-documented.
+        </instruction>
+
+        <minimum_requirements>
+            <requirement>At least 20 data quality rules for matched attributes</requirement>
+            <requirement>Complete RAG pipeline code (all files)</requirement>
+            <requirement>Complete data source loaders</requirement>
+            <requirement>Complete attribute matcher</requirement>
+            <requirement>Complete rule generator</requirement>
+            <requirement>Complete output exporters</requirement>
+            <requirement>Main application with CLI</requirement>
+            <requirement>Configuration files</requirement>
+            <requirement>Requirements.txt</requirement>
+        </minimum_requirements>
+    </response_format>
+
+</data_quality_rules_derivation_prompt>

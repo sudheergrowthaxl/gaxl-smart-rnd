@@ -1,0 +1,446 @@
+{
+  "rated_current": {
+    "term": "rated current",
+    "found": false
+  },
+  "electric_current": {
+    "term": "electric current",
+    "found": false
+  },
+  "iec_60947": {
+    "term": "IEC 60947",
+    "found": false
+  },
+  "zz_dielectric_rating": {
+    "term": "zz Dielectric Rating",
+    "found": false
+  },
+  "zz_control_voltage": {
+    "term": "zz Control Voltage",
+    "found": false
+  },
+  "zz_maximum_voltage": {
+    "term": "zz Maximum Voltage",
+    "found": false
+  },
+  "zz_voltage_range": {
+    "term": "zz Voltage Range",
+    "found": false
+  },
+  "zz_supply_voltage": {
+    "term": "zz Supply Voltage",
+    "found": false
+  },
+  "zz_continuous_current": {
+    "term": "zz Continuous Current",
+    "found": false
+  },
+  "zz_minimum_ambient_temperature": {
+    "term": "zz Minimum Ambient Temperature",
+    "found": false
+  },
+  "zz_operating_voltage": {
+    "term": "zz Operating Voltage",
+    "found": false
+  },
+  "zz_load_voltage": {
+    "term": "zz Load Voltage",
+    "found": false
+  },
+  "zz_surge_current": {
+    "term": "zz Surge Current",
+    "found": false
+  },
+  "zz_contact_current_rating": {
+    "term": "zz Contact Current Rating",
+    "found": false
+  },
+  "zz_current,_ratings": {
+    "term": "zz Current, Ratings",
+    "found": false
+  },
+  "zz_maximum_ambient_temperature": {
+    "term": "zz Maximum Ambient Temperature",
+    "found": false
+  },
+  "zz_series": {
+    "term": "zz Series",
+    "found": false
+  },
+  "zz_current_rating": {
+    "term": "zz Current Rating",
+    "found": false
+  },
+  "zz_frequency": {
+    "term": "zz Frequency",
+    "found": false
+  },
+  "zz_operating_voltage_range": {
+    "term": "zz Operating Voltage Range",
+    "found": false
+  },
+  "zz_dielectric_strength": {
+    "term": "zz Dielectric Strength",
+    "found": false
+  },
+  "zz_voltage_rating": {
+    "term": "zz Voltage Rating",
+    "found": false
+  },
+  "zz_load_current": {
+    "term": "zz Load Current",
+    "found": false
+  },
+  "zz_input_voltage": {
+    "term": "zz Input Voltage",
+    "found": false
+  },
+  "dr_series": {
+    "term": "dr Series",
+    "found": false
+  },
+  "zz_isolation_voltage": {
+    "term": "zz Isolation Voltage",
+    "found": false
+  },
+  "ambient_temperature": {
+    "term": "ambient temperature",
+    "found": false
+  },
+  "auxiliary_contact": {
+    "term": "auxiliary contact",
+    "found": false
+  },
+  "control_circuit": {
+    "term": "control circuit",
+    "found": false
+  },
+  "coil_voltage": {
+    "term": "coil voltage",
+    "found": false
+  },
+  "electromagnet": {
+    "term": "electromagnet",
+    "found": false
+  },
+  "relay_coil": {
+    "term": "relay coil",
+    "found": false
+  },
+  "enclosure": {
+    "term": "enclosure",
+    "found": false
+  },
+  "frequency": {
+    "term": "frequency",
+    "found": false
+  },
+  "utility_frequency": {
+    "term": "utility frequency",
+    "found": false
+  },
+  "alternating_current": {
+    "term": "alternating current",
+    "found": false
+  },
+  "ip_rating": {
+    "term": "ip rating",
+    "found": false
+  },
+  "ip_code": {
+    "term": "IP code",
+    "found": false
+  },
+  "ingress_protection": {
+    "term": "ingress protection",
+    "found": false
+  },
+  "mechanical_durability": {
+    "term": "mechanical durability",
+    "found": false
+  },
+  "mechanical_endurance": {
+    "term": "mechanical endurance",
+    "found": false
+  },
+  "mounting_type": {
+    "term": "mounting type",
+    "found": false
+  },
+  "power_rating": {
+    "term": "power rating",
+    "found": false
+  },
+  "electric_power": {
+    "term": "electric power",
+    "found": false
+  },
+  "watt": {
+    "term": "watt",
+    "found": false
+  },
+  "rated_voltage": {
+    "term": "rated voltage",
+    "found": false
+  },
+  "voltage": {
+    "term": "voltage",
+    "found": false
+  },
+  "terminal_type": {
+    "term": "terminal type",
+    "found": false
+  },
+  "utilization_category": {
+    "term": "utilization category",
+    "found": false
+  },
+  "contactor": {
+    "term": "contactor",
+    "found": false
+  },
+  "minimum_operating_temperature": {
+    "term": "minimum operating temperature",
+    "found": false
+  },
+  "coil_resistance": {
+    "term": "coil resistance",
+    "found": false
+  },
+  "temperature_range.uom": {
+    "term": "temperature range.uom",
+    "found": false
+  },
+  "temperature_operating_range": {
+    "term": "temperature operating range",
+    "found": false
+  },
+  "maximum_ambient_temperature.uom": {
+    "term": "maximum ambient temperature.uom",
+    "found": false
+  },
+  "_productdescription": {
+    "term": " productdescription",
+    "found": false
+  },
+  "mounting": {
+    "term": "mounting",
+    "found": false
+  },
+  "phase": {
+    "term": "phase",
+    "found": false
+  },
+  "supply_voltage.uom": {
+    "term": "supply voltage.uom",
+    "found": false
+  },
+  "horsepower,_max,_1_phase,_at_208_v": {
+    "term": "horsepower, max, 1 phase, at 208 v",
+    "found": false
+  },
+  "number_of_contacts": {
+    "term": "number of contacts",
+    "found": false
+  },
+  "continuous_current": {
+    "term": "continuous current",
+    "found": false
+  },
+  "operating_voltage.uom": {
+    "term": "operating voltage.uom",
+    "found": false
+  },
+  "supply_voltage": {
+    "term": "supply voltage",
+    "found": false
+  },
+  "current_rating.uom": {
+    "term": "current rating.uom",
+    "found": false
+  },
+  "minimum_ambient_temperature": {
+    "term": "minimum ambient temperature",
+    "found": false
+  },
+  "relay_type": {
+    "term": "relay type",
+    "found": false
+  },
+  "contacts": {
+    "term": "contacts",
+    "found": false
+  },
+  "maximum_operating_temperature": {
+    "term": "maximum operating temperature",
+    "found": false
+  },
+  "horsepower,_max,_3_phase,_at_600_v": {
+    "term": "horsepower, max, 3 phase, at 600 v",
+    "found": false
+  },
+  "contact_configuration": {
+    "term": "contact configuration",
+    "found": false
+  },
+  "plci_description": {
+    "term": "plci description",
+    "found": false
+  },
+  "operating_voltage_range": {
+    "term": "operating voltage range",
+    "found": false
+  },
+  "electrical_durability": {
+    "term": "electrical durability",
+    "found": false
+  },
+  "coil_power.uom": {
+    "term": "coil power.uom",
+    "found": false
+  },
+  "operating_voltage_range.uom": {
+    "term": "operating voltage range.uom",
+    "found": false
+  },
+  "dielectric_rating": {
+    "term": "Dielectric Rating",
+    "found": false
+  },
+  "horsepower,_max,_3_phase,_at_480_v": {
+    "term": "Horsepower, Max, 3 Phase, at 480 V",
+    "found": false
+  },
+  "control_voltage": {
+    "term": "Control Voltage",
+    "found": false
+  },
+  "special_features": {
+    "term": "Special Features",
+    "found": false
+  },
+  "material": {
+    "term": "Material",
+    "found": false
+  },
+  "horsepower,_motor,_max_at_115_v": {
+    "term": "Horsepower, Motor, Max at 115 V",
+    "found": false
+  },
+  "maximum_voltage": {
+    "term": "Maximum Voltage",
+    "found": false
+  },
+  "horsepower,_max,_1_phase,_at_240_v": {
+    "term": "Horsepower, Max, 1 Phase, at 240 V",
+    "found": false
+  },
+  "mounting_style": {
+    "term": "Mounting Style",
+    "found": false
+  },
+  "mounting_diameter": {
+    "term": "Mounting Diameter",
+    "found": false
+  },
+  "product_type": {
+    "term": "Product Type",
+    "found": false
+  },
+  "accessory_type": {
+    "term": "Accessory Type",
+    "found": false
+  },
+  "contact_material": {
+    "term": "Contact Material",
+    "found": false
+  },
+  "options": {
+    "term": "Options",
+    "found": false
+  },
+  "voltage_range": {
+    "term": "Voltage Range",
+    "found": false
+  },
+  "horsepower,_max,_3_phase,_at_240_v": {
+    "term": "Horsepower, Max, 3 Phase, at 240 V",
+    "found": false
+  },
+  "horsepower,_max,_3_phase,_at_575_v": {
+    "term": "Horsepower, Max, 3 Phase, at 575 V",
+    "found": false
+  },
+  "contact_form": {
+    "term": "Contact Form",
+    "found": false
+  },
+  "horsepower,_max,_3_phase,_at_200_v": {
+    "term": "Horsepower, Max, 3 Phase, at 200 V",
+    "found": false
+  },
+  "dimensions": {
+    "term": "Dimensions",
+    "found": false
+  },
+  "for_use_with": {
+    "term": "For Use With",
+    "found": false
+  },
+  "screw_type": {
+    "term": "Screw Type",
+    "found": false
+  },
+  "turn_on_time": {
+    "term": "Turn On Time",
+    "found": false
+  },
+  "horsepower,_max,_3_phase,_at_208_v": {
+    "term": "Horsepower, Max, 3 Phase, at 208 V",
+    "found": false
+  },
+  "wire_size": {
+    "term": "Wire Size",
+    "found": false
+  },
+  "iec_60529": {
+    "term": "IEC 60529",
+    "found": false
+  },
+  "contactor_coil": {
+    "term": "contactor coil",
+    "found": false
+  },
+  "control_contact": {
+    "term": "control contact",
+    "found": false
+  },
+  "no_nc_contacts": {
+    "term": "NO NC contacts",
+    "found": false
+  },
+  "operating_temperature": {
+    "term": "operating temperature",
+    "found": false
+  },
+  "temperature_range": {
+    "term": "temperature range",
+    "found": false
+  },
+  "rated_power": {
+    "term": "rated power",
+    "found": false
+  },
+  "kilowatt_rating": {
+    "term": "kilowatt rating",
+    "found": false
+  },
+  "mains_frequency": {
+    "term": "mains frequency",
+    "found": false
+  },
+  "power_frequency": {
+    "term": "power frequency",
+    "found": false
+  }
+}

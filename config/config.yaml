@@ -1,0 +1,79 @@
+# Configuration for Data Quality Rules Derivation Pipeline
+
+# OpenAI Settings
+openai:
+  api_key: ${OPENAI_API_KEY}
+  embedding_model: "text-embedding-3-small"
+  chat_model: "gpt-4o"
+  embedding_dimensions: 1536
+  temperature: 0.3
+  max_tokens: 4096
+
+# ChromaDB Settings
+vectordb:
+  persist_directory: "./vectordb"
+  collection_name: "abb_technical_specs"
+  distance_metric: "cosine"
+
+# Chunking Settings
+chunking:
+  target_tokens: 512
+  overlap_tokens: 50
+  min_chunk_size: 100
+  max_chunk_size: 1000
+
+# Retrieval Settings
+retrieval:
+  top_k: 10
+  similarity_threshold: 0.75
+  hybrid_search:
+    enabled: true
+    vector_weight: 0.7
+    bm25_weight: 0.3
+  reranking:
+    enabled: true
+    model: "cross-encoder/ms-marco-MiniLM-L-6-v2"
+
+# Data Paths
+data:
+  input:
+    crosstab: "./data/input/crosstab"
+    profiling: "./data/input/profiling"
+    wikipedia: "./data/input/wikipedia"
+    pdfs: "./data/input/pdfs"
+  processed: "./data/processed"
+  output: "./data/output"
+
+# ABB Term Mapping
+abb_mapping:
+  rated_current:
+    - "Ie"
+    - "rated operational current"
+  rated_voltage:
+    - "Ue"
+    - "rated operational voltage"
+  coil_voltage:
+    - "control circuit voltage"
+  utilization_category:
+    - "AC-1"
+    - "AC-3"
+    - "AC-4"
+  mechanical_durability:
+    - "mechanical life"
+    - "operations"
+  electrical_durability:
+    - "electrical life"
+
+# Rule Categories
+rule_categories:
+  - COMPLETENESS
+  - VALIDITY
+  - CONSISTENCY
+  - ACCURACY
+  - UNIQUENESS
+  - TIMELINESS
+
+# Logging
+logging:
+  level: "INFO"
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"

@@ -1,0 +1,241 @@
+{
+  "matched": [
+    {
+      "canonical": "zz_Dielectric Rating",
+      "rag_term": "rated_current",
+      "match_type": "abb_term_match",
+      "confidence": 0.9
+    },
+    {
+      "canonical": "zz_Control Voltage",
+      "rag_term": "coil_voltage",
+      "match_type": "semantic_mapping",
+      "confidence": 0.98
+    },
+    {
+      "canonical": "zz_Maximum Voltage",
+      "rag_term": "rated_voltage",
+      "match_type": "semantic_mapping",
+      "confidence": 0.98
+    },
+    {
+      "canonical": "zz_Voltage Range",
+      "rag_term": "rated_voltage",
+      "match_type": "fuzzy",
+      "confidence": 0.8461538461538461
+    },
+    {
+      "canonical": "zz_Supply Voltage",
+      "rag_term": "rated_voltage",
+      "match_type": "semantic_mapping",
+      "confidence": 0.98
+    },
+    {
+      "canonical": "zz_Continuous Current",
+      "rag_term": "rated_current",
+      "match_type": "semantic_mapping",
+      "confidence": 0.98
+    },
+    {
+      "canonical": "zz_Minimum Ambient Temperature",
+      "rag_term": "rated_current",
+      "match_type": "abb_term_match",
+      "confidence": 0.9
+    },
+    {
+      "canonical": "zz_Operating Voltage",
+      "rag_term": "rated_voltage",
+      "match_type": "semantic_mapping",
+      "confidence": 0.98
+    },
+    {
+      "canonical": "zz_Load Voltage",
+      "rag_term": "rated_voltage",
+      "match_type": "fuzzy",
+      "confidence": 0.8
+    },
+    {
+      "canonical": "zz_Surge Current",
+      "rag_term": "rated_current",
+      "match_type": "fuzzy",
+      "confidence": 0.7692307692307692
+    },
+    {
+      "canonical": "zz_Contact Current Rating",
+      "rag_term": "rated_current",
+      "match_type": "keyword_match",
+      "confidence": 0.75
+    },
+    {
+      "canonical": "zz_Current, Ratings",
+      "rag_term": "rated_current",
+      "match_type": "fuzzy",
+      "confidence": 0.7586206896551724
+    },
+    {
+      "canonical": "zz_Maximum Ambient Temperature",
+      "rag_term": "rated_current",
+      "match_type": "abb_term_match",
+      "confidence": 0.9
+    },
+    {
+      "canonical": "zz_Series",
+      "rag_term": "rated_current",
+      "match_type": "abb_term_match",
+      "confidence": 0.9
+    },
+    {
+      "canonical": "zz_Current Rating",
+      "rag_term": "rated_current",
+      "match_type": "semantic_mapping",
+      "confidence": 0.98
+    },
+    {
+      "canonical": "zz_Frequency",
+      "rag_term": "rated_voltage",
+      "match_type": "abb_term_match",
+      "confidence": 0.9
+    },
+    {
+      "canonical": "zz_Operating Voltage Range",
+      "rag_term": "coil_voltage",
+      "match_type": "keyword_match",
+      "confidence": 0.75
+    },
+    {
+      "canonical": "zz_Dielectric Strength",
+      "rag_term": "rated_current",
+      "match_type": "abb_term_match",
+      "confidence": 0.9
+    },
+    {
+      "canonical": "zz_Voltage Rating",
+      "rag_term": "rated_voltage",
+      "match_type": "semantic_mapping",
+      "confidence": 0.98
+    },
+    {
+      "canonical": "zz_Load Current",
+      "rag_term": "rated_current",
+      "match_type": "semantic_mapping",
+      "confidence": 0.98
+    },
+    {
+      "canonical": "zz_Input Voltage",
+      "rag_term": "rated_voltage",
+      "match_type": "semantic_mapping",
+      "confidence": 0.98
+    },
+    {
+      "canonical": "dr_Series",
+      "rag_term": "rated_current",
+      "match_type": "abb_term_match",
+      "confidence": 0.9
+    },
+    {
+      "canonical": "zz_Isolation Voltage",
+      "rag_term": "coil_voltage",
+      "match_type": "keyword_match",
+      "confidence": 0.75
+    }
+  ],
+  "crosstab_only": [
+    "zz_IP Rating",
+    "zz_Horsepower, Max, 3 Phase, at 480 V",
+    "zz_Special Features",
+    "zz_Material",
+    "zz_Horsepower, Motor, Max at 115 V",
+    "zz_Horsepower, Max, 1 Phase, at 240 V",
+    "zz_Mounting Style",
+    "zz_Mounting Diameter",
+    "zz_Product Type",
+    "zz_Accessory Type",
+    "zz_Contact Material",
+    "zz_Options",
+    "zz_Horsepower, Max, 3 Phase, at 240 V",
+    "zz_Horsepower, Max, 3 Phase, at 575 V",
+    "zz_Auxiliary Contact",
+    "zz_Contact Form",
+    "zz_Horsepower, Max, 3 Phase, at 200 V",
+    "dr_Dimensions",
+    "zz_For Use With",
+    "zz_Screw Type",
+    "zz_Turn On Time",
+    "zz_Horsepower, Max, 3 Phase, at 208 V",
+    "zz_Wire Size",
+    "zz_Capacitance",
+    "zz_Number of Contacts",
+    "zz_Coil Resistance",
+    "zz_Approvals",
+    "zz_Number of Poles",
+    "zz_Contacts",
+    "zz_Terminal Type",
+    "zz_Size",
+    "zz_Terminals",
+    "zz_Weight",
+    "zz_Family Name",
+    "zz_Turn Off Time",
+    "zz_Type",
+    "zz_Horsepower, Max, 1 Phase, at 230 V",
+    "zz_Temperature Range",
+    "zz_Horsepower, Max, 3 Phase, at 460 V",
+    "zz_Horsepower, Max, 3 Phase, at 230 V",
+    "zz_Connection",
+    "zz_Standards",
+    "zz_Phase",
+    "zz_Termination",
+    "zz_Enclosure Type",
+    "zz_Connection Type",
+    "zz_Temperature Operating Range",
+    "zz_Minimum Load",
+    "zz_NEMA Size",
+    "zz_Primary Type",
+    "zz_Number of Pins",
+    "zz_Storage Temperature",
+    "zz_Contact Rating",
+    "zz_Horsepower Rating",
+    "zz_Contact Configuration",
+    "zz_Number of Conductors",
+    "zz_Application",
+    "zz_Color",
+    "zz_Switch Type",
+    "zz_Terminator Type",
+    "zz_Jacket Color",
+    "zz_Coil Power",
+    "zz_Horsepower, Max, 3 Phase, at 600 V",
+    "zz_Warranty",
+    "zz_Rating",
+    "zz_Maximum Operating Temperature",
+    "zz_Resistance",
+    "zz_Horsepower, Motor, Max at 230 V",
+    "zz_Body Style",
+    "zz_Overall Length",
+    "zz_Horsepower, Max, 1 Phase, at 115 V",
+    "zz_Horsepower, Max, 1 Phase, at 200 V",
+    "zz_Mounting Type",
+    "zz_Relay Type",
+    "zz_Horsepower, Max, 1 Phase, at 208 V",
+    "zz_Enclosure Rating",
+    "zz_Stripping Length",
+    "zz_Power Rating",
+    "zz_Number of Positions",
+    "zz_Function",
+    "zz_Includes",
+    "zz_Operating Temperature",
+    "zz_Socket Type",
+    "zz_Minimum Operating Temperature",
+    "zz_Leaf Node",
+    "zz_DimensionsNested"
+  ],
+  "rag_only": [
+    "utilization_category"
+  ],
+  "statistics": {
+    "total_crosstab": 109,
+    "total_rag": 4,
+    "matched_count": 23,
+    "crosstab_only_count": 86,
+    "rag_only_count": 1,
+    "match_rate": 0.21100917431192662
+  }
+}

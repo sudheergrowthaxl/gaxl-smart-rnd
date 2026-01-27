@@ -1,0 +1,4711 @@
+{
+  "Action": {
+    "datatype": "Empty",
+    "range": [
+      NaN,
+      NaN
+    ],
+    "missing_percentage": 100.0,
+    "top_values": [],
+    "cardinality": "0.00%",
+    "imbalance": "100.00% top value",
+    "sparsity": "100.00%"
+  },
+  "Type": {
+    "datatype": "Constant",
+    "range": null,
+    "missing_percentage": 0.78,
+    "top_values": [
+      {
+        "value": "sku",
+        "count": 25145
+      }
+    ],
+    "cardinality": "0.00%",
+    "imbalance": "99.22% top value",
+    "sparsity": "0.78%"
+  },
+  "ID": {
+    "datatype": "ID",
+    "range": null,
+    "missing_percentage": 0.0,
+    "top_values": [
+      {
+        "value": "22af4581-6a02-4276-a71d-9557a34f04ce",
+        "count": 3
+      },
+      {
+        "value": "baa80e78-eaae-4e30-b432-b4ff2cfaec8a",
+        "count": 3
+      },
+      {
+        "value": "f32681fa-2f7e-43d8-b471-946b1bc09dca",
+        "count": 3
+      },
+      {
+        "value": "4f996391-b7c7-4061-9e02-683d399bcd37",
+        "count": 3
+      },
+      {
+        "value": "19e7383f-3812-440b-80e2-6178a12d1c4d",
+        "count": 3
+      }
+    ],
+    "cardinality": "99.22%",
+    "imbalance": "0.01% top value",
+    "sparsity": "0.00%"
+  },
+  "Name": {
+    "datatype": "Numeric",
+    "range": [
+      70000087.0,
+      75672390.0
+    ],
+    "missing_percentage": 0.0,
+    "top_values": [
+      {
+        "value": "71127189",
+        "count": 3
+      },
+      {
+        "value": "71127523",
+        "count": 3
+      },
+      {
+        "value": "71127555",
+        "count": 3
+      },
+      {
+        "value": "71127568",
+        "count": 3
+      },
+      {
+        "value": "71127432",
+        "count": 3
+      }
+    ],
+    "cardinality": "99.22%",
+    "imbalance": "0.01% top value",
+    "sparsity": "0.00%"
+  },
+  "RS Product Category": {
+    "datatype": "Constant",
+    "range": null,
+    "missing_percentage": 0.78,
+    "top_values": [
+      {
+        "value": "RS Web Taxonomy>>Industrial Controls>>Contactors & Accessories>>Contactors",
+        "count": 25145
+      }
+    ],
+    "cardinality": "0.00%",
+    "imbalance": "99.22% top value",
+    "sparsity": "0.78%"
+  },
+  "MaterialNumber": {
+    "datatype": "Numeric",
+    "range": [
+      70000087.0,
+      75672390.0
+    ],
+    "missing_percentage": 0.0,
+    "top_values": [
+      {
+        "value": "71127189",
+        "count": 3
+      },
+      {
+        "value": "71127523",
+        "count": 3
+      },
+      {
+        "value": "71127555",
+        "count": 3
+      },
+      {
+        "value": "71127568",
+        "count": 3
+      },
+      {
+        "value": "71127432",
+        "count": 3
+      }
+    ],
+    "cardinality": "99.22%",
+    "imbalance": "0.01% top value",
+    "sparsity": "0.00%"
+  },
+  "zz_80 Character Description": {
+    "datatype": "Text",
+    "range": null,
+    "missing_percentage": 73.44,
+    "top_values": [
+      {
+        "value": "CV VAC Contactor",
+        "count": 20
+      },
+      {
+        "value": "8903L electrically held lighting contactor, 6 P, 6 NO, 30 A, 600 V, 110/120 V",
+        "count": 16
+      },
+      {
+        "value": "8903LX mechanically held lighting contactor, 8 P, 8 NO, 30 A, 600 V, 110/120 V",
+        "count": 15
+      },
+      {
+        "value": "8903LX mechanically held lighting contactor, 4 P, 4 NO, 30 A, 600 V, 110/120 V",
+        "count": 14
+      },
+      {
+        "value": "8903L electrically held lighting contactor, 4 P, 4 NO, 30 A, 600 V, 110/120 V",
+        "count": 14
+      }
+    ],
+    "cardinality": "21.14%",
+    "imbalance": "73.44% top value",
+    "sparsity": "73.44%"
+  },
+  "dr_80 Character Description": {
+    "datatype": "Text",
+    "range": null,
+    "missing_percentage": 0.78,
+    "top_values": [
+      {
+        "value": "Contactors,",
+        "count": 8886
+      },
+      {
+        "value": "Contactors, 3",
+        "count": 689
+      },
+      {
+        "value": "Contactors, 3, AF Series",
+        "count": 383
+      },
+      {
+        "value": "Contactors, , TeSys Deca Series",
+        "count": 366
+      },
+      {
+        "value": "Contactors, Contactor, 2",
+        "count": 342
+      }
+    ],
+    "cardinality": "15.44%",
+    "imbalance": "35.06% top value",
+    "sparsity": "0.78%"
+  },
+  "Workflow Status": {
+    "datatype": "Categorical",
+    "range": null,
+    "missing_percentage": 79.82,
+    "top_values": [
+      {
+        "value": "In Progress",
+        "count": 4315
+      },
+      {
+        "value": "Completed",
+        "count": 798
+      }
+    ],
+    "cardinality": "0.01%",
+    "imbalance": "79.82% top value",
+    "sparsity": "79.82%"
+  },
+  "zz_Web Overview": {
+    "datatype": "Text",
+    "range": null,
+    "missing_percentage": 57.75,
+    "top_values": [
+      {
+        "value": "<b>Eaton XT IEC Power Control Family | XT Series — Reversing & Non-reversing Vacuum Contactors | Power Control 580 to 2600 A:</b><br /><br />The XT ICE Series contactors use an electronic coil interface design that allows for flexibility in switching and greater reliability. These high-amperage contactors can be switched conventionally with full power to the coil, directly from a PLC output, or from a low-power command device. Low pickup and sealing power generates less heat and reduces the investment in control power transformers. The three switching tubes and electromechanical drive system of the XT 580–2600A contactors are arranged in an extremely compact design. This allows for smaller switchgear dimensions, while switching higher currents—up to 2600A.The XT IEC series includes non-reversing and reversing contactors and starters as well as overload relays and accessories. Enclosed control options include metallic and non-metallic enclosures with circuit breakers, and North American or European fuses. The XT line of IEC motor control is not the same as traditional motor control designs. XT was designed to be engineered better.<br /><br /><b>Family Features:</b><br /><li> Toolless assembly of manual motor controllers and reversing contactors<br /><li> Low coil consumption<br /><li> Front accessibility to coil terminations<br /><li> Built-in surge suppression on electronic coils<br /><li> Built-in auxiliary contact for contactors up to 32A in a 45 mm frame<br /><li> Finger-safe and back-of-hand proof ratings<br /><li> Direct PLC control on 185A–2000A contactors<br /><br /><b>The XT Family line includes a large offering of power control components and accessories that cover a broad range of applications and ratings:</b><br /><li> Three-pole contactors to 2000A<br /><li> Four-pole contactors to 200A<br /><li> Capacitor contactors to 680 kVAR<br /><li> Mini contactors to 9A<br /><li> Relays to 16A<br /><li> Thermal overload relays to 630A<br /><li> Electronic overload relays to 1500A<br /><li> Manual motor protectors to 65A<br /><li> Manual motor controllers and combination motor controllers to 65A<br /><br /><b>Additional Information:</b><br />— Electronic coil controller allows contactors to reduce power consumption and generate less heat, resulting in lower cooling requirements, the ability to mount more contactors/starters per cabinet, and an extended life on pilot devices that carry control signals.<br />— AC and DC devices with the same dimensions achieved with an electronically controlled coil system allow for space savings and reduced engineering design time.<br />— Integrated suppressors in DC controlled contactors offers reductions in total logistics and inventory costs by limiting the number of products ordered and stocked.<br />— Wiring is not required, therefore increasing installation and maintenance efficiency.<br />— Expanded range of DC coil control voltages, allows reliable operation through fluctuations in control voltages.<br />— Twin terminals with separate sockets in contactors up to 400A offer installation and application flexibility when using different size wires. The improved integrity of the connections reduces cabling faults.",
+        "count": 808
+      },
+      {
+        "value": "<b>TeSys D Series &mdash; Contactors &amp; Reversing Contactors up to 150A for Inductive MotorS and 250A for Resistive Loads:</b><br><br>The TeSys D contactors and overload relays are the largest selling line of contactors and starters in the world. They offer high reliability with long mechanical and electrical life and the most complete line of accessories in the industry. TeSys D contactors are available in 11 contactor ratings for the USA market for inductive motor applications from 9 up to 150 full-load amps and resistive loads up to 200 A. Designed to control and provide overload protection to motors rated up to 100 HP at 480 VAC or 125 HP at 600 VAC, TeSys D meets your needs for a majority of motor starter applications. Read about TeSys D and Type 2 Coordinated Protection.<br><br><b>Features:</b><br><li> New TeSys D Green increase TeSys D range with a new electronic coil with up to 80&#37; less consumption than TeSys D standard AC or DC coil<br><li> New and patented TeSys D with Everlink&reg; termination technology available on 40A to 65A contactors and overload relays<br><li> Eliminates the time-consuming process of selecting tested combinations through web sites and spreadsheets.<br><li> Simple to select the right product<br><li> 3-pole and 4-pole contactor versions available<br><li> All contactors include built-in auxiliary contacts<br><li> All screw connections have IP20 finger-safe terminals with both North American and International terminal markings<br><li> TeSys D contactors can be panel mounted with screws or DIN rail mounted<br><li> TeSys D Green contactor simplify your maintenance services with 90&#37; less references needed.TeSys D Green contactor associated with  TeSys LR9D electronic overload relay reduces heat generation and  energy consumption up to 50&#37;<br><li> High-fault short circuit current ratings provide the flexibility to select any component, as long as it meets or exceeds the desired SCCR<br><li> TeSys D contactors are available with AC or DC operating coils<br><li> A choice of wiring connections, including spring terminals, ring tongue terminals, slip-on terminals and screw clamps, provides flexibility in meeting specific, application requirements<br><li> Class 10 or Class 20 bimetallic overload relays are available up to 140 A<br><li> Available with or without single-phase sensitivity for phase unbalance and phase loss protection<br><li> New solid state overload relays are available for 90 to 150 A application<br><br><b>Three levels of ratings:</b><br>&mdash; Available at 100 kA on systems with fuses, up to 600 volts.<br>&mdash; Available at 65 kA on systems with circuit breakers, up to 480 volts and up to 32 amps.<br>&mdash; Available at 100 kA on systems with circuit breakers, up to 480 volts and greater than 32 amps<br><br><b>Both Bimetallic and Solid-State Overload Relays include the following Features:</b><br><li> Isolated N.C. trip contact and N.O. alarm contacts<br><li> Manual or automatic reset function (bi-metallic versions only)<br><li> Tamper-resistant window for FLA settings<br><li> Test trip button<br><br><b>Easily Installed Accessories:</b><br>&mdash; Auxiliary contact blocks with serrated wiping action<br>&mdash; Front mount dust tight auxiliary contact blocks<br>&mdash; Pneumatic time delay blocks<br>&mdash; Transient voltage surge suppressors<br>&mdash; Interface modules and electronic timers<br>&mdash; Mechanical latching blocks<br>",
+        "count": 455
+      },
+      {
+        "value": "A-Line contactors are mainly used for controlling 3-phase motors and for controlling power circuits corresponding to their operating characteristics up to 690 and even 1000 VAC and 440 VDC. A variety of accessories are available for top or side-mount versions.<br><br><b>Features:</b><br><li>3- or 4-Poles<br><li>Touch Safe Design<br><li>Easy Maintenance of Contacts and Coil Inspection<br><br><b>Specifications:</b><br><li>24-600 VAC/VDC Coils<br><li>Up to 450 HP &#64; 240V<br><li>Up to 900 HP &#64; 480V<br><li>UL, CSA Approved<br><li>Up to 1650 Amps",
+        "count": 279
+      },
+      {
+        "value": "<p >-IEC Ith ratings in AC1 duty at ≤40°C: 16 to 1600A</p><p>-IEC Ie ratings in AC3 440V duty: 6 to 630A</p><p>-IEC Power ratings in AC3 400V duty: 2.2 to 335kW</p><p>-UL/CSA ratings: 3 to 500HP at 480V and 600V</p><p>-AC, DC, AC/DC and DC low-consumption coil</p>",
+        "count": 269
+      },
+      {
+        "value": "<strong>TeSys D Series - Contactors & Reversing Contactors up to 150A for Inductive MotorS and 250A for Resistive Loads:</strong><br><br>The TeSys D contactors and overload relays are the largest selling line of contactors and starters in the world. They offer high reliability with long mechanical and electrical life and the most complete line of accessories in the industry. TeSys D contactors are available in 11 contactor ratings for the USA market for inductive motor applications from 9 up to 150 full-load amps and resistive loads up to 200 A. Designed to control and provide overload protection to motors rated up to 100 HP at 480 VAC or 125 HP at 600 VAC, TeSys D meets your needs for a majority of motor starter applications. Read about TeSys D and Type 2 Coordinated Protection.<br><br><strong>Features:</strong><br>● New TeSys D Green increase TeSys D range with a new electronic coil with up to 80% less consumption than TeSys D standard AC or DC coil<br>● New and patented TeSys D with Everlink® termination technology available on 40A to 65A contactors and overload relays<br>● Eliminates the time-consuming process of selecting tested combinations through web sites and spreadsheets.<br>● Simple to select the right product<br>● 3-pole and 4-pole contactor versions available<br>● All contactors include built-in auxiliary contacts<br>● All screw connections have IP20 finger-safe terminals with both North American and International terminal markings<br>● TeSys D contactors can be panel mounted with screws or DIN rail mounted<br>● TeSys D Green contactor simplify your maintenance services with 90% less references needed.TeSys D Green contactor associated with  TeSys LR9D electronic overload relay reduces heat generation and  energy consumption up to 50%<br>● High-fault short circuit current ratings provide the flexibility to select any component, as long as it meets or exceeds the desired SCCR<br>● TeSys D contactors are available with AC or DC operating coils<br>● A choice of wiring connections, including spring terminals, ring tongue terminals, slip-on terminals and screw clamps, provides flexibility in meeting specific, application requirements<br>● Class 10 or Class 20 bimetallic overload relays are available up to 140 A<br>● Available with or without single-phase sensitivity for phase unbalance and phase loss protection<br>● New solid state overload relays are available for 90 to 150 A application<br><br><strong>Three levels of ratings:</strong><br>- Available at 100 kA on systems with fuses, up to 600 volts.<br>- Available at 65 kA on systems with circuit breakers, up to 480 volts and up to 32 amps.<br>- Available at 100 kA on systems with circuit breakers, up to 480 volts and greater than 32 amps<br><br><strong>Both Bimetallic and Solid-State Overload Relays include the following Features:</strong><br>● Isolated N.C. trip contact and N.O. alarm contacts<br>● Manual or automatic reset function (bi-metallic versions only)<br>● Tamper-resistant window for FLA settings<br>● Test trip button<br><br><strong>Easily Installed Accessories:</strong><br>- Auxiliary contact blocks with serrated wiping action<br>-",
+        "count": 182
+      }
+    ],
+    "cardinality": "21.87%",
+    "imbalance": "57.75% top value",
+    "sparsity": "57.75%"
+  },
+  "_ProductDescription": {
+    "datatype": "Text",
+    "range": null,
+    "missing_percentage": 0.78,
+    "top_values": [
+      {
+        "value": "Definite Purpose Contactor, XMC0 Series",
+        "count": 215
+      },
+      {
+        "value": "LIGHTING CONTACTOR 600VAC 100A NEMA",
+        "count": 56
+      },
+      {
+        "value": "Definite Purpose Contactor with DC Coils, XMC0 Series",
+        "count": 54
+      },
+      {
+        "value": "STEP SWITCH",
+        "count": 52
+      },
+      {
+        "value": "RCS-OL40",
+        "count": 35
+      }
+    ],
+    "cardinality": "81.34%",
+    "imbalance": "0.85% top value",
+    "sparsity": "0.78%"
+  },
+  "dr_Stocked": {
+    "datatype": "Categorical",
+    "range": null,
+    "missing_percentage": 0.78,
+    "top_values": [
+      {
+        "value": "Non-stocked",
+        "count": 21531
+      },
+      {
+        "value": "Stocked",
+        "count": 3614
+      }
+    ],
+    "cardinality": "0.01%",
+    "imbalance": "84.96% top value",
+    "sparsity": "0.78%"
+  },
+  "_PageViews3Months": {
+    "datatype": "Numeric",
+    "range": [
+      0.0,
+      904.0
+    ],
+    "missing_percentage": 0.78,
+    "top_values": [
+      {
+        "value": "0.0",
+        "count": 16897
+      },
+      {
+        "value": "1.0",
+        "count": 2169
+      },
+      {
+        "value": "2.0",
+        "count": 1161
+      },
+      {
+        "value": "3.0",
+        "count": 740
+      },
+      {
+        "value": "4.0",
+        "count": 545
+      }
+    ],
+    "cardinality": "0.59%",
+    "imbalance": "66.67% top value",
+    "sparsity": "0.78%"
+  },
+  "zz_Alternate Mfr Part Number": {
+    "datatype": "Text",
+    "range": null,
+    "missing_percentage": 83.42,
+    "top_values": [
+      {
+        "value": "ELR 3-230AC/500AC- 9",
+        "count": 2
+      },
+      {
+        "value": "XMC0-257.IBBC",
+        "count": 2
+      },
+      {
+        "value": "XMC0-253A.LC",
+        "count": 1
+      },
+      {
+        "value": "CLM2F03120",
+        "count": 1
+      },
+      {
+        "value": "CMBCS5120",
+        "count": 1
+      }
+    ],
+    "cardinality": "16.57%",
+    "imbalance": "83.42% top value",
+    "sparsity": "83.42%"
+  },
+  "_InvoicedRevenue": {
+    "datatype": "Numeric",
+    "range": [
+      -8279.74,
+      257598.15
+    ],
+    "missing_percentage": 0.78,
+    "top_values": [
+      {
+        "value": "0.0",
+        "count": 22295
+      },
+      {
+        "value": "63.28",
+        "count": 3
+      },
+      {
+        "value": "203.06",
+        "count": 2
+      },
+      {
+        "value": "1895.76",
+        "count": 2
+      },
+      {
+        "value": "403.5",
+        "count": 2
+      }
+    ],
+    "cardinality": "11.20%",
+    "imbalance": "87.97% top value",
+    "sparsity": "0.78%"
+  },
+  "_PageViews12Months": {
+    "datatype": "Numeric",
+    "range": [
+      0.0,
+      5209.0
+    ],
+    "missing_percentage": 0.78,
+    "top_values": [
+      {
+        "value": "0.0",
+        "count": 9146
+      },
+      {
+        "value": "1.0",
+        "count": 2656
+      },
+      {
+        "value": "2.0",
+        "count": 2022
+      },
+      {
+        "value": "3.0",
+        "count": 1689
+      },
+      {
+        "value": "4.0",
+        "count": 1243
+      }
+    ],
+    "cardinality": "1.63%",
+    "imbalance": "36.09% top value",
+    "sparsity": "0.78%"
+  },
+  "_Vendor ABC Indicator": {
+    "datatype": "Categorical",
+    "range": null,
+    "missing_percentage": 0.78,
+    "top_values": [
+      {
+        "value": "F",
+        "count": 21258
+      },
+      {
+        "value": "B",
+        "count": 2358
+      },
+      {
+        "value": "O",
+        "count": 820
+      },
+      {
+        "value": "L",
+        "count": 403
+      },
+      {
+        "value": "A",
+        "count": 294
+      }
+    ],
+    "cardinality": "0.02%",
+    "imbalance": "83.88% top value",
+    "sparsity": "0.78%"
+  },
+  "zz_UPC Code": {
+    "datatype": "Numeric",
+    "range": [
+      40892540284.0,
+      7612271206802.0
+    ],
+    "missing_percentage": 54.83,
+    "top_values": [
+      {
+        "value": "785901067429.0",
+        "count": 2
+      },
+      {
+        "value": "785901503187.0",
+        "count": 2
+      },
+      {
+        "value": "3471522086846.0",
+        "count": 2
+      },
+      {
+        "value": "3471522095343.0",
+        "count": 2
+      },
+      {
+        "value": "785901067399.0",
+        "count": 2
+      }
+    ],
+    "cardinality": "45.09%",
+    "imbalance": "54.83% top value",
+    "sparsity": "54.83%"
+  },
+  "_DateCreated": {
+    "datatype": "Categorical",
+    "range": null,
+    "missing_percentage": 0.78,
+    "top_values": [
+      {
+        "value": "2021-10-27T00:00:00.000-0500",
+        "count": 2931
+      },
+      {
+        "value": "2018-05-07T00:00:00.000-0500",
+        "count": 2270
+      },
+      {
+        "value": "2018-06-29T00:00:00.000-0500",
+        "count": 1381
+      },
+      {
+        "value": "2018-09-24T00:00:00.000-0500",
+        "count": 1321
+      },
+      {
+        "value": "2019-02-07T00:00:00.000-0600",
+        "count": 1144
+      }
+    ],
+    "cardinality": "2.73%",
+    "imbalance": "11.57% top value",
+    "sparsity": "0.78%"
+  },
+  "Batch Number": {
+    "datatype": "Categorical",
+    "range": null,
+    "missing_percentage": 0.78,
+    "top_values": [
+      {
+        "value": "Pareto-BatchNo-31-05172025",
+        "count": 3044
+      },
+      {
+        "value": "Pareto-BatchNo-13-05162025",
+        "count": 1896
+      },
+      {
+        "value": "Pareto-BatchNo-12-05162025",
+        "count": 1582
+      },
+      {
+        "value": "Pareto-BatchNo-14-05162025",
+        "count": 822
+      },
+      {
+        "value": "Pareto-BatchNo-42-05192025",
+        "count": 779
+      }
+    ],
+    "cardinality": "2.95%",
+    "imbalance": "12.01% top value",
+    "sparsity": "0.78%"
+  },
+  "_DChain": {
+    "datatype": "Numeric",
+    "range": [
+      1.0,
+      7.0
+    ],
+    "missing_percentage": 72.2,
+    "top_values": [
+      {
+        "value": "7.0",
+        "count": 5787
+      },
+      {
+        "value": "2.0",
+        "count": 1005
+      },
+      {
+        "value": "6.0",
+        "count": 157
+      },
+      {
+        "value": "1.0",
+        "count": 87
+      },
+      {
+        "value": "3.0",
+        "count": 6
+      }
+    ],
+    "cardinality": "0.03%",
+    "imbalance": "72.20% top value",
+    "sparsity": "72.20%"
+  },
+  "_PLCI": {
+    "datatype": "Numeric",
+    "range": [
+      5.0,
+      95.0
+    ],
+    "missing_percentage": 0.78,
+    "top_values": [
+      {
+        "value": "14.0",
+        "count": 15674
+      },
+      {
+        "value": "95.0",
+        "count": 4042
+      },
+      {
+        "value": "45.0",
+        "count": 2091
+      },
+      {
+        "value": "34.0",
+        "count": 1521
+      },
+      {
+        "value": "25.0",
+        "count": 1143
+      }
+    ],
+    "cardinality": "0.04%",
+    "imbalance": "61.85% top value",
+    "sparsity": "0.78%"
+  },
+  "_VendorCode": {
+    "datatype": "Categorical",
+    "range": null,
+    "missing_percentage": 0.78,
+    "top_values": [
+      {
+        "value": "101179",
+        "count": 7175
+      },
+      {
+        "value": "100275",
+        "count": 5587
+      },
+      {
+        "value": "100167",
+        "count": 4002
+      },
+      {
+        "value": "101653",
+        "count": 2395
+      },
+      {
+        "value": "100176",
+        "count": 1243
+      }
+    ],
+    "cardinality": "0.22%",
+    "imbalance": "28.31% top value",
+    "sparsity": "0.78%"
+  },
+  "_VendorName": {
+    "datatype": "Categorical",
+    "range": null,
+    "missing_percentage": 0.78,
+    "top_values": [
+      {
+        "value": "SIEMENS",
+        "count": 7175
+      },
+      {
+        "value": "ABB",
+        "count": 5587
+      },
+      {
+        "value": "EATON CUTLER HAMMER",
+        "count": 4002
+      },
+      {
+        "value": "SCHNEIDER ELECTRIC",
+        "count": 2395
+      },
+      {
+        "value": "SQUARE D",
+        "count": 1243
+      }
+    ],
+    "cardinality": "0.21%",
+    "imbalance": "28.31% top value",
+    "sparsity": "0.78%"
+  },
+  "_MfrPartNumber": {
+    "datatype": "Text",
+    "range": null,
+    "missing_percentage": 0.78,
+    "top_values": [
+      {
+        "value": "XMC0-257.IBBC",
+        "count": 3
+      },
+      {
+        "value": "XMC0-321.EBBC",
+        "count": 3
+      },
+      {
+        "value": "XMC0-403.ED00F",
+        "count": 3
+      },
+      {
+        "value": "XMC0-323.FC00F",
+        "count": 3
+      },
+      {
+        "value": "XMC0-322.IBBC",
+        "count": 3
+      }
+    ],
+    "cardinality": "98.92%",
+    "imbalance": "0.78% top value",
+    "sparsity": "0.78%"
+  },
+  "Previous Category": {
+    "datatype": "Empty",
+    "range": [
+      NaN,
+      NaN
+    ],
+    "missing_percentage": 100.0,
+    "top_values": [],
+    "cardinality": "0.00%",
+    "imbalance": "100.00% top value",
+    "sparsity": "100.00%"
+  },
+  "EC_ProductVideoURL": {
+    "datatype": "ID",
+    "range": null,
+    "missing_percentage": 95.15,
+    "top_values": [
+      {
+        "value": "https://www.youtube.com/embed/QuYyiUK6HzQ?rel=0",
+        "count": 404
+      },
+      {
+        "value": "https://www.youtube.com/embed/vTzdbedqkKI?rel=0",
+        "count": 132
+      },
+      {
+        "value": "https://www.youtube.com/embed/KCUf4xNlYRw?ecver=1",
+        "count": 123
+      },
+      {
+        "value": "https://www.youtube.com/embed/QuYiUK6HzQ?rel=0",
+        "count": 117
+      },
+      {
+        "value": "https://www.youtube.com/embed/ERhuZhEQSFQ?rel=0",
+        "count": 95
+      }
+    ],
+    "cardinality": "0.11%",
+    "imbalance": "95.15% top value",
+    "sparsity": "95.15%"
+  },
+  "IsCreatedByNonSysAdminRole": {
+    "datatype": "Constant",
+    "range": null,
+    "missing_percentage": 95.73,
+    "top_values": [
+      {
+        "value": "False",
+        "count": 1083
+      }
+    ],
+    "cardinality": "0.00%",
+    "imbalance": "95.73% top value",
+    "sparsity": "95.73%"
+  },
+  "dr_PLCI Description": {
+    "datatype": "Categorical",
+    "range": null,
+    "missing_percentage": 0.78,
+    "top_values": [
+      {
+        "value": "14 - Nonstock NPI (New Product Introduction)",
+        "count": 15674
+      },
+      {
+        "value": "95 - Discontinued without replacement",
+        "count": 4042
+      },
+      {
+        "value": "45 - Stocked BAU",
+        "count": 2091
+      },
+      {
+        "value": "34 - Nonstock BAU",
+        "count": 1521
+      },
+      {
+        "value": "25 - Stocked NPI (New Product Introduction)",
+        "count": 1143
+      }
+    ],
+    "cardinality": "0.04%",
+    "imbalance": "61.85% top value",
+    "sparsity": "0.78%"
+  },
+  "Re-Validate SKU": {
+    "datatype": "ID",
+    "range": null,
+    "missing_percentage": 3.69,
+    "top_values": [
+      {
+        "value": "2023-12-16T01:00:13.000-0600",
+        "count": 2051
+      },
+      {
+        "value": "2023-12-16T02:00:12.000-0600",
+        "count": 1419
+      },
+      {
+        "value": "2023-12-16T06:00:13.000-0600",
+        "count": 1389
+      },
+      {
+        "value": "2023-12-18T02:06:38.000-0600",
+        "count": 1326
+      },
+      {
+        "value": "2023-12-18T03:00:29.000-0600",
+        "count": 1090
+      }
+    ],
+    "cardinality": "0.40%",
+    "imbalance": "8.09% top value",
+    "sparsity": "3.69%"
+  },
+  "wf_Photo Studio Completed ?": {
+    "datatype": "Constant",
+    "range": null,
+    "missing_percentage": 35.82,
+    "top_values": [
+      {
+        "value": "Completed",
+        "count": 16266
+      }
+    ],
+    "cardinality": "0.00%",
+    "imbalance": "64.18% top value",
+    "sparsity": "35.82%"
+  },
+  "wf_Photo Studio Comment": {
+    "datatype": "Empty",
+    "range": [
+      NaN,
+      NaN
+    ],
+    "missing_percentage": 100.0,
+    "top_values": [],
+    "cardinality": "0.00%",
+    "imbalance": "100.00% top value",
+    "sparsity": "100.00%"
+  },
+  "dr_Is SKU Has PDF?": {
+    "datatype": "Categorical",
+    "range": null,
+    "missing_percentage": 0.78,
+    "top_values": [
+      {
+        "value": "True",
+        "count": 14899
+      },
+      {
+        "value": "False",
+        "count": 10246
+      }
+    ],
+    "cardinality": "0.01%",
+    "imbalance": "58.79% top value",
+    "sparsity": "0.78%"
+  },
+  "dr_VendorName": {
+    "datatype": "Categorical",
+    "range": null,
+    "missing_percentage": 2.17,
+    "top_values": [
+      {
+        "value": "101179",
+        "count": 7175
+      },
+      {
+        "value": "100275",
+        "count": 5587
+      },
+      {
+        "value": "100167",
+        "count": 4002
+      },
+      {
+        "value": "101653",
+        "count": 2395
+      },
+      {
+        "value": "100176",
+        "count": 1243
+      }
+    ],
+    "cardinality": "0.21%",
+    "imbalance": "28.31% top value",
+    "sparsity": "2.17%"
+  },
+  "ExportToEventHub": {
+    "datatype": "Empty",
+    "range": [
+      NaN,
+      NaN
+    ],
+    "missing_percentage": 100.0,
+    "top_values": [],
+    "cardinality": "0.00%",
+    "imbalance": "100.00% top value",
+    "sparsity": "100.00%"
+  },
+  "nn_Better World Verification.Action": {
+    "datatype": "Empty",
+    "range": [
+      NaN,
+      NaN
+    ],
+    "missing_percentage": 100.0,
+    "top_values": [],
+    "cardinality": "0.00%",
+    "imbalance": "100.00% top value",
+    "sparsity": "100.00%"
+  },
+  "nn_Better World Verification.zz_Better World Row Number": {
+    "datatype": "Constant",
+    "range": [
+      1.0,
+      1.0
+    ],
+    "missing_percentage": 94.2,
+    "top_values": [
+      {
+        "value": "1.0",
+        "count": 1469
+      }
+    ],
+    "cardinality": "0.00%",
+    "imbalance": "94.20% top value",
+    "sparsity": "94.20%"
+  },
+  "nn_Better World Verification.zz_Better World Verification": {
+    "datatype": "Constant",
+    "range": null,
+    "missing_percentage": 94.2,
+    "top_values": [
+      {
+        "value": "Green Premium",
+        "count": 1469
+      }
+    ],
+    "cardinality": "0.00%",
+    "imbalance": "94.20% top value",
+    "sparsity": "94.20%"
+  },
+  "nn_Better World Verification.zz_Better World Verification Expiry Date": {
+    "datatype": "Categorical",
+    "range": null,
+    "missing_percentage": 94.2,
+    "top_values": [
+      {
+        "value": "2050-04-08",
+        "count": 1191
+      },
+      {
+        "value": "2050-11-30",
+        "count": 157
+      },
+      {
+        "value": "2050-03-01",
+        "count": 121
+      }
+    ],
+    "cardinality": "0.01%",
+    "imbalance": "94.20% top value",
+    "sparsity": "94.20%"
+  },
+  "dr_Better World Verification Expiry Date": {
+    "datatype": "Categorical",
+    "range": null,
+    "missing_percentage": 94.2,
+    "top_values": [
+      {
+        "value": "2050-04-08",
+        "count": 1191
+      },
+      {
+        "value": "2050-11-30",
+        "count": 157
+      },
+      {
+        "value": "2050-03-01",
+        "count": 121
+      }
+    ],
+    "cardinality": "0.01%",
+    "imbalance": "94.20% top value",
+    "sparsity": "94.20%"
+  },
+  "nn_Better World Claim.Action": {
+    "datatype": "Empty",
+    "range": [
+      NaN,
+      NaN
+    ],
+    "missing_percentage": 100.0,
+    "top_values": [],
+    "cardinality": "0.00%",
+    "imbalance": "100.00% top value",
+    "sparsity": "100.00%"
+  },
+  "nn_Better World Claim.zz_Better World Claim Row Number": {
+    "datatype": "Numeric",
+    "range": [
+      1.0,
+      3.0
+    ],
+    "missing_percentage": 95.52,
+    "top_values": [
+      {
+        "value": "1.0",
+        "count": 937
+      },
+      {
+        "value": "2.0",
+        "count": 100
+      },
+      {
+        "value": "3.0",
+        "count": 98
+      }
+    ],
+    "cardinality": "0.01%",
+    "imbalance": "95.52% top value",
+    "sparsity": "95.52%"
+  },
+  "nn_Better World Claim.zz_Better World Claim": {
+    "datatype": "Categorical",
+    "range": null,
+    "missing_percentage": 96.29,
+    "top_values": [
+      {
+        "value": "Low carbon manufacture",
+        "count": 809
+      },
+      {
+        "value": "Repairable by the end user",
+        "count": 99
+      },
+      {
+        "value": "Extended product life",
+        "count": 31
+      }
+    ],
+    "cardinality": "0.01%",
+    "imbalance": "96.29% top value",
+    "sparsity": "96.29%"
+  },
+  "nn_Better World Claim.zz_Better World Claim Expiry Date": {
+    "datatype": "Categorical",
+    "range": null,
+    "missing_percentage": 95.52,
+    "top_values": [
+      {
+        "value": "2050-04-08",
+        "count": 1106
+      },
+      {
+        "value": "2050-09-30",
+        "count": 28
+      },
+      {
+        "value": "2050-04-05",
+        "count": 1
+      }
+    ],
+    "cardinality": "0.01%",
+    "imbalance": "95.52% top value",
+    "sparsity": "95.52%"
+  },
+  "dr_Better World Claim Expiry Date": {
+    "datatype": "Categorical",
+    "range": null,
+    "missing_percentage": 96.3,
+    "top_values": [
+      {
+        "value": "2050-04-08",
+        "count": 908
+      },
+      {
+        "value": "2050-09-30",
+        "count": 28
+      },
+      {
+        "value": "2050-04-05",
+        "count": 1
+      }
+    ],
+    "cardinality": "0.01%",
+    "imbalance": "96.30% top value",
+    "sparsity": "96.30%"
+  },
+  "dr_Better World Product": {
+    "datatype": "Categorical",
+    "range": null,
+    "missing_percentage": 90.49,
+    "top_values": [
+      {
+        "value": "True",
+        "count": 2406
+      },
+      {
+        "value": "False",
+        "count": 3
+      }
+    ],
+    "cardinality": "0.01%",
+    "imbalance": "90.49% top value",
+    "sparsity": "90.49%"
+  },
+  "dr_Better World Verification": {
+    "datatype": "Constant",
+    "range": null,
+    "missing_percentage": 94.2,
+    "top_values": [
+      {
+        "value": "Green Premium",
+        "count": 1469
+      }
+    ],
+    "cardinality": "0.00%",
+    "imbalance": "94.20% top value",
+    "sparsity": "94.20%"
+  },
+  "dr_Better World Claim": {
+    "datatype": "Categorical",
+    "range": null,
+    "missing_percentage": 96.3,
+    "top_values": [
+      {
+        "value": "Low carbon manufacture",
+        "count": 808
+      },
+      {
+        "value": "Repairable by the end user, , , Repairable by the end user, , , Repairable by the end user, ,",
+        "count": 98
+      },
+      {
+        "value": "Extended product life",
+        "count": 29
+      },
+      {
+        "value": "Extended product life, Extended product life, Extended product life, Extended product life",
+        "count": 1
+      },
+      {
+        "value": "Repairable by the end user, Low carbon manufacture, Repairable by the end user, Low carbon manufacture",
+        "count": 1
+      }
+    ],
+    "cardinality": "0.02%",
+    "imbalance": "96.30% top value",
+    "sparsity": "96.30%"
+  },
+  "Assigned Content Manager": {
+    "datatype": "Categorical",
+    "range": null,
+    "missing_percentage": 94.62,
+    "top_values": [
+      {
+        "value": "Marty.Maldonado@na.rsgroup.com",
+        "count": 778
+      },
+      {
+        "value": "Darrell.Wagoner@na.rsgroup.com",
+        "count": 365
+      },
+      {
+        "value": "Marco.Cosby@na.rsgroup.com",
+        "count": 207
+      },
+      {
+        "value": "Chan.Pham@na.rsgroup.com",
+        "count": 12
+      },
+      {
+        "value": "Doug.Watson@na.rsgroup.com",
+        "count": 2
+      }
+    ],
+    "cardinality": "0.02%",
+    "imbalance": "94.62% top value",
+    "sparsity": "94.62%"
+  },
+  "_Pareto": {
+    "datatype": "Categorical",
+    "range": null,
+    "missing_percentage": 37.33,
+    "top_values": [
+      {
+        "value": "D",
+        "count": 12987
+      },
+      {
+        "value": "C",
+        "count": 1472
+      },
+      {
+        "value": "B",
+        "count": 1100
+      },
+      {
+        "value": "A",
+        "count": 324
+      }
+    ],
+    "cardinality": "0.02%",
+    "imbalance": "51.24% top value",
+    "sparsity": "37.33%"
+  },
+  "zz_Dielectric Rating": {
+    "datatype": "Categorical",
+    "range": null,
+    "missing_percentage": 99.99,
+    "top_values": [
+      {
+        "value": "2500 V (RMS) (Coil to Contacts)",
+        "count": 2
+      },
+      {
+        "value": "1500 V (RMS) (Coil to Contacts), 1000 V (RMS) (Across Open Contacts, Pole to Pole, Contacts to Frame)",
+        "count": 1
+      }
+    ],
+    "cardinality": "0.01%",
+    "imbalance": "99.99% top value",
+    "sparsity": "99.99%"
+  },
+  "zz_Dielectric Rating.UOM": {
+    "datatype": "Constant",
+    "range": null,
+    "missing_percentage": 99.99,
+    "top_values": [
+      {
+        "value": "bits",
+        "count": 3
+      }
+    ],
+    "cardinality": "0.00%",
+    "imbalance": "99.99% top value",
+    "sparsity": "99.99%"
+  },
+  "zz_IP Rating": {
+    "datatype": "Constant",
+    "range": null,
+    "missing_percentage": 99.81,
+    "top_values": [
+      {
+        "value": "IP20",
+        "count": 47
+      }
+    ],
+    "cardinality": "0.00%",
+    "imbalance": "99.81% top value",
+    "sparsity": "99.81%"
+  },
+  "zz_Horsepower, Max, 3 Phase, at 480 V": {
+    "datatype": "Categorical",
+    "range": null,
+    "missing_percentage": 98.24,
+    "top_values": [
+      {
+        "value": "5",
+        "count": 84
+      },
+      {
+        "value": "10",
+        "count": 69
+      },
+      {
+        "value": "15",
+        "count": 64
+      },
+      {
+        "value": "30",
+        "count": 48
+      },
+      {
+        "value": "7.5",
+        "count": 45
+      }
+    ],
+    "cardinality": "0.06%",
+    "imbalance": "98.24% top value",
+    "sparsity": "98.24%"
+  },
+  "zz_Control Voltage": {
+    "datatype": "Categorical",
+    "range": null,
+    "missing_percentage": 77.9,
+    "top_values": [
+      {
+        "value": "24",
+        "count": 1209
+      },
+      {
+        "value": "120",
+        "count": 698
+      },
+      {
+        "value": "240",
+        "count": 321
+      },
+      {
+        "value": "110",
+        "count": 257
+      },
+      {
+        "value": "230",
+        "count": 222
+      }
+    ],
+    "cardinality": "0.58%",
+    "imbalance": "77.90% top value",
+    "sparsity": "77.90%"
+  },
+  "zz_Control Voltage.UOM": {
+    "datatype": "Categorical",
+    "range": null,
+    "missing_percentage": 77.9,
+    "top_values": [
+      {
+        "value": "V",
+        "count": 5010
+      },
+      {
+        "value": "VAC",
+        "count": 386
+      },
+      {
+        "value": "VDC",
+        "count": 202
+      },
+      {
+        "value": "V||V",
+        "count": 1
+      },
+      {
+        "value": "VAC||VAC",
+        "count": 1
+      }
+    ],
+    "cardinality": "0.02%",
+    "imbalance": "77.90% top value",
+    "sparsity": "77.90%"
+  },
+  "zz_Special Features": {
+    "datatype": "Categorical",
+    "range": null,
+    "missing_percentage": 97.32,
+    "top_values": [
+      {
+        "value": "Reversing",
+        "count": 108
+      },
+      {
+        "value": "100kA SCCR",
+        "count": 100
+      },
+      {
+        "value": "Global ratings",
+        "count": 45
+      },
+      {
+        "value": "Non-Reversing",
+        "count": 32
+      },
+      {
+        "value": "LED Input Status Indicator",
+        "count": 25
+      }
+    ],
+    "cardinality": "0.27%",
+    "imbalance": "97.32% top value",
+    "sparsity": "97.32%"
+  },
+  "zz_Material": {
+    "datatype": "Constant",
+    "range": null,
+    "missing_percentage": 100.0,
+    "top_values": [
+      {
+        "value": "Copper||Silver",
+        "count": 1
+      }
+    ],
+    "cardinality": "0.00%",
+    "imbalance": "100.00% top value",
+    "sparsity": "100.00%"
+  },
+  "zz_Horsepower, Motor, Max at 115 V": {
+    "datatype": "Numeric",
+    "range": [
+      2.0,
+      10.0
+    ],
+    "missing_percentage": 99.88,
+    "top_values": [
+      {
+        "value": "2.0",
+        "count": 12
+      },
+      {
+        "value": "3.0",
+        "count": 9
+      },
+      {
+        "value": "7.5",
+        "count": 3
+      },
+      {
+        "value": "5.0",
+        "count": 3
+      },
+      {
+        "value": "10.0",
+        "count": 3
+      }
+    ],
+    "cardinality": "0.02%",
+    "imbalance": "99.88% top value",
+    "sparsity": "99.88%"
+  },
+  "zz_Maximum Voltage": {
+    "datatype": "Categorical",
+    "range": null,
+    "missing_percentage": 99.99,
+    "top_values": [
+      {
+        "value": "1800 VDC,2200 VDC,3500 VDC,5000 VDC,7500 VDC,8000 VDC,10000 VDC,12000 VDC,15000 VDC,20000 VDC,25000 VDC,30000 VDC,35000 VDC,50000 VDC,70000 VDC",
+        "count": 1
+      },
+      {
+        "value": "900 VDC",
+        "count": 1
+      },
+      {
+        "value": "2200 VDC",
+        "count": 1
+      }
+    ],
+    "cardinality": "0.01%",
+    "imbalance": "99.99% top value",
+    "sparsity": "99.99%"
+  },
+  "zz_Maximum Voltage.UOM": {
+    "datatype": "Constant",
+    "range": null,
+    "missing_percentage": 99.99,
+    "top_values": [
+      {
+        "value": "V",
+        "count": 3
+      }
+    ],
+    "cardinality": "0.00%",
+    "imbalance": "99.99% top value",
+    "sparsity": "99.99%"
+  },
+  "zz_Horsepower, Max, 1 Phase, at 240 V": {
+    "datatype": "Numeric",
+    "range": [
+      1.0,
+      5.0
+    ],
+    "missing_percentage": 99.91,
+    "top_values": [
+      {
+        "value": "1.0",
+        "count": 8
+      },
+      {
+        "value": "3.0",
+        "count": 8
+      },
+      {
+        "value": "5.0",
+        "count": 4
+      },
+      {
+        "value": "2.0",
+        "count": 4
+      }
+    ],
+    "cardinality": "0.02%",
+    "imbalance": "99.91% top value",
+    "sparsity": "99.91%"
+  },
+  "zz_Mounting Style": {
+    "datatype": "Categorical",
+    "range": null,
+    "missing_percentage": 98.93,
+    "top_values": [
+      {
+        "value": "DIN Rail",
+        "count": 110
+      },
+      {
+        "value": "Plate",
+        "count": 75
+      },
+      {
+        "value": "DIN Rail, Plate",
+        "count": 72
+      },
+      {
+        "value": "Clip-On",
+        "count": 9
+      },
+      {
+        "value": "DIN Rail Mount",
+        "count": 3
+      }
+    ],
+    "cardinality": "0.02%",
+    "imbalance": "98.93% top value",
+    "sparsity": "98.93%"
+  },
+  "zz_Mounting Diameter": {
+    "datatype": "Constant",
+    "range": null,
+    "missing_percentage": 100.0,
+    "top_values": [
+      {
+        "value": "1.5 in. (&plusmn; 0.5 in.)",
+        "count": 1
+      }
+    ],
+    "cardinality": "0.00%",
+    "imbalance": "100.00% top value",
+    "sparsity": "100.00%"
+  },
+  "zz_Mounting Diameter.UOM": {
+    "datatype": "Constant",
+    "range": null,
+    "missing_percentage": 100.0,
+    "top_values": [
+      {
+        "value": "in",
+        "count": 1
+      }
+    ],
+    "cardinality": "0.00%",
+    "imbalance": "100.00% top value",
+    "sparsity": "100.00%"
+  },
+  "zz_Product Type": {
+    "datatype": "Categorical",
+    "range": null,
+    "missing_percentage": 99.99,
+    "top_values": [
+      {
+        "value": "Socket",
+        "count": 1
+      },
+      {
+        "value": "Contactor",
+        "count": 1
+      }
+    ],
+    "cardinality": "0.01%",
+    "imbalance": "99.99% top value",
+    "sparsity": "99.99%"
+  },
+  "zz_Accessory Type": {
+    "datatype": "Categorical",
+    "range": null,
+    "missing_percentage": 99.99,
+    "top_values": [
+      {
+        "value": "Contactor Block",
+        "count": 1
+      },
+      {
+        "value": "Socket",
+        "count": 1
+      },
+      {
+        "value": "Contactor Coil",
+        "count": 1
+      }
+    ],
+    "cardinality": "0.01%",
+    "imbalance": "99.99% top value",
+    "sparsity": "99.99%"
+  },
+  "zz_Contact Material": {
+    "datatype": "Categorical",
+    "range": null,
+    "missing_percentage": 99.28,
+    "top_values": [
+      {
+        "value": "A",
+        "count": 64
+      },
+      {
+        "value": "Silver Tin Oxide",
+        "count": 39
+      },
+      {
+        "value": "Silver Alloy",
+        "count": 38
+      },
+      {
+        "value": "Silver Cadmium Oxide",
+        "count": 36
+      },
+      {
+        "value": "Copper Alloy",
+        "count": 4
+      }
+    ],
+    "cardinality": "0.02%",
+    "imbalance": "99.28% top value",
+    "sparsity": "99.28%"
+  },
+  "zz_Options": {
+    "datatype": "Categorical",
+    "range": null,
+    "missing_percentage": 96.22,
+    "top_values": [
+      {
+        "value": "Global listed",
+        "count": 951
+      },
+      {
+        "value": "Individual pkg.",
+        "count": 5
+      },
+      {
+        "value": "20 pc./pkg., global listed",
+        "count": 1
+      },
+      {
+        "value": "Rotate coil terminals 180° for 15A-50A contactors, global listed",
+        "count": 1
+      }
+    ],
+    "cardinality": "0.02%",
+    "imbalance": "96.22% top value",
+    "sparsity": "96.22%"
+  },
+  "zz_Voltage Range": {
+    "datatype": "Categorical",
+    "range": null,
+    "missing_percentage": 99.96,
+    "top_values": [
+      {
+        "value": "48-530",
+        "count": 6
+      },
+      {
+        "value": "48-600",
+        "count": 2
+      },
+      {
+        "value": "na",
+        "count": 1
+      }
+    ],
+    "cardinality": "0.01%",
+    "imbalance": "99.96% top value",
+    "sparsity": "99.96%"
+  },
+  "zz_Voltage Range.UOM": {
+    "datatype": "Categorical",
+    "range": null,
+    "missing_percentage": 99.96,
+    "top_values": [
+      {
+        "value": "VDC",
+        "count": 8
+      },
+      {
+        "value": "na",
+        "count": 1
+      }
+    ],
+    "cardinality": "0.01%",
+    "imbalance": "99.96% top value",
+    "sparsity": "99.96%"
+  },
+  "zz_Horsepower, Max, 3 Phase, at 240 V": {
+    "datatype": "Numeric",
+    "range": [
+      2.0,
+      10.0
+    ],
+    "missing_percentage": 99.91,
+    "top_values": [
+      {
+        "value": "2.0",
+        "count": 8
+      },
+      {
+        "value": "10.0",
+        "count": 4
+      },
+      {
+        "value": "7.5",
+        "count": 4
+      },
+      {
+        "value": "3.0",
+        "count": 4
+      },
+      {
+        "value": "5.0",
+        "count": 4
+      }
+    ],
+    "cardinality": "0.02%",
+    "imbalance": "99.91% top value",
+    "sparsity": "99.91%"
+  },
+  "zz_Supply Voltage": {
+    "datatype": "Numeric",
+    "range": [
+      24.0,
+      690.0
+    ],
+    "missing_percentage": 99.53,
+    "top_values": [
+      {
+        "value": "600.0",
+        "count": 94
+      },
+      {
+        "value": "24.0",
+        "count": 13
+      },
+      {
+        "value": "440.0",
+        "count": 7
+      },
+      {
+        "value": "690.0",
+        "count": 1
+      },
+      {
+        "value": "575.0",
+        "count": 1
+      }
+    ],
+    "cardinality": "0.03%",
+    "imbalance": "99.53% top value",
+    "sparsity": "99.53%"
+  },
+  "zz_Supply Voltage.UOM": {
+    "datatype": "Categorical",
+    "range": null,
+    "missing_percentage": 99.53,
+    "top_values": [
+      {
+        "value": "VAC",
+        "count": 109
+      },
+      {
+        "value": "V",
+        "count": 5
+      },
+      {
+        "value": "VDC",
+        "count": 4
+      }
+    ],
+    "cardinality": "0.01%",
+    "imbalance": "99.53% top value",
+    "sparsity": "99.53%"
+  },
+  "zz_Continuous Current": {
+    "datatype": "Numeric",
+    "range": [
+      20.0,
+      52.0
+    ],
+    "missing_percentage": 99.91,
+    "top_values": [
+      {
+        "value": "25.0",
+        "count": 8
+      },
+      {
+        "value": "20.0",
+        "count": 4
+      },
+      {
+        "value": "52.0",
+        "count": 4
+      },
+      {
+        "value": "40.0",
+        "count": 4
+      },
+      {
+        "value": "32.0",
+        "count": 4
+      }
+    ],
+    "cardinality": "0.02%",
+    "imbalance": "99.91% top value",
+    "sparsity": "99.91%"
+  },
+  "zz_Continuous Current.UOM": {
+    "datatype": "Constant",
+    "range": null,
+    "missing_percentage": 99.91,
+    "top_values": [
+      {
+        "value": "A",
+        "count": 24
+      }
+    ],
+    "cardinality": "0.00%",
+    "imbalance": "99.91% top value",
+    "sparsity": "99.91%"
+  },
+  "zz_Horsepower, Max, 3 Phase, at 575 V": {
+    "datatype": "Numeric",
+    "range": [
+      3.0,
+      200.0
+    ],
+    "missing_percentage": 99.8,
+    "top_values": [
+      {
+        "value": "10.0",
+        "count": 17
+      },
+      {
+        "value": "25.0",
+        "count": 12
+      },
+      {
+        "value": "15.0",
+        "count": 7
+      },
+      {
+        "value": "7.5",
+        "count": 4
+      },
+      {
+        "value": "5.0",
+        "count": 4
+      }
+    ],
+    "cardinality": "0.04%",
+    "imbalance": "99.80% top value",
+    "sparsity": "99.80%"
+  },
+  "zz_Auxiliary Contact": {
+    "datatype": "Categorical",
+    "range": null,
+    "missing_percentage": 91.38,
+    "top_values": [
+      {
+        "value": "1 NO||1 NC",
+        "count": 511
+      },
+      {
+        "value": "1 NO",
+        "count": 503
+      },
+      {
+        "value": "1 NC",
+        "count": 324
+      },
+      {
+        "value": "2 NO||2 NC",
+        "count": 280
+      },
+      {
+        "value": "1NO",
+        "count": 91
+      }
+    ],
+    "cardinality": "0.17%",
+    "imbalance": "91.38% top value",
+    "sparsity": "91.38%"
+  },
+  "zz_Contact Form": {
+    "datatype": "Categorical",
+    "range": null,
+    "missing_percentage": 97.91,
+    "top_values": [
+      {
+        "value": "SPST-NO",
+        "count": 214
+      },
+      {
+        "value": "3PST-NO",
+        "count": 86
+      },
+      {
+        "value": "1 NO",
+        "count": 64
+      },
+      {
+        "value": "3 NC + 2 NO",
+        "count": 24
+      },
+      {
+        "value": "DPST-NO",
+        "count": 23
+      }
+    ],
+    "cardinality": "0.10%",
+    "imbalance": "97.91% top value",
+    "sparsity": "97.91%"
+  },
+  "zz_Horsepower, Max, 3 Phase, at 200 V": {
+    "datatype": "Numeric",
+    "range": [
+      1.5,
+      5.0
+    ],
+    "missing_percentage": 99.99,
+    "top_values": [
+      {
+        "value": "1.5",
+        "count": 1
+      },
+      {
+        "value": "5.0",
+        "count": 1
+      }
+    ],
+    "cardinality": "0.01%",
+    "imbalance": "99.99% top value",
+    "sparsity": "99.99%"
+  },
+  "zz_Minimum Ambient Temperature": {
+    "datatype": "Constant",
+    "range": [
+      -30.0,
+      -30.0
+    ],
+    "missing_percentage": 100.0,
+    "top_values": [
+      {
+        "value": "-30.0",
+        "count": 1
+      }
+    ],
+    "cardinality": "0.00%",
+    "imbalance": "100.00% top value",
+    "sparsity": "100.00%"
+  },
+  "zz_Minimum Ambient Temperature.UOM": {
+    "datatype": "Constant",
+    "range": null,
+    "missing_percentage": 100.0,
+    "top_values": [
+      {
+        "value": "°C",
+        "count": 1
+      }
+    ],
+    "cardinality": "0.00%",
+    "imbalance": "100.00% top value",
+    "sparsity": "100.00%"
+  },
+  "dr_Dimensions": {
+    "datatype": "Categorical",
+    "range": null,
+    "missing_percentage": 85.54,
+    "top_values": [
+      {
+        "value": "3.75 Inch X 0.00 in W X 3.35 in L",
+        "count": 1280
+      },
+      {
+        "value": "3.75 in H X 0.00 in W X 3.35 in L",
+        "count": 332
+      },
+      {
+        "value": "0 X 0.00 in W X 0",
+        "count": 163
+      },
+      {
+        "value": "6.75 Inch X 0.00 in W X 3.50 in L",
+        "count": 100
+      },
+      {
+        "value": "2.68 in H X 1.77 in W X 2.95 in L",
+        "count": 77
+      }
+    ],
+    "cardinality": "1.11%",
+    "imbalance": "85.54% top value",
+    "sparsity": "85.54%"
+  },
+  "dr_Dimensions.UOM": {
+    "datatype": "Empty",
+    "range": [
+      NaN,
+      NaN
+    ],
+    "missing_percentage": 100.0,
+    "top_values": [],
+    "cardinality": "0.00%",
+    "imbalance": "100.00% top value",
+    "sparsity": "100.00%"
+  },
+  "zz_For Use With": {
+    "datatype": "Categorical",
+    "range": null,
+    "missing_percentage": 99.77,
+    "top_values": [
+      {
+        "value": "DP Series||DPA Series",
+        "count": 54
+      },
+      {
+        "value": "A9/AE9 - A110/AE110 Frame Contactors",
+        "count": 1
+      },
+      {
+        "value": "IEC Contact Frame-B",
+        "count": 1
+      },
+      {
+        "value": "KUP Relays",
+        "count": 1
+      },
+      {
+        "value": "LC1F185, LC1F225",
+        "count": 1
+      }
+    ],
+    "cardinality": "0.02%",
+    "imbalance": "99.77% top value",
+    "sparsity": "99.77%"
+  },
+  "zz_Screw Type": {
+    "datatype": "Constant",
+    "range": null,
+    "missing_percentage": 99.99,
+    "top_values": [
+      {
+        "value": "M4",
+        "count": 3
+      }
+    ],
+    "cardinality": "0.00%",
+    "imbalance": "99.99% top value",
+    "sparsity": "99.99%"
+  },
+  "zz_Turn On Time": {
+    "datatype": "Constant",
+    "range": [
+      50.0,
+      50.0
+    ],
+    "missing_percentage": 100.0,
+    "top_values": [
+      {
+        "value": "50.0",
+        "count": 1
+      }
+    ],
+    "cardinality": "0.00%",
+    "imbalance": "100.00% top value",
+    "sparsity": "100.00%"
+  },
+  "zz_Turn On Time.UOM": {
+    "datatype": "Constant",
+    "range": null,
+    "missing_percentage": 100.0,
+    "top_values": [
+      {
+        "value": "ms",
+        "count": 1
+      }
+    ],
+    "cardinality": "0.00%",
+    "imbalance": "100.00% top value",
+    "sparsity": "100.00%"
+  },
+  "zz_Horsepower, Max, 3 Phase, at 208 V": {
+    "datatype": "Numeric",
+    "range": [
+      1.5,
+      60.0
+    ],
+    "missing_percentage": 99.75,
+    "top_values": [
+      {
+        "value": "3.0",
+        "count": 20
+      },
+      {
+        "value": "2.0",
+        "count": 12
+      },
+      {
+        "value": "10.0",
+        "count": 11
+      },
+      {
+        "value": "5.0",
+        "count": 9
+      },
+      {
+        "value": "7.5",
+        "count": 4
+      }
+    ],
+    "cardinality": "0.03%",
+    "imbalance": "99.75% top value",
+    "sparsity": "99.75%"
+  },
+  "zz_Wire Size": {
+    "datatype": "Categorical",
+    "range": null,
+    "missing_percentage": 99.75,
+    "top_values": [
+      {
+        "value": "16 - 2 AWG",
+        "count": 24
+      },
+      {
+        "value": "14 - 6 AWG",
+        "count": 18
+      },
+      {
+        "value": "18 - 10 AWG",
+        "count": 12
+      },
+      {
+        "value": "18 - 8 AWG",
+        "count": 6
+      },
+      {
+        "value": "8",
+        "count": 2
+      }
+    ],
+    "cardinality": "0.02%",
+    "imbalance": "99.75% top value",
+    "sparsity": "99.75%"
+  },
+  "zz_Wire Size.UOM": {
+    "datatype": "Constant",
+    "range": null,
+    "missing_percentage": 99.75,
+    "top_values": [
+      {
+        "value": "AWG",
+        "count": 63
+      }
+    ],
+    "cardinality": "0.00%",
+    "imbalance": "99.75% top value",
+    "sparsity": "99.75%"
+  },
+  "zz_Capacitance": {
+    "datatype": "Numeric",
+    "range": [
+      10.0,
+      35.0
+    ],
+    "missing_percentage": 99.9,
+    "top_values": [
+      {
+        "value": "20.0",
+        "count": 22
+      },
+      {
+        "value": "10.0",
+        "count": 2
+      },
+      {
+        "value": "35.0",
+        "count": 1
+      }
+    ],
+    "cardinality": "0.01%",
+    "imbalance": "99.90% top value",
+    "sparsity": "99.90%"
+  },
+  "zz_Capacitance.UOM": {
+    "datatype": "Constant",
+    "range": null,
+    "missing_percentage": 99.9,
+    "top_values": [
+      {
+        "value": "pF",
+        "count": 25
+      }
+    ],
+    "cardinality": "0.00%",
+    "imbalance": "99.90% top value",
+    "sparsity": "99.90%"
+  },
+  "zz_Number of Contacts": {
+    "datatype": "Numeric",
+    "range": [
+      3.0,
+      4.0
+    ],
+    "missing_percentage": 99.95,
+    "top_values": [
+      {
+        "value": "3.0",
+        "count": 11
+      },
+      {
+        "value": "4.0",
+        "count": 2
+      }
+    ],
+    "cardinality": "0.01%",
+    "imbalance": "99.95% top value",
+    "sparsity": "99.95%"
+  },
+  "zz_Coil Resistance": {
+    "datatype": "Categorical",
+    "range": null,
+    "missing_percentage": 99.98,
+    "top_values": [
+      {
+        "value": "53",
+        "count": 1
+      },
+      {
+        "value": "4.77-5.83",
+        "count": 1
+      },
+      {
+        "value": "15000",
+        "count": 1
+      },
+      {
+        "value": "84",
+        "count": 1
+      }
+    ],
+    "cardinality": "0.02%",
+    "imbalance": "99.98% top value",
+    "sparsity": "99.98%"
+  },
+  "zz_Coil Resistance.UOM": {
+    "datatype": "Categorical",
+    "range": null,
+    "missing_percentage": 99.98,
+    "top_values": [
+      {
+        "value": "Ohms",
+        "count": 3
+      },
+      {
+        "value": "ohm",
+        "count": 1
+      }
+    ],
+    "cardinality": "0.01%",
+    "imbalance": "99.98% top value",
+    "sparsity": "99.98%"
+  },
+  "zz_Approvals": {
+    "datatype": "Categorical",
+    "range": null,
+    "missing_percentage": 87.73,
+    "top_values": [
+      {
+        "value": "UL Recognized||CSA Certified",
+        "count": 579
+      },
+      {
+        "value": "UL Listed file E1491 (Guide Number NLDX2)||CSA Certified",
+        "count": 554
+      },
+      {
+        "value": "CSA Certified||UL Recognized",
+        "count": 472
+      },
+      {
+        "value": "CSA Certified||UL Listed file E1491 (Guide Number NLDX2)",
+        "count": 428
+      },
+      {
+        "value": "UL Listed||CSA Certified||IEC 60947||EN 60947",
+        "count": 175
+      }
+    ],
+    "cardinality": "0.21%",
+    "imbalance": "87.73% top value",
+    "sparsity": "87.73%"
+  },
+  "zz_Number of Poles": {
+    "datatype": "Categorical",
+    "range": null,
+    "missing_percentage": 55.09,
+    "top_values": [
+      {
+        "value": "3",
+        "count": 7562
+      },
+      {
+        "value": "4",
+        "count": 1678
+      },
+      {
+        "value": "2",
+        "count": 1567
+      },
+      {
+        "value": "1",
+        "count": 445
+      },
+      {
+        "value": "5",
+        "count": 37
+      }
+    ],
+    "cardinality": "0.04%",
+    "imbalance": "55.09% top value",
+    "sparsity": "55.09%"
+  },
+  "zz_Contacts": {
+    "datatype": "Constant",
+    "range": null,
+    "missing_percentage": 99.98,
+    "top_values": [
+      {
+        "value": "1 NO",
+        "count": 6
+      }
+    ],
+    "cardinality": "0.00%",
+    "imbalance": "99.98% top value",
+    "sparsity": "99.98%"
+  },
+  "zz_Terminal Type": {
+    "datatype": "Categorical",
+    "range": null,
+    "missing_percentage": 91.6,
+    "top_values": [
+      {
+        "value": "Screw Terminal",
+        "count": 1193
+      },
+      {
+        "value": "Screw Clamp",
+        "count": 259
+      },
+      {
+        "value": "Box Clamp",
+        "count": 206
+      },
+      {
+        "value": "Quick Connect",
+        "count": 99
+      },
+      {
+        "value": "Spring Terminal",
+        "count": 94
+      }
+    ],
+    "cardinality": "0.09%",
+    "imbalance": "91.60% top value",
+    "sparsity": "91.60%"
+  },
+  "zz_Size": {
+    "datatype": "Categorical",
+    "range": null,
+    "missing_percentage": 98.48,
+    "top_values": [
+      {
+        "value": "S00",
+        "count": 81
+      },
+      {
+        "value": "S0",
+        "count": 67
+      },
+      {
+        "value": "77 H x 45 W x 86 Dia.",
+        "count": 15
+      },
+      {
+        "value": "1.77 L x 2.68 H x 2.95 W in., 45 L x 68 H x 75 W mm",
+        "count": 14
+      },
+      {
+        "value": "S6",
+        "count": 12
+      }
+    ],
+    "cardinality": "0.26%",
+    "imbalance": "98.48% top value",
+    "sparsity": "98.48%"
+  },
+  "zz_Size.UOM": {
+    "datatype": "Categorical",
+    "range": null,
+    "missing_percentage": 98.48,
+    "top_values": [
+      {
+        "value": "in",
+        "count": 313
+      },
+      {
+        "value": "mm",
+        "count": 72
+      }
+    ],
+    "cardinality": "0.01%",
+    "imbalance": "98.48% top value",
+    "sparsity": "98.48%"
+  },
+  "zz_Terminals": {
+    "datatype": "Categorical",
+    "range": null,
+    "missing_percentage": 89.84,
+    "top_values": [
+      {
+        "value": "Screw terminals",
+        "count": 520
+      },
+      {
+        "value": "Box lugs (posidrive setscrew)",
+        "count": 504
+      },
+      {
+        "value": "Binding head screw",
+        "count": 334
+      },
+      {
+        "value": "Screw",
+        "count": 329
+      },
+      {
+        "value": "Box lugs (posidrive setscrew) and quick connect terminals (side-by-side)",
+        "count": 259
+      }
+    ],
+    "cardinality": "0.07%",
+    "imbalance": "89.84% top value",
+    "sparsity": "89.84%"
+  },
+  "zz_Weight": {
+    "datatype": "Numeric",
+    "range": [
+      0.01,
+      382.0
+    ],
+    "missing_percentage": 87.67,
+    "top_values": [
+      {
+        "value": "1.3",
+        "count": 1606
+      },
+      {
+        "value": "3.4",
+        "count": 122
+      },
+      {
+        "value": "1.2",
+        "count": 96
+      },
+      {
+        "value": "0.7",
+        "count": 78
+      },
+      {
+        "value": "0.9",
+        "count": 77
+      }
+    ],
+    "cardinality": "0.52%",
+    "imbalance": "87.67% top value",
+    "sparsity": "87.67%"
+  },
+  "zz_Weight.UOM": {
+    "datatype": "Categorical",
+    "range": null,
+    "missing_percentage": 87.67,
+    "top_values": [
+      {
+        "value": "lb",
+        "count": 2636
+      },
+      {
+        "value": "lbs",
+        "count": 387
+      },
+      {
+        "value": "mm",
+        "count": 60
+      },
+      {
+        "value": "kg",
+        "count": 42
+      },
+      {
+        "value": "g",
+        "count": 1
+      }
+    ],
+    "cardinality": "0.02%",
+    "imbalance": "87.67% top value",
+    "sparsity": "87.67%"
+  },
+  "zz_Family Name": {
+    "datatype": "Categorical",
+    "range": null,
+    "missing_percentage": 97.31,
+    "top_values": [
+      {
+        "value": "TeSys Family",
+        "count": 589
+      },
+      {
+        "value": "DP Contactor Family",
+        "count": 59
+      },
+      {
+        "value": "XT IEC Power Control Family",
+        "count": 31
+      },
+      {
+        "value": "CII Low Signal Relay Family",
+        "count": 2
+      }
+    ],
+    "cardinality": "0.02%",
+    "imbalance": "97.31% top value",
+    "sparsity": "97.31%"
+  },
+  "zz_Turn Off Time": {
+    "datatype": "Constant",
+    "range": [
+      30.0,
+      30.0
+    ],
+    "missing_percentage": 100.0,
+    "top_values": [
+      {
+        "value": "30.0",
+        "count": 1
+      }
+    ],
+    "cardinality": "0.00%",
+    "imbalance": "100.00% top value",
+    "sparsity": "100.00%"
+  },
+  "zz_Turn Off Time.UOM": {
+    "datatype": "Constant",
+    "range": null,
+    "missing_percentage": 100.0,
+    "top_values": [
+      {
+        "value": "ms",
+        "count": 1
+      }
+    ],
+    "cardinality": "0.00%",
+    "imbalance": "100.00% top value",
+    "sparsity": "100.00%"
+  },
+  "zz_Type": {
+    "datatype": "Categorical",
+    "range": null,
+    "missing_percentage": 62.26,
+    "top_values": [
+      {
+        "value": "Contactor",
+        "count": 2756
+      },
+      {
+        "value": "General Purpose Contactors",
+        "count": 1933
+      },
+      {
+        "value": "IEC Contactor",
+        "count": 1744
+      },
+      {
+        "value": "Lighting Contactor",
+        "count": 937
+      },
+      {
+        "value": "AC",
+        "count": 398
+      }
+    ],
+    "cardinality": "0.11%",
+    "imbalance": "62.26% top value",
+    "sparsity": "62.26%"
+  },
+  "zz_Horsepower, Max, 1 Phase, at 230 V": {
+    "datatype": "Numeric",
+    "range": [
+      0.75,
+      30.0
+    ],
+    "missing_percentage": 99.79,
+    "top_values": [
+      {
+        "value": "2.0",
+        "count": 15
+      },
+      {
+        "value": "5.0",
+        "count": 12
+      },
+      {
+        "value": "3.0",
+        "count": 11
+      },
+      {
+        "value": "1.0",
+        "count": 6
+      },
+      {
+        "value": "0.75",
+        "count": 4
+      }
+    ],
+    "cardinality": "0.03%",
+    "imbalance": "99.79% top value",
+    "sparsity": "99.79%"
+  },
+  "zz_Operating Voltage": {
+    "datatype": "Categorical",
+    "range": null,
+    "missing_percentage": 99.96,
+    "top_values": [
+      {
+        "value": "90 to 140",
+        "count": 5
+      },
+      {
+        "value": "4 to 32",
+        "count": 2
+      },
+      {
+        "value": "180 to 260",
+        "count": 1
+      },
+      {
+        "value": "9",
+        "count": 1
+      },
+      {
+        "value": "690",
+        "count": 1
+      }
+    ],
+    "cardinality": "0.02%",
+    "imbalance": "99.96% top value",
+    "sparsity": "99.96%"
+  },
+  "zz_Operating Voltage.UOM": {
+    "datatype": "Categorical",
+    "range": null,
+    "missing_percentage": 99.96,
+    "top_values": [
+      {
+        "value": "V",
+        "count": 9
+      },
+      {
+        "value": "VDC",
+        "count": 1
+      }
+    ],
+    "cardinality": "0.01%",
+    "imbalance": "99.96% top value",
+    "sparsity": "99.96%"
+  },
+  "zz_Temperature Range": {
+    "datatype": "Categorical",
+    "range": null,
+    "missing_percentage": 99.66,
+    "top_values": [
+      {
+        "value": "-25 to 60",
+        "count": 84
+      },
+      {
+        "value": "-55 to 65",
+        "count": 1
+      }
+    ],
+    "cardinality": "0.01%",
+    "imbalance": "99.66% top value",
+    "sparsity": "99.66%"
+  },
+  "zz_Temperature Range.UOM": {
+    "datatype": "Categorical",
+    "range": null,
+    "missing_percentage": 99.66,
+    "top_values": [
+      {
+        "value": "°C",
+        "count": 84
+      },
+      {
+        "value": "C",
+        "count": 1
+      }
+    ],
+    "cardinality": "0.01%",
+    "imbalance": "99.66% top value",
+    "sparsity": "99.66%"
+  },
+  "zz_Horsepower, Max, 3 Phase, at 460 V": {
+    "datatype": "Numeric",
+    "range": [
+      3.0,
+      150.0
+    ],
+    "missing_percentage": 99.72,
+    "top_values": [
+      {
+        "value": "10.0",
+        "count": 17
+      },
+      {
+        "value": "7.5",
+        "count": 16
+      },
+      {
+        "value": "5.0",
+        "count": 13
+      },
+      {
+        "value": "20.0",
+        "count": 8
+      },
+      {
+        "value": "3.0",
+        "count": 5
+      }
+    ],
+    "cardinality": "0.04%",
+    "imbalance": "99.72% top value",
+    "sparsity": "99.72%"
+  },
+  "zz_Horsepower, Max, 3 Phase, at 230 V": {
+    "datatype": "Categorical",
+    "range": null,
+    "missing_percentage": 99.74,
+    "top_values": [
+      {
+        "value": "5",
+        "count": 17
+      },
+      {
+        "value": "3",
+        "count": 13
+      },
+      {
+        "value": "10",
+        "count": 12
+      },
+      {
+        "value": "2",
+        "count": 4
+      },
+      {
+        "value": "75",
+        "count": 3
+      }
+    ],
+    "cardinality": "0.06%",
+    "imbalance": "99.74% top value",
+    "sparsity": "99.74%"
+  },
+  "zz_Connection": {
+    "datatype": "Categorical",
+    "range": null,
+    "missing_percentage": 99.28,
+    "top_values": [
+      {
+        "value": "Quick",
+        "count": 159
+      },
+      {
+        "value": "Front Connected",
+        "count": 23
+      }
+    ],
+    "cardinality": "0.01%",
+    "imbalance": "99.28% top value",
+    "sparsity": "99.28%"
+  },
+  "zz_Standards": {
+    "datatype": "Categorical",
+    "range": null,
+    "missing_percentage": 96.17,
+    "top_values": [
+      {
+        "value": "BS 5424||IEC 60947||NF C 63-110||VDE 0660",
+        "count": 136
+      },
+      {
+        "value": "CAC||CE Recognized||CSA Certified||EAC Certified||GOST Certified||IEC 60947-5-1||UL Listed",
+        "count": 114
+      },
+      {
+        "value": "EN 60947-4-1||IEC 609474-1||IEC 60947-4-1||JEM 1038",
+        "count": 95
+      },
+      {
+        "value": "UL 508||CSA C22.2 No 60947-4-1",
+        "count": 60
+      },
+      {
+        "value": "UL Recognized||File E3190||CCN NLDX2",
+        "count": 54
+      }
+    ],
+    "cardinality": "0.27%",
+    "imbalance": "96.17% top value",
+    "sparsity": "96.17%"
+  },
+  "zz_Phase": {
+    "datatype": "Numeric",
+    "range": [
+      1.0,
+      3.0
+    ],
+    "missing_percentage": 99.46,
+    "top_values": [
+      {
+        "value": "1.0",
+        "count": 131
+      },
+      {
+        "value": "3.0",
+        "count": 6
+      }
+    ],
+    "cardinality": "0.01%",
+    "imbalance": "99.46% top value",
+    "sparsity": "99.46%"
+  },
+  "zz_Phase.UOM": {
+    "datatype": "Constant",
+    "range": null,
+    "missing_percentage": 99.46,
+    "top_values": [
+      {
+        "value": "Phase",
+        "count": 137
+      }
+    ],
+    "cardinality": "0.00%",
+    "imbalance": "99.46% top value",
+    "sparsity": "99.46%"
+  },
+  "zz_Load Voltage": {
+    "datatype": "Categorical",
+    "range": null,
+    "missing_percentage": 99.9,
+    "top_values": [
+      {
+        "value": "48 to 510",
+        "count": 22
+      },
+      {
+        "value": "1 to 48",
+        "count": 2
+      },
+      {
+        "value": "1 to 250",
+        "count": 1
+      }
+    ],
+    "cardinality": "0.01%",
+    "imbalance": "99.90% top value",
+    "sparsity": "99.90%"
+  },
+  "zz_Load Voltage.UOM": {
+    "datatype": "Constant",
+    "range": null,
+    "missing_percentage": 99.9,
+    "top_values": [
+      {
+        "value": "V",
+        "count": 25
+      }
+    ],
+    "cardinality": "0.00%",
+    "imbalance": "99.90% top value",
+    "sparsity": "99.90%"
+  },
+  "zz_Termination": {
+    "datatype": "Categorical",
+    "range": null,
+    "missing_percentage": 97.3,
+    "top_values": [
+      {
+        "value": "Screw",
+        "count": 473
+      },
+      {
+        "value": "Quick Connect",
+        "count": 72
+      },
+      {
+        "value": "Screw/Spring Clamp",
+        "count": 43
+      },
+      {
+        "value": "Screw Clamp",
+        "count": 33
+      },
+      {
+        "value": "Screw/Micro-USB",
+        "count": 16
+      }
+    ],
+    "cardinality": "0.07%",
+    "imbalance": "97.30% top value",
+    "sparsity": "97.30%"
+  },
+  "zz_Enclosure Type": {
+    "datatype": "Categorical",
+    "range": null,
+    "missing_percentage": 99.52,
+    "top_values": [
+      {
+        "value": "IP2x",
+        "count": 63
+      },
+      {
+        "value": "Open",
+        "count": 53
+      },
+      {
+        "value": "NEMA Type 1",
+        "count": 4
+      },
+      {
+        "value": "NEMA 1",
+        "count": 1
+      }
+    ],
+    "cardinality": "0.02%",
+    "imbalance": "99.52% top value",
+    "sparsity": "99.52%"
+  },
+  "zz_Surge Current": {
+    "datatype": "Categorical",
+    "range": null,
+    "missing_percentage": 99.98,
+    "top_values": [
+      {
+        "value": "300",
+        "count": 3
+      },
+      {
+        "value": "750",
+        "count": 1
+      },
+      {
+        "value": "83 A",
+        "count": 1
+      }
+    ],
+    "cardinality": "0.01%",
+    "imbalance": "99.98% top value",
+    "sparsity": "99.98%"
+  },
+  "zz_Surge Current.UOM": {
+    "datatype": "Categorical",
+    "range": null,
+    "missing_percentage": 99.98,
+    "top_values": [
+      {
+        "value": "Apk",
+        "count": 4
+      },
+      {
+        "value": "A",
+        "count": 1
+      }
+    ],
+    "cardinality": "0.01%",
+    "imbalance": "99.98% top value",
+    "sparsity": "99.98%"
+  },
+  "zz_Connection Type": {
+    "datatype": "Constant",
+    "range": null,
+    "missing_percentage": 99.99,
+    "top_values": [
+      {
+        "value": "Screw",
+        "count": 3
+      }
+    ],
+    "cardinality": "0.00%",
+    "imbalance": "99.99% top value",
+    "sparsity": "99.99%"
+  },
+  "zz_Temperature Operating Range": {
+    "datatype": "Categorical",
+    "range": null,
+    "missing_percentage": 97.6,
+    "top_values": [
+      {
+        "value": "-25 to 60",
+        "count": 162
+      },
+      {
+        "value": "-5 to 60",
+        "count": 136
+      },
+      {
+        "value": "-25 to 50",
+        "count": 61
+      },
+      {
+        "value": "0 to 65",
+        "count": 56
+      },
+      {
+        "value": "-25 to 70",
+        "count": 42
+      }
+    ],
+    "cardinality": "0.11%",
+    "imbalance": "97.60% top value",
+    "sparsity": "97.60%"
+  },
+  "zz_Temperature Operating Range.UOM": {
+    "datatype": "Categorical",
+    "range": null,
+    "missing_percentage": 97.6,
+    "top_values": [
+      {
+        "value": "C",
+        "count": 577
+      },
+      {
+        "value": "°F",
+        "count": 25
+      },
+      {
+        "value": "°C",
+        "count": 7
+      }
+    ],
+    "cardinality": "0.01%",
+    "imbalance": "97.60% top value",
+    "sparsity": "97.60%"
+  },
+  "zz_Minimum Load": {
+    "datatype": "Numeric",
+    "range": [
+      0.1,
+      1.0
+    ],
+    "missing_percentage": 99.9,
+    "top_values": [
+      {
+        "value": "0.15",
+        "count": 22
+      },
+      {
+        "value": "0.1",
+        "count": 2
+      },
+      {
+        "value": "1.0",
+        "count": 1
+      }
+    ],
+    "cardinality": "0.01%",
+    "imbalance": "99.90% top value",
+    "sparsity": "99.90%"
+  },
+  "zz_Minimum Load.UOM": {
+    "datatype": "Categorical",
+    "range": null,
+    "missing_percentage": 99.9,
+    "top_values": [
+      {
+        "value": "A rms",
+        "count": 22
+      },
+      {
+        "value": "A",
+        "count": 2
+      },
+      {
+        "value": "mA dc",
+        "count": 1
+      }
+    ],
+    "cardinality": "0.01%",
+    "imbalance": "99.90% top value",
+    "sparsity": "99.90%"
+  },
+  "zz_NEMA Size": {
+    "datatype": "Numeric",
+    "range": [
+      0.0,
+      7.0
+    ],
+    "missing_percentage": 99.68,
+    "top_values": [
+      {
+        "value": "0.0",
+        "count": 24
+      },
+      {
+        "value": "2.0",
+        "count": 12
+      },
+      {
+        "value": "1.0",
+        "count": 12
+      },
+      {
+        "value": "6.0",
+        "count": 8
+      },
+      {
+        "value": "7.0",
+        "count": 8
+      }
+    ],
+    "cardinality": "0.03%",
+    "imbalance": "99.68% top value",
+    "sparsity": "99.68%"
+  },
+  "zz_Primary Type": {
+    "datatype": "Categorical",
+    "range": null,
+    "missing_percentage": 95.85,
+    "top_values": [
+      {
+        "value": "Contactor",
+        "count": 790
+      },
+      {
+        "value": "IEC Contactor",
+        "count": 170
+      },
+      {
+        "value": "Definite Purpose Contactor",
+        "count": 24
+      },
+      {
+        "value": "Definite Purpose Relay",
+        "count": 18
+      },
+      {
+        "value": "Solid-State Contactor",
+        "count": 11
+      }
+    ],
+    "cardinality": "0.07%",
+    "imbalance": "95.85% top value",
+    "sparsity": "95.85%"
+  },
+  "zz_Number of Pins": {
+    "datatype": "Numeric",
+    "range": [
+      4.0,
+      18.0
+    ],
+    "missing_percentage": 99.18,
+    "top_values": [
+      {
+        "value": "4.0",
+        "count": 126
+      },
+      {
+        "value": "8.0",
+        "count": 45
+      },
+      {
+        "value": "16.0",
+        "count": 12
+      },
+      {
+        "value": "6.0",
+        "count": 10
+      },
+      {
+        "value": "15.0",
+        "count": 8
+      }
+    ],
+    "cardinality": "0.04%",
+    "imbalance": "99.18% top value",
+    "sparsity": "99.18%"
+  },
+  "zz_Storage Temperature": {
+    "datatype": "Categorical",
+    "range": null,
+    "missing_percentage": 99.76,
+    "top_values": [
+      {
+        "value": "-60 to 80&deg;C",
+        "count": 33
+      },
+      {
+        "value": "-60 to 80°C",
+        "count": 27
+      }
+    ],
+    "cardinality": "0.01%",
+    "imbalance": "99.76% top value",
+    "sparsity": "99.76%"
+  },
+  "zz_Storage Temperature.UOM": {
+    "datatype": "Constant",
+    "range": null,
+    "missing_percentage": 99.76,
+    "top_values": [
+      {
+        "value": "°C",
+        "count": 60
+      }
+    ],
+    "cardinality": "0.00%",
+    "imbalance": "99.76% top value",
+    "sparsity": "99.76%"
+  },
+  "zz_Contact Rating": {
+    "datatype": "Categorical",
+    "range": null,
+    "missing_percentage": 99.99,
+    "top_values": [
+      {
+        "value": "20A",
+        "count": 1
+      },
+      {
+        "value": "60A make, 6.0A break",
+        "count": 1
+      },
+      {
+        "value": "7A",
+        "count": 1
+      }
+    ],
+    "cardinality": "0.01%",
+    "imbalance": "99.99% top value",
+    "sparsity": "99.99%"
+  },
+  "zz_Contact Rating.UOM": {
+    "datatype": "Constant",
+    "range": null,
+    "missing_percentage": 99.99,
+    "top_values": [
+      {
+        "value": "A",
+        "count": 3
+      }
+    ],
+    "cardinality": "0.00%",
+    "imbalance": "99.99% top value",
+    "sparsity": "99.99%"
+  },
+  "zz_Contact Current Rating": {
+    "datatype": "Categorical",
+    "range": null,
+    "missing_percentage": 66.93,
+    "top_values": [
+      {
+        "value": "25",
+        "count": 890
+      },
+      {
+        "value": "9",
+        "count": 756
+      },
+      {
+        "value": "12",
+        "count": 611
+      },
+      {
+        "value": "32",
+        "count": 378
+      },
+      {
+        "value": "40",
+        "count": 360
+      }
+    ],
+    "cardinality": "0.59%",
+    "imbalance": "66.93% top value",
+    "sparsity": "66.93%"
+  },
+  "zz_Contact Current Rating.UOM": {
+    "datatype": "Categorical",
+    "range": null,
+    "missing_percentage": 66.93,
+    "top_values": [
+      {
+        "value": "A",
+        "count": 8325
+      },
+      {
+        "value": "Amp",
+        "count": 55
+      },
+      {
+        "value": "mA",
+        "count": 2
+      }
+    ],
+    "cardinality": "0.01%",
+    "imbalance": "66.93% top value",
+    "sparsity": "66.93%"
+  },
+  "zz_Horsepower Rating": {
+    "datatype": "Categorical",
+    "range": null,
+    "missing_percentage": 98.07,
+    "top_values": [
+      {
+        "value": "25",
+        "count": 110
+      },
+      {
+        "value": "5",
+        "count": 77
+      },
+      {
+        "value": "8",
+        "count": 59
+      },
+      {
+        "value": "10",
+        "count": 40
+      },
+      {
+        "value": "20",
+        "count": 33
+      }
+    ],
+    "cardinality": "0.09%",
+    "imbalance": "98.07% top value",
+    "sparsity": "98.07%"
+  },
+  "zz_Horsepower Rating.UOM": {
+    "datatype": "Categorical",
+    "range": null,
+    "missing_percentage": 98.07,
+    "top_values": [
+      {
+        "value": "HP",
+        "count": 403
+      },
+      {
+        "value": "hp",
+        "count": 85
+      }
+    ],
+    "cardinality": "0.01%",
+    "imbalance": "98.07% top value",
+    "sparsity": "98.07%"
+  },
+  "zz_Contact Configuration": {
+    "datatype": "Categorical",
+    "range": null,
+    "missing_percentage": 91.58,
+    "top_values": [
+      {
+        "value": "3 NO",
+        "count": 394
+      },
+      {
+        "value": "1 NO, 1 NC",
+        "count": 335
+      },
+      {
+        "value": "1NO",
+        "count": 240
+      },
+      {
+        "value": "2 NO, 2 NC",
+        "count": 201
+      },
+      {
+        "value": "1NO, 1NC",
+        "count": 119
+      }
+    ],
+    "cardinality": "0.21%",
+    "imbalance": "91.58% top value",
+    "sparsity": "91.58%"
+  },
+  "zz_Number of Conductors": {
+    "datatype": "Constant",
+    "range": [
+      1.0,
+      1.0
+    ],
+    "missing_percentage": 99.99,
+    "top_values": [
+      {
+        "value": "1.0",
+        "count": 3
+      }
+    ],
+    "cardinality": "0.00%",
+    "imbalance": "99.99% top value",
+    "sparsity": "99.99%"
+  },
+  "zz_Current, Ratings": {
+    "datatype": "Numeric",
+    "range": [
+      6.0,
+      500.0
+    ],
+    "missing_percentage": 99.89,
+    "top_values": [
+      {
+        "value": "9.0",
+        "count": 7
+      },
+      {
+        "value": "12.0",
+        "count": 5
+      },
+      {
+        "value": "6.0",
+        "count": 4
+      },
+      {
+        "value": "25.0",
+        "count": 2
+      },
+      {
+        "value": "32.0",
+        "count": 2
+      }
+    ],
+    "cardinality": "0.05%",
+    "imbalance": "99.89% top value",
+    "sparsity": "99.89%"
+  },
+  "zz_Current, Ratings.UOM": {
+    "datatype": "Constant",
+    "range": null,
+    "missing_percentage": 99.89,
+    "top_values": [
+      {
+        "value": "Amp",
+        "count": 27
+      }
+    ],
+    "cardinality": "0.00%",
+    "imbalance": "99.89% top value",
+    "sparsity": "99.89%"
+  },
+  "zz_Application": {
+    "datatype": "Categorical",
+    "range": null,
+    "missing_percentage": 99.42,
+    "top_values": [
+      {
+        "value": "Elec Assemblies, Panels & EOEM - Electrical Assemblies, Panels and EOEMs",
+        "count": 125
+      },
+      {
+        "value": "Elec Assemblies, Panels & EOEM - Electrical Assemblies and EOEMs - Other",
+        "count": 5
+      },
+      {
+        "value": "Commercial / Institutional Buildings / Structures - Commercial / Institutional Buildings / Structures - Other",
+        "count": 5
+      },
+      {
+        "value": "Commercial / Institutional Buildings / Structures - Building Automation and Monitoring",
+        "count": 5
+      },
+      {
+        "value": "Generation - Renewable Energy - Alternative Energy||Marine Vessels and Equipment - Marine Vessels and Equipment - Other||Other||Datacenters - IT Space: CI and Hyper Converged||Generation - Conventional Energy - Conventional Energy",
+        "count": 4
+      }
+    ],
+    "cardinality": "0.03%",
+    "imbalance": "99.42% top value",
+    "sparsity": "99.42%"
+  },
+  "zz_Color": {
+    "datatype": "Categorical",
+    "range": null,
+    "missing_percentage": 99.98,
+    "top_values": [
+      {
+        "value": "Green",
+        "count": 3
+      },
+      {
+        "value": "Orange",
+        "count": 1
+      },
+      {
+        "value": "Gray||Green",
+        "count": 1
+      },
+      {
+        "value": "White",
+        "count": 1
+      }
+    ],
+    "cardinality": "0.02%",
+    "imbalance": "99.98% top value",
+    "sparsity": "99.98%"
+  },
+  "zz_Switch Type": {
+    "datatype": "Categorical",
+    "range": null,
+    "missing_percentage": 99.9,
+    "top_values": [
+      {
+        "value": "Zero Crossing",
+        "count": 10
+      },
+      {
+        "value": "Random",
+        "count": 10
+      },
+      {
+        "value": "DC Switching",
+        "count": 3
+      },
+      {
+        "value": "AC Switching||DC Switching",
+        "count": 2
+      }
+    ],
+    "cardinality": "0.02%",
+    "imbalance": "99.90% top value",
+    "sparsity": "99.90%"
+  },
+  "zz_Terminator Type": {
+    "datatype": "Categorical",
+    "range": null,
+    "missing_percentage": 99.95,
+    "top_values": [
+      {
+        "value": "Screw/Pressure Plate",
+        "count": 6
+      },
+      {
+        "value": "Box Lugs",
+        "count": 6
+      }
+    ],
+    "cardinality": "0.01%",
+    "imbalance": "99.95% top value",
+    "sparsity": "99.95%"
+  },
+  "zz_Jacket Color": {
+    "datatype": "Constant",
+    "range": null,
+    "missing_percentage": 99.99,
+    "top_values": [
+      {
+        "value": "Black",
+        "count": 3
+      }
+    ],
+    "cardinality": "0.00%",
+    "imbalance": "99.99% top value",
+    "sparsity": "99.99%"
+  },
+  "zz_Coil Power": {
+    "datatype": "Categorical",
+    "range": null,
+    "missing_percentage": 93.88,
+    "top_values": [
+      {
+        "value": "110-120 Vac, 50/60 Hz",
+        "count": 234
+      },
+      {
+        "value": "208-240 Vac, 50/60 Hz",
+        "count": 182
+      },
+      {
+        "value": "24 Vac, 50/60 Hz",
+        "count": 139
+      },
+      {
+        "value": "440-480 Vac, 50/60 Hz",
+        "count": 112
+      },
+      {
+        "value": "277 Vac, 60 Hz",
+        "count": 87
+      }
+    ],
+    "cardinality": "0.13%",
+    "imbalance": "93.88% top value",
+    "sparsity": "93.88%"
+  },
+  "zz_Coil Power.UOM": {
+    "datatype": "Constant",
+    "range": null,
+    "missing_percentage": 93.88,
+    "top_values": [
+      {
+        "value": "W",
+        "count": 1551
+      }
+    ],
+    "cardinality": "0.00%",
+    "imbalance": "93.88% top value",
+    "sparsity": "93.88%"
+  },
+  "zz_Horsepower, Max, 3 Phase, at 600 V": {
+    "datatype": "Numeric",
+    "range": [
+      7.5,
+      25.0
+    ],
+    "missing_percentage": 99.91,
+    "top_values": [
+      {
+        "value": "7.5",
+        "count": 8
+      },
+      {
+        "value": "25.0",
+        "count": 4
+      },
+      {
+        "value": "20.0",
+        "count": 4
+      },
+      {
+        "value": "10.0",
+        "count": 4
+      },
+      {
+        "value": "15.0",
+        "count": 4
+      }
+    ],
+    "cardinality": "0.02%",
+    "imbalance": "99.91% top value",
+    "sparsity": "99.91%"
+  },
+  "zz_Maximum Ambient Temperature": {
+    "datatype": "Constant",
+    "range": [
+      80.0,
+      80.0
+    ],
+    "missing_percentage": 100.0,
+    "top_values": [
+      {
+        "value": "80.0",
+        "count": 1
+      }
+    ],
+    "cardinality": "0.00%",
+    "imbalance": "100.00% top value",
+    "sparsity": "100.00%"
+  },
+  "zz_Maximum Ambient Temperature.UOM": {
+    "datatype": "Constant",
+    "range": null,
+    "missing_percentage": 100.0,
+    "top_values": [
+      {
+        "value": "°C",
+        "count": 1
+      }
+    ],
+    "cardinality": "0.00%",
+    "imbalance": "100.00% top value",
+    "sparsity": "100.00%"
+  },
+  "zz_Warranty": {
+    "datatype": "Categorical",
+    "range": null,
+    "missing_percentage": 99.55,
+    "top_values": [
+      {
+        "value": "Eaton Selling Policy 25-000, one (1) year from the date of installation of the Product or eighteen (18) months from the date of shipment of the Product, whichever occurs first.",
+        "count": 108
+      },
+      {
+        "value": "1 year",
+        "count": 3
+      },
+      {
+        "value": "Limited Lifetime",
+        "count": 1
+      },
+      {
+        "value": "Not Applicable",
+        "count": 1
+      }
+    ],
+    "cardinality": "0.02%",
+    "imbalance": "99.55% top value",
+    "sparsity": "99.55%"
+  },
+  "zz_Series": {
+    "datatype": "Categorical",
+    "range": null,
+    "missing_percentage": 61.37,
+    "top_values": [
+      {
+        "value": "AF Series",
+        "count": 1123
+      },
+      {
+        "value": "XT IEC",
+        "count": 1117
+      },
+      {
+        "value": "TeSys Deca Series",
+        "count": 1050
+      },
+      {
+        "value": "3RT Series",
+        "count": 760
+      },
+      {
+        "value": "C25 Series",
+        "count": 523
+      }
+    ],
+    "cardinality": "1.05%",
+    "imbalance": "61.37% top value",
+    "sparsity": "61.37%"
+  },
+  "zz_Rating": {
+    "datatype": "Categorical",
+    "range": null,
+    "missing_percentage": 99.97,
+    "top_values": [
+      {
+        "value": "15.5 A",
+        "count": 3
+      },
+      {
+        "value": "12.0 A",
+        "count": 3
+      },
+      {
+        "value": "9.0 A",
+        "count": 2
+      }
+    ],
+    "cardinality": "0.01%",
+    "imbalance": "99.97% top value",
+    "sparsity": "99.97%"
+  },
+  "zz_Current Rating": {
+    "datatype": "Categorical",
+    "range": null,
+    "missing_percentage": 89.74,
+    "top_values": [
+      {
+        "value": "50",
+        "count": 436
+      },
+      {
+        "value": "40",
+        "count": 417
+      },
+      {
+        "value": "25",
+        "count": 263
+      },
+      {
+        "value": "30",
+        "count": 160
+      },
+      {
+        "value": "32",
+        "count": 122
+      }
+    ],
+    "cardinality": "0.36%",
+    "imbalance": "89.74% top value",
+    "sparsity": "89.74%"
+  },
+  "zz_Current Rating.UOM": {
+    "datatype": "Categorical",
+    "range": null,
+    "missing_percentage": 89.74,
+    "top_values": [
+      {
+        "value": "A",
+        "count": 2600
+      },
+      {
+        "value": "Amp",
+        "count": 1
+      }
+    ],
+    "cardinality": "0.01%",
+    "imbalance": "89.74% top value",
+    "sparsity": "89.74%"
+  },
+  "zz_Maximum Operating Temperature": {
+    "datatype": "Categorical",
+    "range": null,
+    "missing_percentage": 97.86,
+    "top_values": [
+      {
+        "value": "60",
+        "count": 241
+      },
+      {
+        "value": "65",
+        "count": 89
+      },
+      {
+        "value": "70",
+        "count": 70
+      },
+      {
+        "value": "50",
+        "count": 46
+      },
+      {
+        "value": "55",
+        "count": 23
+      }
+    ],
+    "cardinality": "0.05%",
+    "imbalance": "97.86% top value",
+    "sparsity": "97.86%"
+  },
+  "zz_Maximum Operating Temperature.UOM": {
+    "datatype": "Categorical",
+    "range": null,
+    "missing_percentage": 97.86,
+    "top_values": [
+      {
+        "value": "°C",
+        "count": 496
+      },
+      {
+        "value": "°F",
+        "count": 32
+      },
+      {
+        "value": "°C||°F",
+        "count": 12
+      },
+      {
+        "value": "C",
+        "count": 2
+      }
+    ],
+    "cardinality": "0.02%",
+    "imbalance": "97.86% top value",
+    "sparsity": "97.86%"
+  },
+  "zz_Resistance": {
+    "datatype": "Constant",
+    "range": [
+      114.0,
+      114.0
+    ],
+    "missing_percentage": 100.0,
+    "top_values": [
+      {
+        "value": "114.0",
+        "count": 1
+      }
+    ],
+    "cardinality": "0.00%",
+    "imbalance": "100.00% top value",
+    "sparsity": "100.00%"
+  },
+  "zz_Resistance.UOM": {
+    "datatype": "Constant",
+    "range": null,
+    "missing_percentage": 100.0,
+    "top_values": [
+      {
+        "value": "Ohms",
+        "count": 1
+      }
+    ],
+    "cardinality": "0.00%",
+    "imbalance": "100.00% top value",
+    "sparsity": "100.00%"
+  },
+  "zz_Horsepower, Motor, Max at 230 V": {
+    "datatype": "Numeric",
+    "range": [
+      3.0,
+      15.0
+    ],
+    "missing_percentage": 99.88,
+    "top_values": [
+      {
+        "value": "7.5",
+        "count": 9
+      },
+      {
+        "value": "3.0",
+        "count": 6
+      },
+      {
+        "value": "5.0",
+        "count": 6
+      },
+      {
+        "value": "10.0",
+        "count": 6
+      },
+      {
+        "value": "15.0",
+        "count": 3
+      }
+    ],
+    "cardinality": "0.02%",
+    "imbalance": "99.88% top value",
+    "sparsity": "99.88%"
+  },
+  "zz_Body Style": {
+    "datatype": "Constant",
+    "range": null,
+    "missing_percentage": 99.97,
+    "top_values": [
+      {
+        "value": "Compact",
+        "count": 7
+      }
+    ],
+    "cardinality": "0.00%",
+    "imbalance": "99.97% top value",
+    "sparsity": "99.97%"
+  },
+  "zz_Frequency": {
+    "datatype": "Categorical",
+    "range": null,
+    "missing_percentage": 99.91,
+    "top_values": [
+      {
+        "value": "50-60 Hz",
+        "count": 19
+      },
+      {
+        "value": "2.4GHz, 5GHz",
+        "count": 3
+      }
+    ],
+    "cardinality": "0.01%",
+    "imbalance": "99.91% top value",
+    "sparsity": "99.91%"
+  },
+  "zz_Frequency.UOM": {
+    "datatype": "Constant",
+    "range": null,
+    "missing_percentage": 99.91,
+    "top_values": [
+      {
+        "value": "GHz",
+        "count": 22
+      }
+    ],
+    "cardinality": "0.00%",
+    "imbalance": "99.91% top value",
+    "sparsity": "99.91%"
+  },
+  "zz_Overall Length": {
+    "datatype": "Constant",
+    "range": [
+      6.142,
+      6.142
+    ],
+    "missing_percentage": 99.99,
+    "top_values": [
+      {
+        "value": "6.142",
+        "count": 3
+      }
+    ],
+    "cardinality": "0.00%",
+    "imbalance": "99.99% top value",
+    "sparsity": "99.99%"
+  },
+  "zz_Overall Length.UOM": {
+    "datatype": "Constant",
+    "range": null,
+    "missing_percentage": 99.99,
+    "top_values": [
+      {
+        "value": "in",
+        "count": 3
+      }
+    ],
+    "cardinality": "0.00%",
+    "imbalance": "99.99% top value",
+    "sparsity": "99.99%"
+  },
+  "zz_Operating Voltage Range": {
+    "datatype": "Categorical",
+    "range": null,
+    "missing_percentage": 99.04,
+    "top_values": [
+      {
+        "value": "690",
+        "count": 148
+      },
+      {
+        "value": "42 to 660",
+        "count": 52
+      },
+      {
+        "value": "440",
+        "count": 36
+      },
+      {
+        "value": "48 to 530",
+        "count": 3
+      },
+      {
+        "value": "24 to 264",
+        "count": 3
+      }
+    ],
+    "cardinality": "0.03%",
+    "imbalance": "99.04% top value",
+    "sparsity": "99.04%"
+  },
+  "zz_Operating Voltage Range.UOM": {
+    "datatype": "Categorical",
+    "range": null,
+    "missing_percentage": 99.04,
+    "top_values": [
+      {
+        "value": "V",
+        "count": 242
+      },
+      {
+        "value": "dB",
+        "count": 2
+      }
+    ],
+    "cardinality": "0.01%",
+    "imbalance": "99.04% top value",
+    "sparsity": "99.04%"
+  },
+  "zz_Horsepower, Max, 1 Phase, at 115 V": {
+    "datatype": "Categorical",
+    "range": null,
+    "missing_percentage": 99.76,
+    "top_values": [
+      {
+        "value": "1",
+        "count": 16
+      },
+      {
+        "value": "2",
+        "count": 11
+      },
+      {
+        "value": "0.5",
+        "count": 6
+      },
+      {
+        "value": "0.33",
+        "count": 5
+      },
+      {
+        "value": "0.25",
+        "count": 5
+      }
+    ],
+    "cardinality": "0.05%",
+    "imbalance": "99.76% top value",
+    "sparsity": "99.76%"
+  },
+  "zz_Horsepower, Max, 1 Phase, at 200 V": {
+    "datatype": "Numeric",
+    "range": [
+      0.75,
+      2.0
+    ],
+    "missing_percentage": 99.99,
+    "top_values": [
+      {
+        "value": "0.75",
+        "count": 1
+      },
+      {
+        "value": "2.0",
+        "count": 1
+      }
+    ],
+    "cardinality": "0.01%",
+    "imbalance": "99.99% top value",
+    "sparsity": "99.99%"
+  },
+  "zz_Mounting Type": {
+    "datatype": "Categorical",
+    "range": null,
+    "missing_percentage": 64.38,
+    "top_values": [
+      {
+        "value": "DIN Rail Mount",
+        "count": 4052
+      },
+      {
+        "value": "DIN Rail/Panel Mount",
+        "count": 2200
+      },
+      {
+        "value": "Panel Mount",
+        "count": 2074
+      },
+      {
+        "value": "Screw||DIN Rail Mount",
+        "count": 492
+      },
+      {
+        "value": "Plate Mount",
+        "count": 107
+      }
+    ],
+    "cardinality": "0.07%",
+    "imbalance": "64.38% top value",
+    "sparsity": "64.38%"
+  },
+  "zz_Dielectric Strength": {
+    "datatype": "Categorical",
+    "range": null,
+    "missing_percentage": 99.98,
+    "top_values": [
+      {
+        "value": "4000 Vrms",
+        "count": 5
+      },
+      {
+        "value": "4000 V (RMS)",
+        "count": 1
+      }
+    ],
+    "cardinality": "0.01%",
+    "imbalance": "99.98% top value",
+    "sparsity": "99.98%"
+  },
+  "zz_Dielectric Strength.UOM": {
+    "datatype": "Constant",
+    "range": null,
+    "missing_percentage": 99.98,
+    "top_values": [
+      {
+        "value": "V",
+        "count": 6
+      }
+    ],
+    "cardinality": "0.00%",
+    "imbalance": "99.98% top value",
+    "sparsity": "99.98%"
+  },
+  "zz_Relay Type": {
+    "datatype": "Categorical",
+    "range": null,
+    "missing_percentage": 99.17,
+    "top_values": [
+      {
+        "value": "Solid State",
+        "count": 89
+      },
+      {
+        "value": "Electromechanical",
+        "count": 88
+      },
+      {
+        "value": "General Purpose",
+        "count": 22
+      },
+      {
+        "value": "Solenoid",
+        "count": 5
+      },
+      {
+        "value": "Contactor",
+        "count": 4
+      }
+    ],
+    "cardinality": "0.02%",
+    "imbalance": "99.17% top value",
+    "sparsity": "99.17%"
+  },
+  "zz_Voltage Rating": {
+    "datatype": "Categorical",
+    "range": null,
+    "missing_percentage": 94.02,
+    "top_values": [
+      {
+        "value": "24",
+        "count": 297
+      },
+      {
+        "value": "42 to 660",
+        "count": 166
+      },
+      {
+        "value": "600",
+        "count": 161
+      },
+      {
+        "value": "120",
+        "count": 85
+      },
+      {
+        "value": "480",
+        "count": 58
+      }
+    ],
+    "cardinality": "0.33%",
+    "imbalance": "94.02% top value",
+    "sparsity": "94.02%"
+  },
+  "zz_Voltage Rating.UOM": {
+    "datatype": "Categorical",
+    "range": null,
+    "missing_percentage": 94.02,
+    "top_values": [
+      {
+        "value": "V",
+        "count": 904
+      },
+      {
+        "value": "VAC",
+        "count": 283
+      },
+      {
+        "value": "VDC",
+        "count": 169
+      },
+      {
+        "value": "V||V",
+        "count": 87
+      },
+      {
+        "value": "VAC||VDC",
+        "count": 59
+      }
+    ],
+    "cardinality": "0.03%",
+    "imbalance": "94.02% top value",
+    "sparsity": "94.02%"
+  },
+  "zz_Horsepower, Max, 1 Phase, at 208 V": {
+    "datatype": "Numeric",
+    "range": [
+      0.5,
+      30.0
+    ],
+    "missing_percentage": 99.84,
+    "top_values": [
+      {
+        "value": "2.0",
+        "count": 15
+      },
+      {
+        "value": "5.0",
+        "count": 7
+      },
+      {
+        "value": "1.5",
+        "count": 6
+      },
+      {
+        "value": "0.5",
+        "count": 4
+      },
+      {
+        "value": "1.0",
+        "count": 4
+      }
+    ],
+    "cardinality": "0.03%",
+    "imbalance": "99.84% top value",
+    "sparsity": "99.84%"
+  },
+  "zz_Enclosure Rating": {
+    "datatype": "Categorical",
+    "range": null,
+    "missing_percentage": 95.65,
+    "top_values": [
+      {
+        "value": "Open with metal mounting plate",
+        "count": 921
+      },
+      {
+        "value": "NEMA Type 1 Enclosed",
+        "count": 139
+      },
+      {
+        "value": "Open with DIN rail mounting adapter",
+        "count": 42
+      },
+      {
+        "value": "NEMA 1",
+        "count": 1
+      }
+    ],
+    "cardinality": "0.02%",
+    "imbalance": "95.65% top value",
+    "sparsity": "95.65%"
+  },
+  "zz_Stripping Length": {
+    "datatype": "Constant",
+    "range": null,
+    "missing_percentage": 99.99,
+    "top_values": [
+      {
+        "value": "8 mm",
+        "count": 3
+      }
+    ],
+    "cardinality": "0.00%",
+    "imbalance": "99.99% top value",
+    "sparsity": "99.99%"
+  },
+  "zz_Stripping Length.UOM": {
+    "datatype": "Constant",
+    "range": null,
+    "missing_percentage": 99.99,
+    "top_values": [
+      {
+        "value": "in",
+        "count": 3
+      }
+    ],
+    "cardinality": "0.00%",
+    "imbalance": "99.99% top value",
+    "sparsity": "99.99%"
+  },
+  "zz_Power Rating": {
+    "datatype": "Categorical",
+    "range": null,
+    "missing_percentage": 97.62,
+    "top_values": [
+      {
+        "value": "4 kW",
+        "count": 69
+      },
+      {
+        "value": "5.5 kW",
+        "count": 65
+      },
+      {
+        "value": "3 kW",
+        "count": 48
+      },
+      {
+        "value": "400",
+        "count": 44
+      },
+      {
+        "value": "7.5 kW",
+        "count": 37
+      }
+    ],
+    "cardinality": "0.29%",
+    "imbalance": "97.62% top value",
+    "sparsity": "97.62%"
+  },
+  "zz_Power Rating.UOM": {
+    "datatype": "Categorical",
+    "range": null,
+    "missing_percentage": 97.62,
+    "top_values": [
+      {
+        "value": "W",
+        "count": 500
+      },
+      {
+        "value": "kW",
+        "count": 58
+      },
+      {
+        "value": "V",
+        "count": 44
+      },
+      {
+        "value": "[DELETE]",
+        "count": 1
+      }
+    ],
+    "cardinality": "0.02%",
+    "imbalance": "97.62% top value",
+    "sparsity": "97.62%"
+  },
+  "zz_Number of Positions": {
+    "datatype": "Constant",
+    "range": [
+      1.0,
+      1.0
+    ],
+    "missing_percentage": 99.99,
+    "top_values": [
+      {
+        "value": "1.0",
+        "count": 3
+      }
+    ],
+    "cardinality": "0.00%",
+    "imbalance": "99.99% top value",
+    "sparsity": "99.99%"
+  },
+  "zz_Load Current": {
+    "datatype": "Categorical",
+    "range": null,
+    "missing_percentage": 99.87,
+    "top_values": [
+      {
+        "value": "2.4",
+        "count": 12
+      },
+      {
+        "value": "4.2",
+        "count": 10
+      },
+      {
+        "value": "50",
+        "count": 4
+      },
+      {
+        "value": "25",
+        "count": 3
+      },
+      {
+        "value": "40",
+        "count": 2
+      }
+    ],
+    "cardinality": "0.03%",
+    "imbalance": "99.87% top value",
+    "sparsity": "99.87%"
+  },
+  "zz_Load Current.UOM": {
+    "datatype": "Constant",
+    "range": null,
+    "missing_percentage": 99.87,
+    "top_values": [
+      {
+        "value": "A",
+        "count": 34
+      }
+    ],
+    "cardinality": "0.00%",
+    "imbalance": "99.87% top value",
+    "sparsity": "99.87%"
+  },
+  "zz_Input Voltage": {
+    "datatype": "Numeric",
+    "range": [
+      24.0,
+      120.0
+    ],
+    "missing_percentage": 99.98,
+    "top_values": [
+      {
+        "value": "24.0",
+        "count": 4
+      },
+      {
+        "value": "120.0",
+        "count": 2
+      }
+    ],
+    "cardinality": "0.01%",
+    "imbalance": "99.98% top value",
+    "sparsity": "99.98%"
+  },
+  "zz_Function": {
+    "datatype": "Categorical",
+    "range": null,
+    "missing_percentage": 98.41,
+    "top_values": [
+      {
+        "value": "Zero-Switching",
+        "count": 229
+      },
+      {
+        "value": "Contactor",
+        "count": 93
+      },
+      {
+        "value": "IEC Contactor",
+        "count": 41
+      },
+      {
+        "value": "Random Turn-On",
+        "count": 21
+      },
+      {
+        "value": "SCR/Proportional Control",
+        "count": 10
+      }
+    ],
+    "cardinality": "0.05%",
+    "imbalance": "98.41% top value",
+    "sparsity": "98.41%"
+  },
+  "zz_Includes": {
+    "datatype": "Categorical",
+    "range": null,
+    "missing_percentage": 99.99,
+    "top_values": [
+      {
+        "value": "Quick Connect",
+        "count": 1
+      },
+      {
+        "value": "Quick Connect Terminal",
+        "count": 1
+      }
+    ],
+    "cardinality": "0.01%",
+    "imbalance": "99.99% top value",
+    "sparsity": "99.99%"
+  },
+  "zz_Operating Temperature": {
+    "datatype": "Constant",
+    "range": null,
+    "missing_percentage": 100.0,
+    "top_values": [
+      {
+        "value": "-10 to 55",
+        "count": 1
+      }
+    ],
+    "cardinality": "0.00%",
+    "imbalance": "100.00% top value",
+    "sparsity": "100.00%"
+  },
+  "zz_Operating Temperature.UOM": {
+    "datatype": "Constant",
+    "range": null,
+    "missing_percentage": 100.0,
+    "top_values": [
+      {
+        "value": "°C",
+        "count": 1
+      }
+    ],
+    "cardinality": "0.00%",
+    "imbalance": "100.00% top value",
+    "sparsity": "100.00%"
+  },
+  "dr_Series": {
+    "datatype": "Categorical",
+    "range": null,
+    "missing_percentage": 61.37,
+    "top_values": [
+      {
+        "value": "AF Series",
+        "count": 1123
+      },
+      {
+        "value": "XT IEC Series",
+        "count": 1117
+      },
+      {
+        "value": "TeSys Deca Series",
+        "count": 1050
+      },
+      {
+        "value": "3RT Series",
+        "count": 760
+      },
+      {
+        "value": "C25 Series",
+        "count": 523
+      }
+    ],
+    "cardinality": "1.01%",
+    "imbalance": "61.37% top value",
+    "sparsity": "61.37%"
+  },
+  "zz_Socket Type": {
+    "datatype": "Constant",
+    "range": null,
+    "missing_percentage": 100.0,
+    "top_values": [
+      {
+        "value": "Printed Circuit Board",
+        "count": 1
+      }
+    ],
+    "cardinality": "0.00%",
+    "imbalance": "100.00% top value",
+    "sparsity": "100.00%"
+  },
+  "zz_Minimum Operating Temperature": {
+    "datatype": "Categorical",
+    "range": null,
+    "missing_percentage": 97.89,
+    "top_values": [
+      {
+        "value": "-25",
+        "count": 274
+      },
+      {
+        "value": "-5",
+        "count": 97
+      },
+      {
+        "value": "-40",
+        "count": 60
+      },
+      {
+        "value": "0",
+        "count": 54
+      },
+      {
+        "value": "-20",
+        "count": 20
+      }
+    ],
+    "cardinality": "0.04%",
+    "imbalance": "97.89% top value",
+    "sparsity": "97.89%"
+  },
+  "zz_Minimum Operating Temperature.UOM": {
+    "datatype": "Categorical",
+    "range": null,
+    "missing_percentage": 97.89,
+    "top_values": [
+      {
+        "value": "°C",
+        "count": 495
+      },
+      {
+        "value": "°F",
+        "count": 32
+      },
+      {
+        "value": "°C||°F",
+        "count": 6
+      },
+      {
+        "value": "C",
+        "count": 2
+      }
+    ],
+    "cardinality": "0.02%",
+    "imbalance": "97.89% top value",
+    "sparsity": "97.89%"
+  },
+  "zz_Leaf Node": {
+    "datatype": "Constant",
+    "range": null,
+    "missing_percentage": 0.78,
+    "top_values": [
+      {
+        "value": "contactors",
+        "count": 25145
+      }
+    ],
+    "cardinality": "0.00%",
+    "imbalance": "99.22% top value",
+    "sparsity": "0.78%"
+  },
+  "zz_Isolation Voltage": {
+    "datatype": "Constant",
+    "range": null,
+    "missing_percentage": 100.0,
+    "top_values": [
+      {
+        "value": "2500 VRMS Coil to Contacts, Contacts to Frame, 1500 VRMS Across Open Contacts, Pole to Pole",
+        "count": 1
+      }
+    ],
+    "cardinality": "0.00%",
+    "imbalance": "100.00% top value",
+    "sparsity": "100.00%"
+  },
+  "zz_Isolation Voltage.UOM": {
+    "datatype": "Constant",
+    "range": null,
+    "missing_percentage": 100.0,
+    "top_values": [
+      {
+        "value": "_EMPTY",
+        "count": 1
+      }
+    ],
+    "cardinality": "0.00%",
+    "imbalance": "100.00% top value",
+    "sparsity": "100.00%"
+  },
+  "zz_DimensionsNested": {
+    "datatype": "Empty",
+    "range": [
+      NaN,
+      NaN
+    ],
+    "missing_percentage": 100.0,
+    "top_values": [],
+    "cardinality": "0.00%",
+    "imbalance": "100.00% top value",
+    "sparsity": "100.00%"
+  }
+}

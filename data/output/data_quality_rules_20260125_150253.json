@@ -1,0 +1,705 @@
+{
+  "metadata": {
+    "generated_at": "2026-01-25T09:32:53.997148",
+    "generator_version": "1.0.0",
+    "data_sources": [],
+    "total_rules": 25,
+    "rules_by_category": {
+      "COMPLETENESS": 17,
+      "VALIDITY": 8
+    }
+  },
+  "attribute_matching_report": {
+    "matched_attributes": [],
+    "crosstab_only_attributes": [],
+    "rag_only_attributes": [],
+    "statistics": {}
+  },
+  "rules": [
+    {
+      "rule_id": "DQR_001",
+      "attribute": "zz_Dielectric Rating",
+      "category": "COMPLETENESS",
+      "subtype": "mandatory_field",
+      "description": "Ensure zz_Dielectric Rating is not missing.",
+      "validation_logic": {
+        "expression": "not pd.isnull(df['zz_Dielectric Rating'])",
+        "parameters": {
+          "from": "profiling"
+        },
+        "error_message": "Dielectric Rating is missing.",
+        "severity": "ERROR"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Profiling Statistics",
+          "excerpt": "Missing %: 99.99%",
+          "confidence": 0.95
+        }
+      ],
+      "business_impact": "Missing dielectric rating can lead to incorrect product specifications.",
+      "implementation_notes": "Ensure data collection process captures dielectric rating.",
+      "created_at": "2026-01-25T09:32:53.997148"
+    },
+    {
+      "rule_id": "DQR_002",
+      "attribute": "zz_IP Rating",
+      "category": "COMPLETENESS",
+      "subtype": "mandatory_field",
+      "description": "Ensure zz_IP Rating is not missing.",
+      "validation_logic": {
+        "expression": "not pd.isnull(df['zz_IP Rating'])",
+        "parameters": {
+          "from": "profiling"
+        },
+        "error_message": "IP Rating is missing.",
+        "severity": "ERROR"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Profiling Statistics",
+          "excerpt": "Missing %: 99.81%",
+          "confidence": 0.95
+        }
+      ],
+      "business_impact": "Missing IP rating affects product protection classification.",
+      "implementation_notes": "Ensure IP ratings are recorded during product testing.",
+      "created_at": "2026-01-25T09:32:53.997148"
+    },
+    {
+      "rule_id": "DQR_003",
+      "attribute": "zz_Horsepower, Max, 3 Phase, at 480 V",
+      "category": "VALIDITY",
+      "subtype": "range_check",
+      "description": "Ensure zz_Horsepower, Max, 3 Phase, at 480 V is within the allowed range.",
+      "validation_logic": {
+        "expression": "df['zz_Horsepower, Max, 3 Phase, at 480 V'].between(0, 100)",
+        "parameters": {
+          "from": "profiling"
+        },
+        "error_message": "Horsepower value is out of range.",
+        "severity": "ERROR"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Profiling Statistics",
+          "excerpt": "Top Values: 5, 10, 15",
+          "confidence": 0.95
+        }
+      ],
+      "business_impact": "Incorrect horsepower values can lead to product failure.",
+      "implementation_notes": "Validate horsepower values against design specifications.",
+      "created_at": "2026-01-25T09:32:53.997148"
+    },
+    {
+      "rule_id": "DQR_004",
+      "attribute": "zz_Control Voltage",
+      "category": "COMPLETENESS",
+      "subtype": "mandatory_field",
+      "description": "Ensure zz_Control Voltage is not missing.",
+      "validation_logic": {
+        "expression": "not pd.isnull(df['zz_Control Voltage'])",
+        "parameters": {
+          "from": "profiling"
+        },
+        "error_message": "Control Voltage is missing.",
+        "severity": "ERROR"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Profiling Statistics",
+          "excerpt": "Missing %: 77.9%",
+          "confidence": 0.95
+        }
+      ],
+      "business_impact": "Missing control voltage can lead to incorrect electrical configurations.",
+      "implementation_notes": "Ensure control voltage is captured during product setup.",
+      "created_at": "2026-01-25T09:32:53.997148"
+    },
+    {
+      "rule_id": "DQR_005",
+      "attribute": "zz_Special Features",
+      "category": "COMPLETENESS",
+      "subtype": "mandatory_field",
+      "description": "Ensure zz_Special Features is not missing.",
+      "validation_logic": {
+        "expression": "not pd.isnull(df['zz_Special Features'])",
+        "parameters": {
+          "from": "profiling"
+        },
+        "error_message": "Special Features are missing.",
+        "severity": "WARNING"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Profiling Statistics",
+          "excerpt": "Missing %: 97.32%",
+          "confidence": 0.95
+        }
+      ],
+      "business_impact": "Missing special features may affect product differentiation.",
+      "implementation_notes": "Ensure special features are documented during product design.",
+      "created_at": "2026-01-25T09:32:53.997148"
+    },
+    {
+      "rule_id": "DQR_006",
+      "attribute": "zz_Material",
+      "category": "COMPLETENESS",
+      "subtype": "mandatory_field",
+      "description": "Ensure zz_Material is not missing.",
+      "validation_logic": {
+        "expression": "not pd.isnull(df['zz_Material'])",
+        "parameters": {
+          "from": "profiling"
+        },
+        "error_message": "Material information is missing.",
+        "severity": "ERROR"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Profiling Statistics",
+          "excerpt": "Missing %: 100.0%",
+          "confidence": 0.95
+        }
+      ],
+      "business_impact": "Missing material information can lead to incorrect manufacturing processes.",
+      "implementation_notes": "Ensure material data is captured during material sourcing.",
+      "created_at": "2026-01-25T09:32:53.997148"
+    },
+    {
+      "rule_id": "DQR_007",
+      "attribute": "zz_Horsepower, Motor, Max at 115 V",
+      "category": "VALIDITY",
+      "subtype": "range_check",
+      "description": "Ensure zz_Horsepower, Motor, Max at 115 V is within the allowed range.",
+      "validation_logic": {
+        "expression": "df['zz_Horsepower, Motor, Max at 115 V'].between(2.0, 10.0)",
+        "parameters": {
+          "from": "profiling"
+        },
+        "error_message": "Horsepower value is out of range.",
+        "severity": "ERROR"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Profiling Statistics",
+          "excerpt": "Range: 2.0 to 10.0",
+          "confidence": 0.95
+        }
+      ],
+      "business_impact": "Incorrect horsepower values can lead to product failure.",
+      "implementation_notes": "Validate horsepower values against design specifications.",
+      "created_at": "2026-01-25T09:32:53.997148"
+    },
+    {
+      "rule_id": "DQR_008",
+      "attribute": "zz_Maximum Voltage",
+      "category": "COMPLETENESS",
+      "subtype": "mandatory_field",
+      "description": "Ensure zz_Maximum Voltage is not missing.",
+      "validation_logic": {
+        "expression": "not pd.isnull(df['zz_Maximum Voltage'])",
+        "parameters": {
+          "from": "profiling"
+        },
+        "error_message": "Maximum Voltage is missing.",
+        "severity": "ERROR"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Profiling Statistics",
+          "excerpt": "Missing %: 99.99%",
+          "confidence": 0.95
+        }
+      ],
+      "business_impact": "Missing maximum voltage can lead to incorrect voltage ratings.",
+      "implementation_notes": "Ensure maximum voltage is recorded during electrical testing.",
+      "created_at": "2026-01-25T09:32:53.997148"
+    },
+    {
+      "rule_id": "DQR_009",
+      "attribute": "zz_Horsepower, Max, 1 Phase, at 240 V",
+      "category": "VALIDITY",
+      "subtype": "range_check",
+      "description": "Ensure zz_Horsepower, Max, 1 Phase, at 240 V is within the allowed range.",
+      "validation_logic": {
+        "expression": "df['zz_Horsepower, Max, 1 Phase, at 240 V'].between(1.0, 5.0)",
+        "parameters": {
+          "from": "profiling"
+        },
+        "error_message": "Horsepower value is out of range.",
+        "severity": "ERROR"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Profiling Statistics",
+          "excerpt": "Range: 1.0 to 5.0",
+          "confidence": 0.95
+        }
+      ],
+      "business_impact": "Incorrect horsepower values can lead to product failure.",
+      "implementation_notes": "Validate horsepower values against design specifications.",
+      "created_at": "2026-01-25T09:32:53.997148"
+    },
+    {
+      "rule_id": "DQR_010",
+      "attribute": "zz_Mounting Style",
+      "category": "COMPLETENESS",
+      "subtype": "mandatory_field",
+      "description": "Ensure zz_Mounting Style is not missing.",
+      "validation_logic": {
+        "expression": "not pd.isnull(df['zz_Mounting Style'])",
+        "parameters": {
+          "from": "profiling"
+        },
+        "error_message": "Mounting Style is missing.",
+        "severity": "ERROR"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Profiling Statistics",
+          "excerpt": "Missing %: 98.93%",
+          "confidence": 0.95
+        }
+      ],
+      "business_impact": "Missing mounting style can lead to incorrect installation.",
+      "implementation_notes": "Ensure mounting style is documented during product design.",
+      "created_at": "2026-01-25T09:32:53.997148"
+    },
+    {
+      "rule_id": "DQR_011",
+      "attribute": "zz_Mounting Diameter",
+      "category": "COMPLETENESS",
+      "subtype": "mandatory_field",
+      "description": "Ensure zz_Mounting Diameter is not missing.",
+      "validation_logic": {
+        "expression": "not pd.isnull(df['zz_Mounting Diameter'])",
+        "parameters": {
+          "from": "profiling"
+        },
+        "error_message": "Mounting Diameter is missing.",
+        "severity": "ERROR"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Profiling Statistics",
+          "excerpt": "Missing %: 100.0%",
+          "confidence": 0.95
+        }
+      ],
+      "business_impact": "Missing mounting diameter can lead to incorrect installation.",
+      "implementation_notes": "Ensure mounting diameter is documented during product design.",
+      "created_at": "2026-01-25T09:32:53.997148"
+    },
+    {
+      "rule_id": "DQR_012",
+      "attribute": "zz_Product Type",
+      "category": "COMPLETENESS",
+      "subtype": "mandatory_field",
+      "description": "Ensure zz_Product Type is not missing.",
+      "validation_logic": {
+        "expression": "not pd.isnull(df['zz_Product Type'])",
+        "parameters": {
+          "from": "profiling"
+        },
+        "error_message": "Product Type is missing.",
+        "severity": "ERROR"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Profiling Statistics",
+          "excerpt": "Missing %: 99.99%",
+          "confidence": 0.95
+        }
+      ],
+      "business_impact": "Missing product type can lead to incorrect product categorization.",
+      "implementation_notes": "Ensure product type is recorded during product classification.",
+      "created_at": "2026-01-25T09:32:53.997148"
+    },
+    {
+      "rule_id": "DQR_013",
+      "attribute": "zz_Accessory Type",
+      "category": "COMPLETENESS",
+      "subtype": "mandatory_field",
+      "description": "Ensure zz_Accessory Type is not missing.",
+      "validation_logic": {
+        "expression": "not pd.isnull(df['zz_Accessory Type'])",
+        "parameters": {
+          "from": "profiling"
+        },
+        "error_message": "Accessory Type is missing.",
+        "severity": "ERROR"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Profiling Statistics",
+          "excerpt": "Missing %: 99.99%",
+          "confidence": 0.95
+        }
+      ],
+      "business_impact": "Missing accessory type can lead to incorrect accessory categorization.",
+      "implementation_notes": "Ensure accessory type is recorded during product classification.",
+      "created_at": "2026-01-25T09:32:53.997148"
+    },
+    {
+      "rule_id": "DQR_014",
+      "attribute": "zz_Contact Material",
+      "category": "COMPLETENESS",
+      "subtype": "mandatory_field",
+      "description": "Ensure zz_Contact Material is not missing.",
+      "validation_logic": {
+        "expression": "not pd.isnull(df['zz_Contact Material'])",
+        "parameters": {
+          "from": "profiling"
+        },
+        "error_message": "Contact Material is missing.",
+        "severity": "ERROR"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Profiling Statistics",
+          "excerpt": "Missing %: 99.28%",
+          "confidence": 0.95
+        }
+      ],
+      "business_impact": "Missing contact material can lead to incorrect material selection.",
+      "implementation_notes": "Ensure contact material is documented during material sourcing.",
+      "created_at": "2026-01-25T09:32:53.997148"
+    },
+    {
+      "rule_id": "DQR_015",
+      "attribute": "zz_Options",
+      "category": "COMPLETENESS",
+      "subtype": "mandatory_field",
+      "description": "Ensure zz_Options is not missing.",
+      "validation_logic": {
+        "expression": "not pd.isnull(df['zz_Options'])",
+        "parameters": {
+          "from": "profiling"
+        },
+        "error_message": "Options are missing.",
+        "severity": "WARNING"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Profiling Statistics",
+          "excerpt": "Missing %: 96.22%",
+          "confidence": 0.95
+        }
+      ],
+      "business_impact": "Missing options may affect product customization.",
+      "implementation_notes": "Ensure options are documented during product configuration.",
+      "created_at": "2026-01-25T09:32:53.997148"
+    },
+    {
+      "rule_id": "DQR_016",
+      "attribute": "zz_Voltage Range",
+      "category": "COMPLETENESS",
+      "subtype": "mandatory_field",
+      "description": "Ensure zz_Voltage Range is not missing.",
+      "validation_logic": {
+        "expression": "not pd.isnull(df['zz_Voltage Range'])",
+        "parameters": {
+          "from": "profiling"
+        },
+        "error_message": "Voltage Range is missing.",
+        "severity": "ERROR"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Profiling Statistics",
+          "excerpt": "Missing %: 99.96%",
+          "confidence": 0.95
+        }
+      ],
+      "business_impact": "Missing voltage range can lead to incorrect voltage specifications.",
+      "implementation_notes": "Ensure voltage range is recorded during electrical testing.",
+      "created_at": "2026-01-25T09:32:53.997148"
+    },
+    {
+      "rule_id": "DQR_017",
+      "attribute": "zz_Horsepower, Max, 3 Phase, at 240 V",
+      "category": "VALIDITY",
+      "subtype": "range_check",
+      "description": "Ensure zz_Horsepower, Max, 3 Phase, at 240 V is within the allowed range.",
+      "validation_logic": {
+        "expression": "df['zz_Horsepower, Max, 3 Phase, at 240 V'].between(2.0, 10.0)",
+        "parameters": {
+          "from": "profiling"
+        },
+        "error_message": "Horsepower value is out of range.",
+        "severity": "ERROR"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Profiling Statistics",
+          "excerpt": "Range: 2.0 to 10.0",
+          "confidence": 0.95
+        }
+      ],
+      "business_impact": "Incorrect horsepower values can lead to product failure.",
+      "implementation_notes": "Validate horsepower values against design specifications.",
+      "created_at": "2026-01-25T09:32:53.997148"
+    },
+    {
+      "rule_id": "DQR_018",
+      "attribute": "zz_Supply Voltage",
+      "category": "VALIDITY",
+      "subtype": "range_check",
+      "description": "Ensure zz_Supply Voltage is within the allowed range.",
+      "validation_logic": {
+        "expression": "df['zz_Supply Voltage'].between(24.0, 690.0)",
+        "parameters": {
+          "from": "profiling"
+        },
+        "error_message": "Supply Voltage value is out of range.",
+        "severity": "ERROR"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Profiling Statistics",
+          "excerpt": "Range: 24.0 to 690.0",
+          "confidence": 0.95
+        }
+      ],
+      "business_impact": "Incorrect supply voltage can lead to electrical failures.",
+      "implementation_notes": "Validate supply voltage values against electrical standards.",
+      "created_at": "2026-01-25T09:32:53.997148"
+    },
+    {
+      "rule_id": "DQR_019",
+      "attribute": "zz_Continuous Current",
+      "category": "VALIDITY",
+      "subtype": "range_check",
+      "description": "Ensure zz_Continuous Current is within the allowed range.",
+      "validation_logic": {
+        "expression": "df['zz_Continuous Current'].between(20.0, 52.0)",
+        "parameters": {
+          "from": "profiling"
+        },
+        "error_message": "Continuous Current value is out of range.",
+        "severity": "ERROR"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Profiling Statistics",
+          "excerpt": "Range: 20.0 to 52.0",
+          "confidence": 0.95
+        }
+      ],
+      "business_impact": "Incorrect continuous current can lead to electrical failures.",
+      "implementation_notes": "Validate continuous current values against electrical standards.",
+      "created_at": "2026-01-25T09:32:53.997148"
+    },
+    {
+      "rule_id": "DQR_020",
+      "attribute": "zz_Horsepower, Max, 3 Phase, at 575 V",
+      "category": "VALIDITY",
+      "subtype": "range_check",
+      "description": "Ensure zz_Horsepower, Max, 3 Phase, at 575 V is within the allowed range.",
+      "validation_logic": {
+        "expression": "df['zz_Horsepower, Max, 3 Phase, at 575 V'].between(3.0, 200.0)",
+        "parameters": {
+          "from": "profiling"
+        },
+        "error_message": "Horsepower value is out of range.",
+        "severity": "ERROR"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Profiling Statistics",
+          "excerpt": "Range: 3.0 to 200.0",
+          "confidence": 0.95
+        }
+      ],
+      "business_impact": "Incorrect horsepower values can lead to product failure.",
+      "implementation_notes": "Validate horsepower values against design specifications.",
+      "created_at": "2026-01-25T09:32:53.997148"
+    },
+    {
+      "rule_id": "DQR_021",
+      "attribute": "zz_Auxiliary Contact",
+      "category": "COMPLETENESS",
+      "subtype": "mandatory_field",
+      "description": "Ensure zz_Auxiliary Contact is not missing.",
+      "validation_logic": {
+        "expression": "not pd.isnull(df['zz_Auxiliary Contact'])",
+        "parameters": {
+          "from": "profiling"
+        },
+        "error_message": "Auxiliary Contact is missing.",
+        "severity": "WARNING"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Profiling Statistics",
+          "excerpt": "Missing %: 91.38%",
+          "confidence": 0.95
+        }
+      ],
+      "business_impact": "Missing auxiliary contact information can lead to incorrect product configurations.",
+      "implementation_notes": "Ensure auxiliary contact details are captured during product setup.",
+      "created_at": "2026-01-25T09:32:53.997148"
+    },
+    {
+      "rule_id": "DQR_022",
+      "attribute": "zz_Contact Form",
+      "category": "COMPLETENESS",
+      "subtype": "mandatory_field",
+      "description": "Ensure zz_Contact Form is not missing.",
+      "validation_logic": {
+        "expression": "not pd.isnull(df['zz_Contact Form'])",
+        "parameters": {
+          "from": "profiling"
+        },
+        "error_message": "Contact Form is missing.",
+        "severity": "WARNING"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Profiling Statistics",
+          "excerpt": "Missing %: 97.91%",
+          "confidence": 0.95
+        }
+      ],
+      "business_impact": "Missing contact form can lead to incorrect product configurations.",
+      "implementation_notes": "Ensure contact form is documented during product design.",
+      "created_at": "2026-01-25T09:32:53.997148"
+    },
+    {
+      "rule_id": "DQR_023",
+      "attribute": "zz_Horsepower, Max, 3 Phase, at 200 V",
+      "category": "VALIDITY",
+      "subtype": "range_check",
+      "description": "Ensure zz_Horsepower, Max, 3 Phase, at 200 V is within the allowed range.",
+      "validation_logic": {
+        "expression": "df['zz_Horsepower, Max, 3 Phase, at 200 V'].between(1.5, 5.0)",
+        "parameters": {
+          "from": "profiling"
+        },
+        "error_message": "Horsepower value is out of range.",
+        "severity": "ERROR"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Profiling Statistics",
+          "excerpt": "Range: 1.5 to 5.0",
+          "confidence": 0.95
+        }
+      ],
+      "business_impact": "Incorrect horsepower values can lead to product failure.",
+      "implementation_notes": "Validate horsepower values against design specifications.",
+      "created_at": "2026-01-25T09:32:53.997148"
+    },
+    {
+      "rule_id": "DQR_024",
+      "attribute": "zz_Minimum Ambient Temperature",
+      "category": "COMPLETENESS",
+      "subtype": "mandatory_field",
+      "description": "Ensure zz_Minimum Ambient Temperature is not missing.",
+      "validation_logic": {
+        "expression": "not pd.isnull(df['zz_Minimum Ambient Temperature'])",
+        "parameters": {
+          "from": "profiling"
+        },
+        "error_message": "Minimum Ambient Temperature is missing.",
+        "severity": "ERROR"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Profiling Statistics",
+          "excerpt": "Missing %: 100.0%",
+          "confidence": 0.95
+        }
+      ],
+      "business_impact": "Missing minimum ambient temperature can lead to incorrect environmental specifications.",
+      "implementation_notes": "Ensure minimum ambient temperature is recorded during environmental testing.",
+      "created_at": "2026-01-25T09:32:53.997148"
+    },
+    {
+      "rule_id": "DQR_025",
+      "attribute": "dr_Dimensions",
+      "category": "COMPLETENESS",
+      "subtype": "mandatory_field",
+      "description": "Ensure dr_Dimensions is not missing.",
+      "validation_logic": {
+        "expression": "not pd.isnull(df['dr_Dimensions'])",
+        "parameters": {
+          "from": "profiling"
+        },
+        "error_message": "Dimensions are missing.",
+        "severity": "WARNING"
+      },
+      "source_evidence": [
+        {
+          "source_type": "profiling",
+          "source_reference": "Profiling Statistics",
+          "excerpt": "Missing %: 85.54%",
+          "confidence": 0.95
+        }
+      ],
+      "business_impact": "Missing dimensions can lead to incorrect product sizing.",
+      "implementation_notes": "Ensure dimensions are captured during product design.",
+      "created_at": "2026-01-25T09:32:53.997148"
+    }
+  ],
+  "summary": {
+    "total_rules": 25,
+    "by_category": {
+      "COMPLETENESS": 17,
+      "VALIDITY": 8
+    },
+    "by_attribute": {
+      "zz_Dielectric Rating": 1,
+      "zz_IP Rating": 1,
+      "zz_Horsepower, Max, 3 Phase, at 480 V": 1,
+      "zz_Control Voltage": 1,
+      "zz_Special Features": 1,
+      "zz_Material": 1,
+      "zz_Horsepower, Motor, Max at 115 V": 1,
+      "zz_Maximum Voltage": 1,
+      "zz_Horsepower, Max, 1 Phase, at 240 V": 1,
+      "zz_Mounting Style": 1,
+      "zz_Mounting Diameter": 1,
+      "zz_Product Type": 1,
+      "zz_Accessory Type": 1,
+      "zz_Contact Material": 1,
+      "zz_Options": 1,
+      "zz_Voltage Range": 1,
+      "zz_Horsepower, Max, 3 Phase, at 240 V": 1,
+      "zz_Supply Voltage": 1,
+      "zz_Continuous Current": 1,
+      "zz_Horsepower, Max, 3 Phase, at 575 V": 1,
+      "zz_Auxiliary Contact": 1,
+      "zz_Contact Form": 1,
+      "zz_Horsepower, Max, 3 Phase, at 200 V": 1,
+      "zz_Minimum Ambient Temperature": 1,
+      "dr_Dimensions": 1
+    },
+    "coverage_rate": 0.0
+  }
+}

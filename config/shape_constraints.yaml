@@ -1,0 +1,179 @@
+# Shape Constraints Configuration for Descriptive + Industry-Standard Rule Derivation
+#
+# COMPLETENESS Rules: Descriptive approach (based on actual data patterns in Profiling)
+# VALIDITY Rules: Prescriptive approach (based on Wikipedia/Industry standards)
+
+shape_constraints:
+  # Completeness Thresholds - Reflect actual data patterns
+  # These determine when to create mandatory vs optional rules
+  completeness:
+    # < 5% missing → Mandatory field (customers always provide)
+    mandatory_threshold: 5.0
+    # 5-20% missing → Expected field (customers usually provide)
+    expected_threshold: 20.0
+    # 20-70% missing → Conditional field (sometimes provided)
+    conditional_threshold: 70.0
+    # > 70% missing → Optional (no completeness rule generated)
+    optional_above: 70.0
+    # 100% missing → Flag as dead field (consider removing from schema)
+    dead_field_threshold: 100.0
+
+  # Validity Configuration
+  validity:
+    # Use Wikipedia for industry standards (primary source for validity rules)
+    scrape_wikipedia: true
+    # Fall back to profiling statistics if Wikipedia has no data
+    fallback_to_profiling: true
+    # Minimum confidence for Wikipedia-sourced rules
+    min_wikipedia_confidence: 0.7
+
+  # Wikipedia Attribute Mappings
+  # Maps canonical attribute names to Wikipedia search terms
+  wikipedia:
+    attribute_mappings:
+      # Voltage attributes
+      control_voltage:
+        terms: ["control voltage", "coil voltage", "relay coil", "contactor coil"]
+        expected_unit: "V"
+        standard_reference: "IEC 60947-4"
+      rated_voltage:
+        terms: ["rated voltage", "nominal voltage", "IEC 60038", "mains voltage"]
+        expected_unit: "V"
+        standard_reference: "IEC 60038"
+
+      # Current attributes
+      rated_current:
+        terms: ["rated current", "electric current", "IEC 60947", "operational current"]
+        expected_unit: "A"
+        standard_reference: "IEC 60947-4-1"
+
+      # Frequency
+      frequency:
+        terms: ["utility frequency", "mains frequency", "power frequency", "alternating current"]
+        expected_unit: "Hz"
+        standard_reference: "IEC 60038"
+
+      # Protection ratings
+      ip_rating:
+        terms: ["IP code", "ingress protection", "IEC 60529"]
+        expected_unit: ""
+        standard_reference: "IEC 60529"
+
+      # Temperature
+      temperature:
+        terms: ["operating temperature", "ambient temperature", "temperature range"]
+        expected_unit: "C"
+        standard_reference: "IEC 60947-1"
+      ambient_temperature:
+        terms: ["ambient temperature", "operating temperature", "environmental temperature"]
+        expected_unit: "C"
+        standard_reference: "IEC 60947-1"
+
+      # Durability
+      mechanical_durability:
+        terms: ["mechanical endurance", "mechanical life", "contactor life cycles"]
+        expected_unit: "operations"
+        standard_reference: "IEC 60947-4-1"
+      electrical_durability:
+        terms: ["electrical endurance", "electrical life", "arc erosion"]
+        expected_unit: "operations"
+        standard_reference: "IEC 60947-4-1"
+
+      # Categories
+      utilization_category:
+        terms: ["utilization category", "AC-3", "AC-4", "IEC 60947-4-1"]
+        expected_unit: ""
+        standard_reference: "IEC 60947-4-1"
+
+      # Power
+      power_rating:
+        terms: ["power rating", "rated power", "kilowatt rating"]
+        expected_unit: "kW"
+        standard_reference: "IEC 60947-4-1"
+
+      # Contacts
+      auxiliary_contact:
+        terms: ["auxiliary contact", "control contact", "NO NC contacts"]
+        expected_unit: ""
+        standard_reference: "IEC 60947-5-1"
+
+  # Industry Standard Values (fallback when Wikipedia scraping fails)
+  # These are common values from IEC standards
+  standard_values:
+    voltage:
+      # Standard voltages per IEC 60038
+      common_values: [24, 48, 110, 120, 220, 230, 240, 380, 400, 415, 440, 480, 500, 690]
+      range:
+        min: 12
+        max: 1000
+      unit: "V"
+
+    control_voltage:
+      # Common control circuit voltages
+      common_values: [24, 48, 110, 120, 220, 230, 240]
+      range:
+        min: 12
+        max: 400
+      unit: "V"
+
+    current:
+      # Contactor rated currents (IEC 60947-4-1)
+      common_values: [6, 9, 12, 16, 25, 32, 40, 50, 65, 80, 95, 115, 145, 170, 205, 250, 300, 400, 500, 630, 800, 1000, 1250, 1600, 2050]
+      range:
+        min: 0.1
+        max: 5000
+      unit: "A"
+
+    frequency:
+      # Power system frequencies
+      common_values: [50, 60]
+      range:
+        min: 45
+        max: 65
+      unit: "Hz"
+
+    ip_rating:
+      # Common IP ratings for contactors
+      common_values: ["IP00", "IP20", "IP40", "IP54", "IP55", "IP65", "IP66", "IP67"]
+      pattern: "IP[0-6][0-9X]"
+
+    temperature:
+      # Operating temperature range
+      range:
+        min: -25
+        max: 70
+      unit: "C"
+
+    utilization_category:
+      # AC utilization categories per IEC 60947-4-1
+      common_values: ["AC-1", "AC-2", "AC-3", "AC-4", "AC-5a", "AC-5b", "AC-6a", "AC-6b", "AC-7a", "AC-7b", "AC-8a", "AC-8b"]
+
+    mechanical_durability:
+      # Mechanical life (operations)
+      range:
+        min: 100000
+        max: 30000000
+      unit: "operations"
+
+    electrical_durability:
+      # Electrical life at AC-3 (operations)
+      range:
+        min: 50000
+        max: 3000000
+      unit: "operations"
+
+  # Severity Mapping
+  severity:
+    mandatory: "ERROR"      # Missing mandatory field
+    expected: "WARNING"     # Missing expected field
+    conditional: "INFO"     # Missing conditional field
+    validity_violation: "ERROR"  # Value outside valid range/set
+
+# Rule Generation Settings
+rule_generation:
+  # Whether to enrich rules with GPT-4o descriptions
+  enrich_with_llm: true
+  # Include source evidence in rules
+  include_evidence: true
+  # Generate implementation notes
+  generate_implementation_notes: true
