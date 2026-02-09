@@ -162,15 +162,31 @@ def derive_rules_node(state: AgentState) -> Dict[str, Any]:
     }
 
     # Prepare analysis context
+    # Use all distinct values when available, otherwise fall back to top_values
+    all_values = profiling_result.distinct_values if profiling_result.distinct_values else profiling_result.top_values
     attr_analysis = {
         "attribute_name": current_attr,
         "datatype": profiling_result.datatype,
         "missing_percentage": profiling_result.missing_percentage,
         "cardinality": profiling_result.cardinality,
-        "top_values": profiling_result.top_values,
+        "top_values": all_values,
+        "total_distinct_count": profiling_result.total_distinct_count,
         "range": profiling_result.range,
         "recommended_rules": profiler.recommend_rule_types(profiling_result),
     }
+
+    # Detect if all values are numeric (even for Categorical datatype)
+    all_values_numeric = _check_all_values_numeric(all_values)
+    attr_analysis["all_values_numeric"] = all_values_numeric
+
+    # Add numeric pattern detection for categorical fields with numeric values
+    if all_values_numeric and profiling_result.datatype == "Categorical":
+        numeric_range = _extract_numeric_range(all_values)
+        if numeric_range:
+            attr_analysis["range"] = list(numeric_range)
+            pattern = profiler.detect_numeric_pattern(all_values, numeric_range)
+            if pattern:
+                attr_analysis["numeric_pattern"] = pattern
 
     # Get dataset context from state - all values derived dynamically
     dataset_context = state.get('dataset_context', {})
@@ -370,3 +386,31 @@ def format_output_node(state: AgentState) -> Dict[str, Any]:
         "output_json_path": json_path,
         "output_excel_path": excel_path,
     }
+
+
+def _check_all_values_numeric(top_values: list) -> bool:
+    """Check if all values in top_values are numeric."""
+    if not top_values:
+        return False
+    for tv in top_values:
+        value = str(tv.get('value', '')).strip()
+        if not value:
+            continue
+        try:
+            float(value)
+        except (ValueError, TypeError):
+            return False
+    return True
+
+
+def _extract_numeric_range(top_values: list) -> tuple:
+    """Extract min/max range from numeric top_values."""
+    nums = []
+    for tv in top_values:
+        try:
+            nums.append(float(str(tv.get('value', ''))))
+        except (ValueError, TypeError):
+            continue
+    if nums:
+        return (min(nums), max(nums))
+    return None

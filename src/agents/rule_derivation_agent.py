@@ -93,7 +93,11 @@ class RuleDerivationAgent:
                 response.content,
                 attribute_analysis['attribute_name'],
             )
-            return rules
+            # Apply post-generation quality filter
+            filtered = self._filter_low_quality_rules(rules)
+            if len(rules) != len(filtered):
+                print(f"  Quality filter: {len(rules)} -> {len(filtered)} rules (removed {len(rules) - len(filtered)} low-quality)")
+            return filtered
         except Exception as e:
             print(f"Error deriving rules for {attribute_analysis['attribute_name']}: {e}")
             return []
@@ -187,13 +191,15 @@ class RuleDerivationAgent:
                 rule_data[field] = default
 
         # Ensure numeric fields are proper types
-        if isinstance(rule_data['threshold_percent'], str):
-            try:
-                rule_data['threshold_percent'] = float(rule_data['threshold_percent'])
-            except ValueError:
-                rule_data['threshold_percent'] = 5.0
+        if 'threshold_percent' in rule_data:
+            if isinstance(rule_data['threshold_percent'], str):
+                try:
+                    rule_data['threshold_percent'] = float(rule_data['threshold_percent'])
+                except ValueError:
+                    rule_data['threshold_percent'] = 5.0
+            rule_data['threshold_percent'] = max(0.0, min(100.0, rule_data['threshold_percent']))
 
-        if isinstance(rule_data['confidence_score'], str):
+        if isinstance(rule_data.get('confidence_score', 0.8), str):
             try:
                 rule_data['confidence_score'] = float(rule_data['confidence_score'])
             except ValueError:
@@ -201,7 +207,6 @@ class RuleDerivationAgent:
 
         # Ensure confidence_score is in valid range
         rule_data['confidence_score'] = max(0.0, min(1.0, rule_data['confidence_score']))
-        rule_data['threshold_percent'] = max(0.0, min(100.0, rule_data['threshold_percent']))
 
         # Ensure list fields are lists
         if not isinstance(rule_data['sample_valid_values'], list):
@@ -218,6 +223,64 @@ class RuleDerivationAgent:
         ]
 
         return rule_data
+
+    def _filter_low_quality_rules(self, rules: List[DQRule]) -> List[DQRule]:
+        """
+        Filter out low-quality rules that don't provide actionable insight.
+
+        Removes:
+        - VALUE_SET rules with >30 values in the expression
+        - Duplicate rules (same attribute + category + type)
+
+        Args:
+            rules: List of DQRule objects from LLM
+
+        Returns:
+            Filtered list of high-quality rules
+        """
+        filtered = []
+        seen_keys = set()
+
+        for rule in rules:
+            # Skip duplicates
+            key = rule.unique_key
+            if key in seen_keys:
+                continue
+
+            # Check VALUE_SET rules for excessive values
+            if rule.rule_type == "VALUE_SET":
+                value_count = self._count_value_set_items(rule.rule_expression)
+                if value_count > 30:
+                    print(f"    Filtered: VALUE_SET with {value_count} values for {rule.attribute_name} (max 30)")
+                    continue
+
+            seen_keys.add(key)
+            filtered.append(rule)
+
+        return filtered
+
+    def _count_value_set_items(self, expression: str) -> int:
+        """
+        Count the number of items in a VALUE_SET expression.
+
+        Handles formats like:
+        - "attr IN ('a', 'b', 'c')"
+        - "attr IN (1, 2, 3)"
+        """
+        # Look for IN clause with values
+        in_match = re.search(r'IN\s*\(([^)]+)\)', expression, re.IGNORECASE)
+        if in_match:
+            values_str = in_match.group(1)
+            # Count comma-separated items
+            return len([v.strip() for v in values_str.split(',') if v.strip()])
+
+        # Look for isin([...]) Python pattern
+        isin_match = re.search(r'isin\s*\(\[([^\]]+)\]\)', expression)
+        if isin_match:
+            values_str = isin_match.group(1)
+            return len([v.strip() for v in values_str.split(',') if v.strip()])
+
+        return 0
 
     def generate_sql_expression(
         self,
