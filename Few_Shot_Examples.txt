@@ -1,0 +1,8 @@
+Contactors	zz_Auxiliary Contact	Normalization	Normalize to format 1NO+1NC
+Contactors	zz_Number of Poles	Normalization	“3P”, “3 Pole”, “Three Pole” normalize them to 3
+Contactors	zz_Number of Poles	Normalization	1 + Shunt, normalize to 1 and move rest to special features
+Contactors	zz_Mounting Type	Normalization	“On Rail”, “35mm rail” becomes "DIN Rail". “Screw mount”, “Bolt mount” becomes "Panel Mount"
+Contactors	zz_Mounting Type	Normalization	if frame width < 50, DIN Rail Mount
+Contactors	zz_Type	Normalization	If no current rating, set to Auxiliary
+Contactors	zz_Type	Normalization	If reversing feature, set to Reversing Contactor
+Contactors	zz_Type	Normalization	If < 9A + small frame, set to Mini Contactor
