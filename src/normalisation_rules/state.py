@@ -17,6 +17,8 @@ class RuleDerivationState(TypedDict, total=False):
     domain: str
     # Whether to call Tavily for web context
     use_tavily: bool
+    # Tavily search depth ("basic" or "advanced")
+    search_depth: str
     # Path to log file for Tavily responses (optional)
     tavily_log_path: str
     # Accumulated rules (reducer appends when node returns {"rules": [...]})

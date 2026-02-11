@@ -18,7 +18,13 @@ def _fetch_context_node(state: RuleDerivationState) -> dict:
         return {"web_context": "", "error": ""}
     attr = state.get("current_attribute") or {}
     name = attr.get("name", "")
-    print(f"  [Tavily] Using web search for attribute: {name}")
+    search_depth = state.get("search_depth", "basic")
+
+    # Extract top sample values for better query targeting
+    values = attr.get("values") or []
+    sample_values = [str(v.get("value", "")) for v in values[:5] if v.get("value")]
+
+    print(f"  [Tavily] Using web search for attribute: {name} (depth={search_depth})")
     context = ""
     query_used = ""
     try:
@@ -27,6 +33,8 @@ def _fetch_context_node(state: RuleDerivationState) -> dict:
             domain="electrical contactors",
             max_results=5,
             max_content_chars=6000,
+            search_depth=search_depth,
+            sample_values=sample_values,
         )
         n_chars = len(context)
         print(f"  [Tavily] Returned {n_chars} chars of context")
@@ -108,6 +116,7 @@ def run_for_attribute(
     domain: str = "Contactors",
     use_tavily: bool = True,
     tavily_log_path: str | None = None,
+    search_depth: str = "basic",
 ) -> list[str]:
     """
     Run the graph for a single attribute (fetch Tavily context then derive rules). Returns list of rule lines.
@@ -119,6 +128,7 @@ def run_for_attribute(
         "few_shot_examples": few_shot_examples,
         "domain": domain,
         "use_tavily": use_tavily,
+        "search_depth": search_depth,
         "tavily_log_path": tavily_log_path or "",
         "rules": [],
     }

@@ -68,6 +68,12 @@ def main() -> None:
         action="store_true",
         help="Do not use Tavily (skip web search context)",
     )
+    parser.add_argument(
+        "--search-depth",
+        choices=["basic", "advanced"],
+        default="basic",
+        help="Tavily search depth: 'basic' (faster, lower cost) or 'advanced' (richer context, higher cost)",
+    )
     args = parser.parse_args()
 
     use_tavily = not args.no_tavily
@@ -118,6 +124,7 @@ def main() -> None:
                 domain=DOMAIN,
                 use_tavily=use_tavily,
                 tavily_log_path=tavily_log_path,
+                search_depth=args.search_depth,
             )
             for r in rules:
                 all_rules.append((r, reference))
