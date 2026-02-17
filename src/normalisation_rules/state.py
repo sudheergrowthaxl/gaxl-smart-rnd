@@ -9,8 +9,16 @@ class RuleDerivationState(TypedDict, total=False):
 
     # Current attribute being processed
     current_attribute: dict
-    # Web search context for this attribute (from Tavily)
+    # Web search context for this attribute (from Tavily; legacy or combined)
     web_context: str
+    # Standards (NEMA, IEC) search context
+    standards_context: str
+    # Manufacturers/vendors search context
+    manufacturers_context: str
+    # Merged list: customer distinct + extracted from standards + manufacturers (with or without dedup)
+    merged_possible_values: list
+    # Whether to deduplicate when merging possible values
+    dedup_merged_values: bool
     # Few-shot examples text
     few_shot_examples: str
     # Domain (e.g. Contactors)

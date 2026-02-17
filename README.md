@@ -95,8 +95,28 @@ When Tavily is used, the terminal shows `[Tavily] Using web search for attribute
   uv run python scripts/generate_approach_doc.py
   ```
 
-Output is written to `Derived_Normalisation_Rules.txt` (or the path given by `-o`), one rule per line:  
-`Contactors\t<Attribute>\tNormalization\t<Rule description>`.
+Output is written to `Derived_Normalisation_Rules.xlsx` (or the path given by `-o`).
+
+### Apply rules to raw dataset (before/after comparison)
+
+After deriving rules, you can generate Python normalisers from them, apply them to the raw Contactors dataset, and write a single workbook with **Before**, **After**, and **Comparison** sheets.
+
+- **Raw dataset:** Place `Contactors_Dataset.xlsx` in the project root (same columns as profiled data, including zz_* attributes). Override with `--dataset`.
+- **First run (generates Python via LLM and applies):**
+
+  ```bash
+  uv run normalisation-apply
+  ```
+
+- **Re-run without calling the LLM** (reuse stored `generated_normalisers.json`):
+
+  ```bash
+  uv run normalisation-apply --skip-generate
+  ```
+
+- **Options:** `--rules`, `--dataset`, `--output`, `--provider`, `--model`, `--limit-rows` (for testing).
+
+Output: **Contactors_Normalisation_Comparison.xlsx** with sheets **Before** (original data), **After** (normalised values where rules exist), **Comparison** (RowIndex, Attribute, Value_Before, Value_After for changed cells), and **Python_Expressions** (generated code per attribute). Generated code is also saved to **generated_normalisers.json** for audit and `--skip-generate`.
 
 ## Project layout
 
@@ -106,8 +126,11 @@ Normalisation_Rules/
 ├── .env.example                 # Template for API keys
 ├── README.md                    # This file
 ├── Contactors_Profiling_distinct_values.json
+├── Contactors_Dataset.xlsx       # Raw dataset for apply step
 ├── Few_Shot_Examples.txt
 ├── Derived_Normalisation_Rules.xlsx  # Generated rules (after run)
+├── Contactors_Normalisation_Comparison.xlsx  # Before/After/Comparison (after normalisation-apply)
+├── generated_normalisers.json   # Generated Python per attribute (after normalisation-apply)
 ├── Approach_to_Normalisation_Rules.docx  # Approach document (run scripts/generate_approach_doc.py)
 ├── logs/                             # Per-run Tavily logs (tavily_context_YYYY-MM-DD_HH-MM-SS.log)
 ├── scripts/
@@ -117,12 +140,17 @@ Normalisation_Rules/
         ├── __init__.py
         ├── config.py             # Paths and env (OPENAI/GROQ/TAVILY)
         ├── data_loader.py       # Load JSON, extract attributes
+        ├── rules_loader.py      # Load rules Excel, group by Attribute
+        ├── codegen.py           # LLM generate Python normaliser per attribute
+        ├── apply_rules.py       # Apply normalisers, build before/after
+        ├── export_comparison.py # Write comparison workbook
         ├── tavily_context.py     # Tavily search per attribute
         ├── state.py              # LangGraph state
         ├── prompts.py            # System/user prompts
         ├── models.py             # get_llm(openai | groq)
         ├── graph.py             # LangGraph: fetch_context -> derive_rules
-        └── cli.py               # Entrypoint: normalisation-rules
+        ├── cli.py               # Entrypoint: normalisation-rules
+        └── cli_apply.py         # Entrypoint: normalisation-apply
 ```
 
 ## Dependencies (uv)
@@ -134,5 +162,6 @@ Normalisation_Rules/
 - `tavily-python` – Tavily search API
 - `python-dotenv` – load `.env`
 - `python-docx` – generate approach document (Word)
+- `pandas` – load dataset and build comparison
 
 All managed via `pyproject.toml`; run `uv sync` to install.

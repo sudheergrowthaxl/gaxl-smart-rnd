@@ -14,10 +14,12 @@ dependencies = [
     "python-dotenv>=1.0.0",
     "openpyxl>=3.1.0",
     "python-docx>=1.0.0",
+    "pandas>=2.0.0",
 ]
 
 [project.scripts]
 normalisation-rules = "normalisation_rules.cli:main"
+normalisation-apply = "normalisation_rules.cli_apply:main"
 
 [build-system]
 requires = ["hatchling"]
