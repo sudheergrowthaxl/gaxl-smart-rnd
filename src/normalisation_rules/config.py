@@ -22,6 +22,16 @@ DEFAULT_FEW_SHOT_PATH = PROJECT_ROOT / "Few_Shot_Examples.txt"
 DOMAIN = "Contactors"
 OUTPUT_RULES_FILE = PROJECT_ROOT / "Derived_Normalisation_Rules.xlsx"
 TAVILY_LOGS_DIR = PROJECT_ROOT / "logs"
+CURATED_VALUES_DIR = PROJECT_ROOT / "curated_values"
+
+# Default manufacturers to search for catalog values (configurable via CLI)
+DEFAULT_MANUFACTURERS = [
+    "ABB",
+    "Eaton Cutler Hammer",
+    "Schneider Electric",
+    "Siemens",
+    "Square D",
+]
 
 
 def get_tavily_log_path_for_run() -> Path:
@@ -29,6 +39,13 @@ def get_tavily_log_path_for_run() -> Path:
     TAVILY_LOGS_DIR.mkdir(parents=True, exist_ok=True)
     ts = datetime.now(timezone.utc).strftime("%Y-%m-%d_%H-%M-%S")
     return TAVILY_LOGS_DIR / f"tavily_context_{ts}.log"
+
+
+def get_curated_values_path_for_run() -> Path:
+    """Return a unique JSON file path for curated values output (timestamped)."""
+    CURATED_VALUES_DIR.mkdir(parents=True, exist_ok=True)
+    ts = datetime.now(timezone.utc).strftime("%Y-%m-%d_%H-%M-%S")
+    return CURATED_VALUES_DIR / f"curated_values_{ts}.json"
 
 
 def ensure_api_keys(use_openai: bool, use_groq: bool, use_tavily: bool) -> list[str]:

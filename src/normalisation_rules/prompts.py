@@ -3,7 +3,10 @@
 SYSTEM_PROMPT = """You are an expert in data normalisation for Electrical Equipment, specifically Contactors.
 Your task is to derive clear, actionable normalisation rules based on:
 1) Attribute-level statistics (datatype, range, cardinality, missing %, imbalance, patterns across values) for a given attribute,
-2) Web/domain context about standard terminology and practices (when provided).
+2) Curated possible values from three sources (when provided):
+   a) Customer observed values (distinct values from profiling data),
+   b) Standards context (IEC 60947, NEMA ICS terminology and accepted values),
+   c) Manufacturer catalog values (how ABB, Siemens, Schneider Electric, Eaton, Square D etc. represent this attribute).
 
 Rules must be GENERALISED over the entire attribute—do not output one rule per distinct value.
 - Output 1–2 rules per attribute (3 only if clearly needed). Match the style of the few-shot examples: general format standardisation, conditional logic, or mapping families, not exhaustive value-by-value mappings.
@@ -24,11 +27,23 @@ Contactors\tzz_Mounting Type\tNormalization\t"On Rail", "35mm rail" becomes "DIN
 
 def build_user_prompt(
     attribute: dict,
-    web_context: str,
+    curated_context: str,
     few_shot_examples: str,
     domain: str,
 ) -> str:
-    """Build the user message for the LLM."""
+    """Build the user message for the LLM.
+
+    Parameters
+    ----------
+    attribute : dict
+        Attribute dict from data_loader.
+    curated_context : str
+        Combined context from curate_values (customer values list + standards summary + manufacturer summary).
+    few_shot_examples : str
+        Few-shot example rules text.
+    domain : str
+        Domain name (e.g. "Contactors").
+    """
     name = attribute.get("name", "")
     datatype = attribute.get("datatype", "")
     semantic_type = attribute.get("semantic_type", "")
@@ -60,18 +75,19 @@ def build_user_prompt(
     if len(values) > n_show:
         lines.append(f"  ... and {len(values) - n_show} more distinct values.")
 
-    if web_context.strip():
+    if curated_context.strip():
         lines.extend([
             "",
-            "--- Web search context for this attribute (use this to align with domain standards and terminology) ---",
-            web_context[:6000],
+            "--- Curated possible values from all sources (use this to align rules with standards and industry practice) ---",
+            curated_context[:12000],
             "",
         ])
 
     lines.append("")
     lines.append(
         "Derive 1–2 generalised normalisation rules for this attribute. "
-        "Do not list one rule per value; generalise from the statistics, patterns, and the web search context above. "
+        "Do not list one rule per value; generalise from the statistics, patterns, "
+        "and the curated context above (customer data, standards, and manufacturer catalogs). "
         "Output only the rule lines (tab-separated: Entity, Attribute, Normalization, Rule description), one per line."
     )
     return "\n".join(lines)

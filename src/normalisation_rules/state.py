@@ -9,8 +9,12 @@ class RuleDerivationState(TypedDict, total=False):
 
     # Current attribute being processed
     current_attribute: dict
-    # Web search context for this attribute (from Tavily)
+    # Web search context for this attribute (from Tavily standards search)
     web_context: str
+    # Manufacturer catalog context (from Tavily manufacturer search)
+    manufacturer_context: str
+    # Curated combined context string (customer + standards + manufacturer)
+    curated_values: str
     # Few-shot examples text
     few_shot_examples: str
     # Domain (e.g. Contactors)
@@ -21,6 +25,8 @@ class RuleDerivationState(TypedDict, total=False):
     search_depth: str
     # Path to log file for Tavily responses (optional)
     tavily_log_path: str
+    # List of manufacturers to search for catalog values
+    manufacturers: list[str]
     # Accumulated rules (reducer appends when node returns {"rules": [...]})
     rules: Annotated[list[str], operator.add]
     # Last error if any

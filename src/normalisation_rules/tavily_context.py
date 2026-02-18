@@ -2,7 +2,7 @@
 
 from typing import Any
 
-from normalisation_rules.config import TAVILY_API_KEY
+from normalisation_rules.config import TAVILY_API_KEY, DEFAULT_MANUFACTURERS
 
 # Lazy client to avoid import errors if tavily not used
 _tavily_client: Any = None
@@ -82,6 +82,79 @@ def search_attribute_context(
         )
 
     # Adjust limits for advanced depth (richer context budget)
+    if search_depth == "advanced":
+        max_results = max(max_results, 10)
+        max_content_chars = max(max_content_chars, 15000)
+
+    try:
+        response = client.search(
+            query=query,
+            search_depth=search_depth,
+            max_results=max_results,
+            include_answer=True,
+        )
+    except Exception:
+        return ("", query)
+
+    parts = []
+    if response.get("answer"):
+        parts.append(response["answer"])
+    for r in (response.get("results") or [])[:max_results]:
+        content = (r.get("content") or "").strip()
+        if content:
+            if len(content) > 1200:
+                content = content[:1200] + "..."
+            parts.append(content)
+    combined = "\n\n".join(parts)
+    if len(combined) > max_content_chars:
+        combined = combined[:max_content_chars] + "..."
+    return (combined.strip(), query)
+
+
+def search_manufacturer_values(
+    attribute_name: str,
+    manufacturers: list[str] | None = None,
+    domain: str = "electrical contactors",
+    max_results: int = 5,
+    max_content_chars: int = 8000,
+    search_depth: str = None,
+    sample_values: list[str] | None = None,
+) -> tuple[str, str]:
+    """
+    Search manufacturer websites/catalogs for values of this attribute.
+    Returns (context_string, query_used).
+
+    Makes a single consolidated Tavily query mentioning all manufacturers
+    to find how they represent this attribute in their product catalogs.
+    """
+    if not TAVILY_API_KEY:
+        return ("", "")
+
+    if should_skip_tavily(attribute_name):
+        return ("", f"(skipped: '{attribute_name}' not suitable for manufacturer search)")
+
+    if manufacturers is None:
+        manufacturers = DEFAULT_MANUFACTURERS
+
+    client = get_tavily_client()
+    label = attribute_name.replace("zz_", "").strip()
+    mfr_names = ", ".join(manufacturers)
+
+    # Build query targeting manufacturer catalog values
+    if sample_values:
+        top_vals = ", ".join(f"'{v}'" for v in sample_values[:5])
+        query = (
+            f"Product catalog values for '{label}' in {domain} from manufacturers: {mfr_names}. "
+            f"Customer data shows variations: {top_vals}. "
+            f"What specific values and formats do these manufacturers use in their datasheets and catalogs?"
+        )
+    else:
+        query = (
+            f"Product catalog values for '{label}' in {domain} from manufacturers: {mfr_names}. "
+            f"What specific values and formats do these manufacturers use in their datasheets and catalogs?"
+        )
+
+    # Adjust limits for advanced depth
     if search_depth == "advanced":
         max_results = max(max_results, 10)
         max_content_chars = max(max_content_chars, 15000)
