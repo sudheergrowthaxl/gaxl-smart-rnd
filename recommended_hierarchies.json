@@ -1,0 +1,59 @@
+[
+  {
+    "category": "contactors",
+    "recommended_path": "Electrical Systems and Lighting and Components and Accessories and Supplies > Electrical equipment and components and supplies > Electrical controls and accessories > Contactors",
+    "ecommerce_recommended_path": "Siemens: Global > Products > Automation > Industrial Controls > Sirius > Sirius Control > Contactors",
+    "global_generalized_hierarchy_path": "Electrical Systems and Lighting and Components and Accessories and Supplies > Electrical equipment and components and supplies > Electrical controls and accessories > Contactors",
+    "supply_chain_reason": "I chose the UNSPSC path because it provides a standardized classification that aligns with procurement processes, ensuring consistency in sourcing and inventory management. This path is sourced from the UNSPSC hierarchy.",
+    "ecommerce_reason": "I selected the Siemens path as it reflects a clear and structured navigation that aligns with how buyers typically search for and discover products in an ecommerce context. This path is derived from the manufacturer’s site structure.",
+    "unspsc_code": "39121529",
+    "standard": "UNSPSC/Manufacturer",
+    "confidence": 0.95,
+    "from_unspsc": {
+      "excerpt_preview": "UNSPSC segments: Segment 10000000 Live Plant and Animal Material and Accessories and Supplies | Segment 11000000 Mineral and Textile and Inedible Plant and Animal Materials | Segment 12000000 Chemicals including Bio Chemicals and Gas Materials | Segment 13000000 Resin and Rosin and Rubber and Foam and Film and Elastomeric Materials | Segment 14000000 Paper Materials and Products | Segment 15000000 Fuels and Fuel Additives and Lubricants and Anti corrosive Materials | Segment 20000000 Mining and …",
+      "extracted_hierarchy": {
+        "hierarchy_path": "Electrical Systems and Lighting and Components and Accessories and Supplies > Electrical equipment and components and supplies > Electrical controls and accessories > Contactors",
+        "ecommerce_hierarchy_path": "Industrial Controls > Contactors & Accessories > Contactors",
+        "unspsc_code": "39121529",
+        "standard": "IEC/NEMA/UNSPSC/Manufacturer",
+        "confidence": 0.95
+      }
+    },
+    "from_manufacturer_websites": [
+      {
+        "source_name": "Siemens",
+        "url": "https://www.siemens.com/global/en/products/automation/industrial-controls/sirius/sirius-control/contactors.html",
+        "excerpt_from_site": "Global > Products > Automation > Industrial Controls > Sirius > Sirius Control > Contactors | Why Contactors? | Key benefits | Featured capabilities",
+        "extracted_hierarchy": {
+          "crawled_path": "Global > Products > Automation > Industrial Controls > Sirius > Sirius Control > Contactors"
+        }
+      },
+      {
+        "source_name": "Schneider Electric",
+        "url": "https://www.se.com/in/en/product-category/1500-contactors-and-protection-relays/",
+        "excerpt_from_site": "HTTP 403",
+        "extracted_hierarchy": {
+          "crawled_path": "Home > All products > Industrial Automation and Control > Contactors and Protection Relays > Contactors",
+          "error": "HTTP 403"
+        }
+      },
+      {
+        "source_name": "Rockwell Automation",
+        "url": "https://www.rockwellautomation.com/en-us/products/hardware/motor-control.html",
+        "excerpt_from_site": "Home > Products > Hardware Catalog > Motor Control | Rockwell Automation Home > Products > Hardware Catalog > Motor Control | Chevron Left > Chevron Left > Rockwell Automation Home > Chevron Left > Chevron Left > Products > Chevron Left > Chevron Left > Hardware Catalog > Chevron Left > Chevron Left > Motor Control | Rockwell Automation Home > Products > Hardware Catalog | Products > Hardware > Motor Control | Motor ControlAllen-Bradley",
+        "extracted_hierarchy": {
+          "crawled_path": "Home > Products > Hardware Catalog > Motor Control"
+        }
+      },
+      {
+        "source_name": "Eaton",
+        "url": "https://www.eaton.com/in/en-us/products/controls-drives-automation-sensors/contactors-and-starters.html",
+        "excerpt_from_site": "Request failed: HTTPSConnectionPool(host='www.eaton.com', port=443): Read timed out. (read timeout=30)",
+        "extracted_hierarchy": {
+          "crawled_path": "",
+          "error": "HTTPSConnectionPool(host='www.eaton.com', port=443): Read timed out. (read timeout=30)"
+        }
+      }
+    ]
+  }
+]

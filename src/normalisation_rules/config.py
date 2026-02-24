@@ -58,3 +58,22 @@ def ensure_api_keys(use_openai: bool, use_groq: bool, use_tavily: bool) -> list[
     if use_tavily and not TAVILY_API_KEY:
         missing.append("TAVILY_API_KEY")
     return missing
+
+
+def get_openai_client():
+    """Return a raw OpenAI client instance (used by hierarchy and attribute resolver)."""
+    from openai import OpenAI
+    key = OPENAI_API_KEY
+    if not key or not str(key).strip():
+        raise ValueError("OPENAI_API_KEY not set. Add it to .env or environment.")
+    return OpenAI(api_key=key)
+
+
+# Output paths for hierarchy pipeline
+HIERARCHY_OUTPUT_CSV = PROJECT_ROOT / "standardized_hierarchies.csv"
+HIERARCHY_CRAWLED_PATHS_JSON = PROJECT_ROOT / "manufacturer_crawled_paths.json"
+HIERARCHY_RECOMMENDED_JSON = PROJECT_ROOT / "recommended_hierarchies.json"
+
+# Output paths for attribute resolver pipeline
+ATTRIBUTE_RESOLVER_OUTPUT_JSON = PROJECT_ROOT / "recommended_attributes.json"
+ATTRIBUTE_RESOLVER_OUTPUT_CSV = PROJECT_ROOT / "standardized_attributes.csv"

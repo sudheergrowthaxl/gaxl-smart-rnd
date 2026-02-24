@@ -1,0 +1,21 @@
+lens,attribute_name,description,rationale,confidence,sources
+supply_chain,Rated operational voltage,Rated voltage for main circuit,Essential for ensuring compatibility with electrical systems.,0.95,IEC 60947
+supply_chain,Rated control supply voltage,Voltage required to operate the control circuit,Critical for procurement to match control systems.,0.95,IEC 60947
+supply_chain,Rated operational current,Maximum current the contactor can handle,Key for determining the suitability of the contactor for specific applications.,0.95,IEC 60947
+supply_chain,Number of poles,Total number of poles in the contactor,Important for inventory management and matching with circuit requirements.,0.95,IEC 60947
+supply_chain,Degree of protection,IP rating indicating the level of protection against dust and water,Necessary for compliance with safety standards in various environments.,0.95,IEC 60947
+supply_chain,Standards met,Standards that the contactor complies with,Essential for procurement to ensure regulatory compliance.,0.95,IEC 60947
+supply_chain,Weight,Weight of the contactor,Important for logistics and shipping considerations.,0.95,IEC 60947
+supply_chain,Coil voltage,Voltage required for the coil to operate,Critical for ensuring compatibility with control systems.,0.95,IEC 60947
+supply_chain,Short circuit current rating,Maximum current the contactor can withstand during a short circuit,Important for safety and compliance in electrical installations.,0.95,Manufacturer
+supply_chain,RoHS compliance,Indicates compliance with restrictions on hazardous substances,Necessary for environmental compliance in procurement.,0.95,Manufacturer
+ecommerce,Rated operational voltage,Rated voltage for main circuit,Helps buyers filter products based on voltage requirements.,0.95,IEC 60947
+ecommerce,Rated operational current,Maximum current the contactor can handle,Allows buyers to compare based on current ratings.,0.95,IEC 60947
+ecommerce,Number of poles,Total number of poles in the contactor,Facilitates product comparison based on application needs.,0.95,IEC 60947
+ecommerce,Degree of protection,IP rating indicating the level of protection against dust and water,Important for buyers to assess suitability for different environments.,0.95,IEC 60947
+ecommerce,Visual indication,Indicates the operational status of the contactor,Enhances user experience by providing operational feedback.,0.95,Manufacturer
+ecommerce,Control voltage,Voltage required to operate the control circuit,Allows buyers to filter based on control voltage needs.,0.95,Manufacturer
+ecommerce,Response time pick-up,Time taken for the contactor to engage,Helps buyers understand performance characteristics.,0.95,Manufacturer
+ecommerce,Response time drop-out,Time taken for the contactor to disengage,Important for buyers to assess performance in dynamic applications.,0.95,Manufacturer
+ecommerce,Operating temperature,Operating temperature range,Critical for buyers to ensure the contactor operates within their environmental conditions.,0.95,Manufacturer
+ecommerce,Pollution degree,Indicates the environmental conditions the contactor can operate in,Helps buyers assess suitability for specific applications.,0.95,Manufacturer

@@ -1,0 +1,26 @@
+[
+  {
+    "category": "contactors",
+    "source_name": "Siemens",
+    "url": "https://www.siemens.com/global/en/products/automation/industrial-controls/sirius/sirius-control/contactors.html",
+    "crawled_path": "Global > Products > Automation > Industrial Controls > Sirius > Sirius Control > Contactors"
+  },
+  {
+    "category": "contactors",
+    "source_name": "Schneider Electric",
+    "url": "https://www.se.com/in/en/product-category/1500-contactors-and-protection-relays/",
+    "crawled_path": "Home > All products > Industrial Automation and Control > Contactors and Protection Relays > Contactors"
+  },
+  {
+    "category": "contactors",
+    "source_name": "Rockwell Automation",
+    "url": "https://www.rockwellautomation.com/en-us/products/hardware/motor-control.html",
+    "crawled_path": "Home > Products > Hardware Catalog > Motor Control"
+  },
+  {
+    "category": "contactors",
+    "source_name": "Eaton",
+    "url": "https://www.eaton.com/in/en-us/products/controls-drives-automation-sensors/contactors-and-starters.html",
+    "crawled_path": ""
+  }
+]

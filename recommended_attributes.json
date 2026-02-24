@@ -1,0 +1,518 @@
+{
+  "category": "contactors",
+  "from_standards": {
+    "attributes": [
+      {
+        "name": "Rated operational voltage",
+        "source": "IEC 60947",
+        "description": "Rated voltage for main circuit"
+      },
+      {
+        "name": "Rated control supply voltage",
+        "source": "IEC 60947",
+        "description": "Voltage required to operate the control circuit"
+      },
+      {
+        "name": "Rated operational current",
+        "source": "IEC 60947",
+        "description": "Maximum current the contactor can handle"
+      },
+      {
+        "name": "Rated frequency",
+        "source": "IEC 60947",
+        "description": "Frequency at which the contactor operates"
+      },
+      {
+        "name": "Number of poles",
+        "source": "IEC 60947",
+        "description": "Total number of poles in the contactor"
+      },
+      {
+        "name": "Number of normally open contacts",
+        "source": "IEC 60947",
+        "description": "Count of contacts that are normally open"
+      },
+      {
+        "name": "Number of normally closed contacts",
+        "source": "IEC 60947",
+        "description": "Count of contacts that are normally closed"
+      },
+      {
+        "name": "Degree of protection",
+        "source": "IEC 60947",
+        "description": "IP rating indicating the level of protection against dust and water"
+      },
+      {
+        "name": "Coil voltage",
+        "source": "IEC 60947",
+        "description": "Voltage required for the coil to operate"
+      },
+      {
+        "name": "Conventional free-air thermal current",
+        "source": "IEC 60947",
+        "description": "Maximum current the contactor can carry without tripping"
+      },
+      {
+        "name": "Rated insulation voltage",
+        "source": "IEC 60947",
+        "description": "Voltage rating for insulation"
+      },
+      {
+        "name": "Rated impulse withstand voltage",
+        "source": "IEC 60947",
+        "description": "Voltage rating for impulse withstand"
+      },
+      {
+        "name": "Maximum electrical switching frequency",
+        "source": "IEC 60947",
+        "description": "Maximum number of switching cycles per hour"
+      },
+      {
+        "name": "Operate time",
+        "source": "IEC 60947",
+        "description": "Time taken for the contactor to operate"
+      },
+      {
+        "name": "Release time",
+        "source": "IEC 60947",
+        "description": "Time taken for the contactor to release"
+      },
+      {
+        "name": "Shock resistance",
+        "source": "IEC 60947",
+        "description": "Resistance to mechanical shock"
+      },
+      {
+        "name": "Vibration resistance",
+        "source": "IEC 60947",
+        "description": "Resistance to mechanical vibrations"
+      },
+      {
+        "name": "Ambient air temperature",
+        "source": "IEC 60947",
+        "description": "Operating temperature range"
+      },
+      {
+        "name": "Mounting method",
+        "source": "IEC 60947",
+        "description": "Method used for mounting the contactor"
+      },
+      {
+        "name": "Terminal type",
+        "source": "IEC 60947",
+        "description": "Type of terminals used for connections"
+      },
+      {
+        "name": "Weight",
+        "source": "IEC 60947",
+        "description": "Weight of the contactor"
+      },
+      {
+        "name": "Standards met",
+        "source": "IEC 60947",
+        "description": "Standards that the contactor complies with"
+      }
+    ],
+    "raw_excerpt": "### Query: UNSPSC electrical equipment contactors attributes properties\n\n## [PDF] RS PRO Contactors - RS-Online\nURL: https://assets.rs-online.com/v1740822498/Datasheets/99dccaaf7bc493d21bfa54c6092e40fe.pdf\n\nContactors Page 1 of 3 Buy this product from https://uk.rs-online.com/ RS PRO Contactors Iskra name: (K07CG-40/24V DC) MPN for RS Comp.: 030041639000 RS Stock No.: 2842357 RS Professionally Approved Products bring to you professional quality parts across all product categories. Our product range has been tested by engineers and provides a comparable quality to the leading brands without paying a premium price.      Features Contactors Page 2 of 3 Buy this product from https://uk.rs-online.com/ Miniature contactors are electrically remote controlled switches used for switching a power circuit. Contactors are mainly used for switching motors, building automation systems and applications including use in machines. C-series are specified for contactor relays.  Miniature contactor relay  Voltage type for actuating: DC  Screw connection  Product weight 220 gr.  Degree of protection IP20  4-pole; 45 mm width  Mounting method: DIN rail  Manual operation possible: No  Product weight 220 gr.  Product size H: 57,8 W: 45 D: 49,5 mm  Rated control supply voltage Us at DC: 24 V  Rated operational current (Ie) for 24V DC: 4 A  Rated frequency 50/60 Hz  Number of contacts as normally open contact: 4  Number of contacts as normally closed contact: 0 General Specifications Mechanical Specifications Electrical Specifications Product Description ATTRIBUTE 1 Contactors Page 3 of 3 Buy this product from https://uk.rs-online.com/  Degree of protection IP20 eCl@ss (Version) UNSPSC (Version) Declarations EU Declaration of Conformity Hazardous Area Certification Standards Met IEC/EN 60947-5-1 Stock No. Brand Product Name Attribute 1 Attribute 2 Attribute 3 XXX-XXXX RS PRO XXX-XXXX RS PRO Connection Diagrams / Assembly Diagrams / Illustrations / Accessories Protection "
+  },
+  "from_manufacturer_sites": {
+    "attributes": [
+      {
+        "name": "Rated current",
+        "source": "Rockwell Automation"
+      },
+      {
+        "name": "Rated voltage",
+        "source": "Rockwell Automation"
+      },
+      {
+        "name": "Control voltage",
+        "source": "Rockwell Automation"
+      },
+      {
+        "name": "Rated power",
+        "source": "Rockwell Automation"
+      },
+      {
+        "name": "Operational voltage",
+        "source": "Rockwell Automation"
+      },
+      {
+        "name": "Short circuit current rating",
+        "source": "Rockwell Automation"
+      },
+      {
+        "name": "Latching voltage",
+        "source": "Rockwell Automation"
+      },
+      {
+        "name": "Operational frequency range",
+        "source": "Rockwell Automation"
+      },
+      {
+        "name": "Power factor",
+        "source": "Rockwell Automation"
+      },
+      {
+        "name": "Touch protection",
+        "source": "Rockwell Automation"
+      },
+      {
+        "name": "Pollution degree",
+        "source": "Rockwell Automation"
+      },
+      {
+        "name": "Overvoltage category",
+        "source": "Rockwell Automation"
+      },
+      {
+        "name": "Isolation",
+        "source": "Rockwell Automation"
+      },
+      {
+        "name": "Operating temperature",
+        "source": "Rockwell Automation"
+      },
+      {
+        "name": "Storage temperature",
+        "source": "Rockwell Automation"
+      },
+      {
+        "name": "RoHS compliance",
+        "source": "Rockwell Automation"
+      },
+      {
+        "name": "Vibration resistance",
+        "source": "Rockwell Automation"
+      },
+      {
+        "name": "Impact resistance",
+        "source": "Rockwell Automation"
+      },
+      {
+        "name": "Relative humidity",
+        "source": "Rockwell Automation"
+      },
+      {
+        "name": "Installation altitude",
+        "source": "Rockwell Automation"
+      },
+      {
+        "name": "Approximate weight",
+        "source": "Rockwell Automation"
+      },
+      {
+        "name": "Maximum transient surge current",
+        "source": "Rockwell Automation"
+      },
+      {
+        "name": "Maximum off-state leakage current",
+        "source": "Rockwell Automation"
+      },
+      {
+        "name": "I2t for fusing",
+        "source": "Rockwell Automation"
+      },
+      {
+        "name": "Critical dv/dt",
+        "source": "Rockwell Automation"
+      },
+      {
+        "name": "Input specifications",
+        "source": "Rockwell Automation"
+      },
+      {
+        "name": "Output specifications",
+        "source": "Rockwell Automation"
+      },
+      {
+        "name": "Fan control voltage",
+        "source": "Rockwell Automation"
+      },
+      {
+        "name": "Response time pick-up",
+        "source": "Rockwell Automation"
+      },
+      {
+        "name": "Response time drop-out",
+        "source": "Rockwell Automation"
+      },
+      {
+        "name": "Visual indication",
+        "source": "Rockwell Automation"
+      },
+      {
+        "name": "Reverse polarity protection",
+        "source": "Rockwell Automation"
+      },
+      {
+        "name": "Control voltage range",
+        "source": "Rockwell Automation"
+      },
+      {
+        "name": "Pick-up voltage",
+        "source": "Rockwell Automation"
+      },
+      {
+        "name": "Drop-out voltage",
+        "source": "Rockwell Automation"
+      }
+    ],
+    "raw_excerpt": "### Query: contactors technical specifications datasheet attributes Schneider Siemens Eaton Rockwell\n\n## [PDF] Solid-state Contactor Specifications - Literature Library\nURL: https://literature.rockwellautomation.com/idc/groups/literature/documents/td/156-td002_-en-p.pdf\n\nTechnical Data Solid-state Contactor Specifications Bulletin Number 156 Additional Resources These documents contain additional information concerning related products from Rockwell Automation.\nYou can view or download publications at http://www.rockwellautomation.com/global/literature-library/ overview.page. To order paper copies of technical documentation, contact your local Allen-Bradley distributor or Rockwell Automation sales representative.\nTopic Page Topic Page Catalog Number Explanation 2 Dual- and Three-phase Devices 25 Single-phase Devices 3 Product Selection 25 Product Selection 3 Specifications 25 Specifications 3 Current Derating 31 Application Diagrams 16 Application Diagrams 42 Load Curves 18 Wiring Diagrams 44 Wiring Diagrams 21 Approximate Dimensions 45 Approximate Dimensions 22 Resource Description Industrial Automation Wiring and Grounding Guidelines, publication 1770-4.1 Provides general guidelines for installing a Rockwell Automation industrial system.\nProduct Certifications website, http://www.rockwellautomation.com/global/ certification/overview.page Provides declarations of conformity, certificates, and other certification details.\n2 Rockwell Automation Publication 156-TD002B-EN-P - May 2018 Solid-state Contactor Specifications Catalog Number Explanation Examples in this section are not intended to be used for product selection. Not all combinations will produce a valid catalog number.\nTable 1 - Fan Option Compatibility 156 – C1P 20 N A D A a b c d e f g a b c d Bulletin Number No. of Poles Contactor Rating, AC-51 @ 40 °C (104°F) Enclosure Type Code Description Code Description Code Description Code Description 156 Solid-state Contactor C1P Control 1 pole in 1-pole body 20 20"
+  },
+  "from_dataset": {
+    "attributes": [],
+    "columns": [],
+    "raw_excerpt": "",
+    "error": "Dataset file not found: C:\\Users\\Saranya\\OneDrive - GrowthAXL Technologies Private Limited\\Schema_builder\\gaxl-smart-rnd\\Contactors_Dataset.xlsx"
+  },
+  "reasoning": "Step 1: Identify attributes that are critical for both procurement and sales of contactors. Step 2: Consider standards (IEC, NEMA) and manufacturer specifications that define the operational and physical characteristics of contactors. Step 3: Distinguish between attributes that are necessary for supply chain management (like compliance and logistics) and those that enhance the buyer's experience in ecommerce (like discoverability and comparison). Therefore, I have derived two sets of attributes tailored for each perspective.",
+  "supply_chain_attributes": [
+    {
+      "name": "Rated operational voltage",
+      "description": "Rated voltage for main circuit",
+      "rationale": "Essential for ensuring compatibility with electrical systems.",
+      "sources": "IEC 60947"
+    },
+    {
+      "name": "Rated control supply voltage",
+      "description": "Voltage required to operate the control circuit",
+      "rationale": "Critical for procurement to match control systems.",
+      "sources": "IEC 60947"
+    },
+    {
+      "name": "Rated operational current",
+      "description": "Maximum current the contactor can handle",
+      "rationale": "Key for determining the suitability of the contactor for specific applications.",
+      "sources": "IEC 60947"
+    },
+    {
+      "name": "Number of poles",
+      "description": "Total number of poles in the contactor",
+      "rationale": "Important for inventory management and matching with circuit requirements.",
+      "sources": "IEC 60947"
+    },
+    {
+      "name": "Degree of protection",
+      "description": "IP rating indicating the level of protection against dust and water",
+      "rationale": "Necessary for compliance with safety standards in various environments.",
+      "sources": "IEC 60947"
+    },
+    {
+      "name": "Standards met",
+      "description": "Standards that the contactor complies with",
+      "rationale": "Essential for procurement to ensure regulatory compliance.",
+      "sources": "IEC 60947"
+    },
+    {
+      "name": "Weight",
+      "description": "Weight of the contactor",
+      "rationale": "Important for logistics and shipping considerations.",
+      "sources": "IEC 60947"
+    },
+    {
+      "name": "Coil voltage",
+      "description": "Voltage required for the coil to operate",
+      "rationale": "Critical for ensuring compatibility with control systems.",
+      "sources": "IEC 60947"
+    },
+    {
+      "name": "Short circuit current rating",
+      "description": "Maximum current the contactor can withstand during a short circuit",
+      "rationale": "Important for safety and compliance in electrical installations.",
+      "sources": "Manufacturer"
+    },
+    {
+      "name": "RoHS compliance",
+      "description": "Indicates compliance with restrictions on hazardous substances",
+      "rationale": "Necessary for environmental compliance in procurement.",
+      "sources": "Manufacturer"
+    }
+  ],
+  "ecommerce_attributes": [
+    {
+      "name": "Rated operational voltage",
+      "description": "Rated voltage for main circuit",
+      "rationale": "Helps buyers filter products based on voltage requirements.",
+      "sources": "IEC 60947"
+    },
+    {
+      "name": "Rated operational current",
+      "description": "Maximum current the contactor can handle",
+      "rationale": "Allows buyers to compare based on current ratings.",
+      "sources": "IEC 60947"
+    },
+    {
+      "name": "Number of poles",
+      "description": "Total number of poles in the contactor",
+      "rationale": "Facilitates product comparison based on application needs.",
+      "sources": "IEC 60947"
+    },
+    {
+      "name": "Degree of protection",
+      "description": "IP rating indicating the level of protection against dust and water",
+      "rationale": "Important for buyers to assess suitability for different environments.",
+      "sources": "IEC 60947"
+    },
+    {
+      "name": "Visual indication",
+      "description": "Indicates the operational status of the contactor",
+      "rationale": "Enhances user experience by providing operational feedback.",
+      "sources": "Manufacturer"
+    },
+    {
+      "name": "Control voltage",
+      "description": "Voltage required to operate the control circuit",
+      "rationale": "Allows buyers to filter based on control voltage needs.",
+      "sources": "Manufacturer"
+    },
+    {
+      "name": "Response time pick-up",
+      "description": "Time taken for the contactor to engage",
+      "rationale": "Helps buyers understand performance characteristics.",
+      "sources": "Manufacturer"
+    },
+    {
+      "name": "Response time drop-out",
+      "description": "Time taken for the contactor to disengage",
+      "rationale": "Important for buyers to assess performance in dynamic applications.",
+      "sources": "Manufacturer"
+    },
+    {
+      "name": "Operating temperature",
+      "description": "Operating temperature range",
+      "rationale": "Critical for buyers to ensure the contactor operates within their environmental conditions.",
+      "sources": "Manufacturer"
+    },
+    {
+      "name": "Pollution degree",
+      "description": "Indicates the environmental conditions the contactor can operate in",
+      "rationale": "Helps buyers assess suitability for specific applications.",
+      "sources": "Manufacturer"
+    }
+  ],
+  "recommended_attributes": [
+    {
+      "name": "Rated operational voltage",
+      "description": "Rated voltage for main circuit",
+      "rationale": "Essential for ensuring compatibility with electrical systems.",
+      "sources": "IEC 60947"
+    },
+    {
+      "name": "Rated control supply voltage",
+      "description": "Voltage required to operate the control circuit",
+      "rationale": "Critical for procurement to match control systems.",
+      "sources": "IEC 60947"
+    },
+    {
+      "name": "Rated operational current",
+      "description": "Maximum current the contactor can handle",
+      "rationale": "Key for determining the suitability of the contactor for specific applications.",
+      "sources": "IEC 60947"
+    },
+    {
+      "name": "Number of poles",
+      "description": "Total number of poles in the contactor",
+      "rationale": "Important for inventory management and matching with circuit requirements.",
+      "sources": "IEC 60947"
+    },
+    {
+      "name": "Degree of protection",
+      "description": "IP rating indicating the level of protection against dust and water",
+      "rationale": "Necessary for compliance with safety standards in various environments.",
+      "sources": "IEC 60947"
+    },
+    {
+      "name": "Standards met",
+      "description": "Standards that the contactor complies with",
+      "rationale": "Essential for procurement to ensure regulatory compliance.",
+      "sources": "IEC 60947"
+    },
+    {
+      "name": "Weight",
+      "description": "Weight of the contactor",
+      "rationale": "Important for logistics and shipping considerations.",
+      "sources": "IEC 60947"
+    },
+    {
+      "name": "Coil voltage",
+      "description": "Voltage required for the coil to operate",
+      "rationale": "Critical for ensuring compatibility with control systems.",
+      "sources": "IEC 60947"
+    },
+    {
+      "name": "Short circuit current rating",
+      "description": "Maximum current the contactor can withstand during a short circuit",
+      "rationale": "Important for safety and compliance in electrical installations.",
+      "sources": "Manufacturer"
+    },
+    {
+      "name": "RoHS compliance",
+      "description": "Indicates compliance with restrictions on hazardous substances",
+      "rationale": "Necessary for environmental compliance in procurement.",
+      "sources": "Manufacturer"
+    },
+    {
+      "name": "Rated operational voltage",
+      "description": "Rated voltage for main circuit",
+      "rationale": "Helps buyers filter products based on voltage requirements.",
+      "sources": "IEC 60947"
+    },
+    {
+      "name": "Rated operational current",
+      "description": "Maximum current the contactor can handle",
+      "rationale": "Allows buyers to compare based on current ratings.",
+      "sources": "IEC 60947"
+    },
+    {
+      "name": "Number of poles",
+      "description": "Total number of poles in the contactor",
+      "rationale": "Facilitates product comparison based on application needs.",
+      "sources": "IEC 60947"
+    },
+    {
+      "name": "Degree of protection",
+      "description": "IP rating indicating the level of protection against dust and water",
+      "rationale": "Important for buyers to assess suitability for different environments.",
+      "sources": "IEC 60947"
+    },
+    {
+      "name": "Visual indication",
+      "description": "Indicates the operational status of the contactor",
+      "rationale": "Enhances user experience by providing operational feedback.",
+      "sources": "Manufacturer"
+    },
+    {
+      "name": "Control voltage",
+      "description": "Voltage required to operate the control circuit",
+      "rationale": "Allows buyers to filter based on control voltage needs.",
+      "sources": "Manufacturer"
+    },
+    {
+      "name": "Response time pick-up",
+      "description": "Time taken for the contactor to engage",
+      "rationale": "Helps buyers understand performance characteristics.",
+      "sources": "Manufacturer"
+    },
+    {
+      "name": "Response time drop-out",
+      "description": "Time taken for the contactor to disengage",
+      "rationale": "Important for buyers to assess performance in dynamic applications.",
+      "sources": "Manufacturer"
+    },
+    {
+      "name": "Operating temperature",
+      "description": "Operating temperature range",
+      "rationale": "Critical for buyers to ensure the contactor operates within their environmental conditions.",
+      "sources": "Manufacturer"
+    },
+    {
+      "name": "Pollution degree",
+      "description": "Indicates the environmental conditions the contactor can operate in",
+      "rationale": "Helps buyers assess suitability for specific applications.",
+      "sources": "Manufacturer"
+    }
+  ],
+  "confidence": 0.95,
+  "error": null
+}
