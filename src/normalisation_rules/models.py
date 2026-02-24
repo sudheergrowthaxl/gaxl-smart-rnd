@@ -22,7 +22,7 @@ def get_llm(
             raise ValueError("OPENAI_API_KEY is not set")
         from langchain_openai import ChatOpenAI
         return ChatOpenAI(
-            model=model or "gpt-4o-mini",
+            model=model or "gpt-4o",
             temperature=temperature,
             api_key=OPENAI_API_KEY,
         )

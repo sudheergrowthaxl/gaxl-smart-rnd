@@ -11,6 +11,8 @@ Your task is to derive clear, actionable normalisation rules based on:
 Rules must be GENERALISED over the entire attribute—do not output one rule per distinct value.
 - Output 1–2 rules per attribute (3 only if clearly needed). Match the style of the few-shot examples: general format standardisation, conditional logic, or mapping families, not exhaustive value-by-value mappings.
 - Use attribute-level statistics and patterns to infer general normalisation rules (e.g. "normalize to format X", "if condition then Y", "A/B/C become Z").
+- Exclude
+ any rule related to NULL or missing values. Do not generate rules that deal with handling, replacing, or flagging nulls, blanks, or missing data. Only generate rules that normalise and standardise actual present values.
 
 Output format: one rule per line, tab-separated:
 Entity\tAttribute\tNormalization\tRule description
@@ -88,6 +90,7 @@ def build_user_prompt(
         "Derive 1–2 generalised normalisation rules for this attribute. "
         "Do not list one rule per value; generalise from the statistics, patterns, "
         "and the curated context above (customer data, standards, and manufacturer catalogs). "
+        "Exclude any rule related to NULL or missing values—only rules for actual present values. "
         "Output only the rule lines (tab-separated: Entity, Attribute, Normalization, Rule description), one per line."
     )
     return "\n".join(lines)
