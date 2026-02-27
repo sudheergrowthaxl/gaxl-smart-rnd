@@ -1,0 +1,83 @@
+---
+description: Schema Builder V0 project overview - architecture, pipelines, data flow, and directory layout
+alwaysApply: true
+---
+
+# Project Overview
+
+Python 3.10+ CLI application (`normalisation-rules`) that derives data normalization rules for Electrical Equipment (Contactors) using LLMs.
+
+## Tech Stack
+
+- **Language**: Python >= 3.10
+- **Package manager**: uv (Astral)
+- **Build backend**: hatchling
+- **Orchestration**: LangGraph / LangChain
+- **LLM providers**: OpenAI (gpt-4o, gpt-4o-mini), Groq (llama-3.1-8b-instant)
+- **Web search**: Tavily API
+- **Data processing**: pandas, openpyxl, BeautifulSoup4, requests
+
+## Directory Layout
+
+```
+Schema_Builder_V0/
+├── pyproject.toml                     # uv project config, dependencies, entry point
+├── .env.example                       # API key template (OPENAI, GROQ, TAVILY)
+├── python_profiling.py                # Standalone data profiling utility
+├── Contactors_Profiling_distinct_values.json   # Input profiling data
+├── Few_Shot_Examples.txt              # Few-shot prompt examples
+└── src/normalisation_rules/           # Main package
+    ├── cli.py                         # CLI entry point (main())
+    ├── config.py                      # Centralized paths, API keys, constants
+    ├── models.py                      # LLM factory (OpenAI / Groq)
+    ├── state.py                       # LangGraph TypedDict state
+    ├── graph.py                       # LangGraph workflow definition
+    ├── data_loader.py                 # Load/filter profiling JSON
+    ├── tavily_context.py              # Tavily web search integration
+    ├── curate_values.py               # Combine customer + standards + manufacturer data
+    ├── export.py                      # Excel/text rule export
+    ├── few_shots_generator.py         # Generate few-shot example mappings
+    ├── prompts/
+    │   ├── normalisation_rules_prompt.py
+    │   ├── hierarchy_prompt.py
+    │   └── attribute_resolver_prompt.py
+    ├── hierarchy/
+    │   └── resolver.py                # UNSPSC + manufacturer scraping pipeline
+    └── attribute_resolver/
+        └── resolver.py                # Standards + manufacturer + dataset CoT pipeline
+```
+
+## Three Pipelines
+
+1. **Normalization rules** (`graph.py`, `cli.py:_run_normalisation_rules`):
+   `START -> fetch_context (Tavily standards) -> fetch_manufacturer_context (Tavily catalogs) -> curate_values -> derive_rules (LLM) -> END`
+   Outputs: Excel/text with tab-separated rules
+
+2. **Hierarchy resolution** (`hierarchy/resolver.py`, `cli.py:_run_hierarchy`):
+   Scrape UNSPSC + manufacturer websites -> extract breadcrumb paths -> AI recommendation of supply chain + ecommerce paths
+   Outputs: CSV, JSON
+
+3. **Attribute resolution** (`attribute_resolver/resolver.py`, `cli.py:_run_attribute_resolver`):
+   Tavily search for standards + manufacturer attributes -> load dataset columns -> Chain-of-Thought derivation
+   Outputs: JSON, CSV
+
+## Entry Point
+
+```bash
+uv run normalisation-rules [--provider openai|groq] [--priority-only] [--no-tavily] [--limit N]
+```
+
+Interactive CLI prompts user for which pipelines to run (yes/no for each).
+
+## Configuration
+
+- API keys in `.env` file (loaded by `python-dotenv` in `config.py`)
+- All file paths centralized in `config.py` relative to `PROJECT_ROOT`
+- Default manufacturers: ABB, Eaton Cutler Hammer, Schneider Electric, Siemens, Square D
+
+## Key Conventions
+
+- No frontend exists; this is a CLI-only project
+- No test suite exists (no pytest setup)
+- Output files are timestamped where applicable (logs, curated values)
+- LLM responses always parsed with try/except, errors returned as dicts with `"error"` key

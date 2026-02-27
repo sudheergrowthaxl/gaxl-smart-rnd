@@ -1,0 +1,655 @@
+# Domain Backbone — Contactors (Electrical Equipment)
+# Machine-readable canonical schema for pipeline consumption.
+# Referenced by: attribute resolver, normalization rules, hierarchy resolution.
+
+domain:
+  name: Industrial Component
+  sub_domain: Electrical Equipment
+  focus_entity: Contactor
+  standards_basis:
+    - IEC 60947-4-1
+    - IEC 60947-1
+    - NEMA ICS 2
+    - UNSPSC 39121004
+  manufacturers:
+    - ABB
+    - Siemens
+    - Schneider Electric
+    - Eaton
+    - Square D
+    - Rockwell Automation
+
+# ---------------------------------------------------------------------------
+# Entities
+# ---------------------------------------------------------------------------
+entities:
+  primary:
+    - name: Contactor
+      type: physical
+      description: Electromechanical switching device for power circuit control.
+    - name: MainContact
+      type: physical
+      description: Power-carrying contact element that establishes/interrupts load circuit.
+    - name: AuxiliaryContact
+      type: physical
+      description: Low-current contact for signaling, interlocking, and control feedback.
+    - name: ElectromagneticCoil
+      type: physical
+      description: Solenoid that generates magnetic force to actuate the contact bridge.
+    - name: ArcChamber
+      type: physical
+      description: Arc suppression system (deion plates, magnetic blowout).
+    - name: ContactBridge
+      type: physical
+      description: Movable element carrying the moving contacts, driven by the armature.
+
+  supporting:
+    - name: Terminal
+      type: physical
+      description: Connection point for external wiring.
+    - name: Enclosure
+      type: physical
+      description: Protective housing defining IP rating and mounting footprint.
+    - name: MountingSystem
+      type: physical
+      description: DIN rail clip, panel-mount holes, or adapter plate.
+    - name: MechanicalInterlock
+      type: physical
+      description: Device preventing simultaneous closure of two contactors.
+    - name: SurgeSuppressor
+      type: physical
+      description: RC circuit or varistor for coil transient suppression.
+
+  control:
+    - name: ControlCircuit
+      type: logical
+      description: Low-voltage circuit that energizes/de-energizes the coil.
+    - name: OverloadRelay
+      type: physical
+      description: Thermal or electronic relay for motor overload protection.
+    - name: TimerModule
+      type: physical
+      description: On-delay or off-delay timer for timed control sequences.
+    - name: AuxiliaryContactBlock
+      type: physical
+      description: Add-on module providing additional auxiliary contacts.
+
+  protection:
+    - name: SCPD
+      type: physical
+      description: Short-Circuit Protective Device (fuse or breaker) coordinated upstream.
+    - name: CoordinationType
+      type: logical
+      description: IEC Type 1 or Type 2 short-circuit coordination classification.
+
+  governance:
+    - name: IEC_60947_4_1
+      type: standard
+    - name: NEMA_ICS_2
+      type: standard
+    - name: UNSPSC
+      type: taxonomy
+    - name: Manufacturer
+      type: external
+    - name: CertificationBody
+      type: external
+    - name: ProductFamily
+      type: logical
+
+# ---------------------------------------------------------------------------
+# Canonical Attribute Schema (Backbone)
+# ---------------------------------------------------------------------------
+attributes:
+  # --- Tier 1: ontologically required ---
+  - name: Rated operational current (Ie)
+    structural_role: variant-defining
+    data_type: scalar
+    unit: {base_unit: A, unit_system: SI}
+    intrinsic: true
+    standards_defined: true
+    cross_manufacturer_stability: high
+    dependencies:
+      - {attribute: Utilization category, type: conditional, note: "Value changes per AC-1/AC-3/AC-4"}
+      - {attribute: Rated operational voltage (Ue), type: co-determined, note: "Ie specified at a given Ue"}
+      - {attribute: Ambient temperature, type: constrains, note: "Derating above 40°C"}
+    tier: 1
+
+  - name: Rated operational voltage (Ue)
+    structural_role: variant-defining
+    data_type: scalar
+    unit: {base_unit: V, unit_system: SI}
+    intrinsic: true
+    standards_defined: true
+    cross_manufacturer_stability: high
+    dependencies:
+      - {attribute: Rated operational current (Ie), type: co-determined}
+      - {attribute: Altitude, type: constrains, note: "Derating above 2000m"}
+    tier: 1
+
+  - name: Number of poles
+    structural_role: variant-defining
+    data_type: scalar
+    unit: null
+    intrinsic: true
+    standards_defined: true
+    cross_manufacturer_stability: high
+    dependencies:
+      - {attribute: Contact configuration, type: constrains}
+    tier: 1
+
+  - name: Utilization category
+    structural_role: contextual
+    data_type: enumeration
+    unit: null
+    allowed_values: [AC-1, AC-2, AC-3, AC-4, AC-5a, AC-5b, AC-6a, AC-6b, DC-1, DC-3, DC-5]
+    intrinsic: false
+    standards_defined: true
+    cross_manufacturer_stability: high
+    dependencies:
+      - {attribute: Rated operational current (Ie), type: conditional}
+      - {attribute: Electrical durability, type: conditional}
+      - {attribute: Making capacity, type: conditional}
+      - {attribute: Breaking capacity, type: conditional}
+    tier: 1
+
+  - name: Contact configuration
+    structural_role: variant-defining
+    data_type: composite
+    unit: null
+    intrinsic: true
+    standards_defined: true
+    cross_manufacturer_stability: high
+    parse_pattern: '(\d+)(NO|NC)([+](\d+)(NO|NC))*'
+    canonical_format: "{n}NO+{m}NC"
+    dependencies:
+      - {attribute: Number of poles, type: constrains}
+    tier: 1
+
+  - name: Rated coil voltage (Us)
+    structural_role: variant-defining
+    data_type: scalar
+    unit: {base_unit: V, unit_system: SI}
+    intrinsic: true
+    standards_defined: true
+    cross_manufacturer_stability: high
+    dependencies:
+      - {attribute: Coil voltage type, type: co-determined}
+    tier: 1
+
+  - name: Manufacturer
+    structural_role: identity
+    data_type: enumeration
+    unit: null
+    intrinsic: false
+    standards_defined: false
+    cross_manufacturer_stability: high
+    tier: 1
+
+  - name: Part number
+    structural_role: identity
+    data_type: scalar
+    unit: null
+    intrinsic: false
+    standards_defined: false
+    cross_manufacturer_stability: high
+    tier: 1
+
+  # --- Tier 2: structurally important ---
+  - name: Rated insulation voltage (Ui)
+    structural_role: descriptive
+    data_type: scalar
+    unit: {base_unit: V, unit_system: SI}
+    intrinsic: true
+    standards_defined: true
+    cross_manufacturer_stability: high
+    dependencies:
+      - {attribute: Rated operational voltage (Ue), type: constrains, note: "Ui >= Ue always"}
+    tier: 2
+
+  - name: Rated frequency
+    structural_role: variant-defining
+    data_type: enumeration
+    unit: {base_unit: Hz, unit_system: SI}
+    allowed_values: ["50", "60", "50/60"]
+    intrinsic: true
+    standards_defined: true
+    cross_manufacturer_stability: high
+    tier: 2
+
+  - name: Voltage type
+    structural_role: variant-defining
+    data_type: enumeration
+    unit: null
+    allowed_values: [AC, DC]
+    intrinsic: true
+    standards_defined: true
+    cross_manufacturer_stability: high
+    tier: 2
+
+  - name: Coil voltage type
+    structural_role: variant-defining
+    data_type: enumeration
+    unit: null
+    allowed_values: [AC, DC]
+    intrinsic: true
+    standards_defined: true
+    cross_manufacturer_stability: high
+    dependencies:
+      - {attribute: Rated coil voltage (Us), type: co-determined}
+    tier: 2
+
+  - name: Mechanical durability
+    structural_role: descriptive
+    data_type: scalar
+    unit: {base_unit: million operations, unit_system: custom}
+    intrinsic: true
+    standards_defined: true
+    cross_manufacturer_stability: medium
+    tier: 2
+
+  - name: Electrical durability
+    structural_role: descriptive
+    data_type: scalar
+    unit: {base_unit: million operations, unit_system: custom}
+    intrinsic: true
+    standards_defined: true
+    cross_manufacturer_stability: medium
+    dependencies:
+      - {attribute: Utilization category, type: conditional}
+    tier: 2
+
+  - name: Mounting type
+    structural_role: variant-defining
+    data_type: enumeration
+    unit: null
+    allowed_values: [DIN Rail, Panel Mount, DIN Rail/Panel Mount, Screw Mount]
+    intrinsic: true
+    standards_defined: false
+    cross_manufacturer_stability: medium
+    tier: 2
+
+  - name: Terminal type
+    structural_role: variant-defining
+    data_type: enumeration
+    unit: null
+    allowed_values: [Screw, Spring, Ring Terminal, Box Lug, Cage Clamp]
+    intrinsic: true
+    standards_defined: false
+    cross_manufacturer_stability: medium
+    tier: 2
+
+  - name: Degree of protection (IP)
+    structural_role: descriptive
+    data_type: enumeration
+    unit: null
+    intrinsic: true
+    standards_defined: true
+    cross_manufacturer_stability: high
+    tier: 2
+
+  - name: NEMA size
+    structural_role: variant-defining
+    data_type: enumeration
+    unit: null
+    allowed_values: ["00", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
+    intrinsic: false
+    standards_defined: true
+    cross_manufacturer_stability: high
+    dependencies:
+      - {attribute: Horsepower rating, type: co-determined}
+    tier: 2
+
+  - name: Product family
+    structural_role: identity
+    data_type: enumeration
+    unit: null
+    intrinsic: false
+    standards_defined: false
+    cross_manufacturer_stability: low
+    tier: 2
+
+  - name: Horsepower rating
+    structural_role: variant-defining
+    data_type: conditional
+    unit: {base_unit: HP, unit_system: Imperial}
+    intrinsic: true
+    standards_defined: true
+    cross_manufacturer_stability: high
+    dependencies:
+      - {attribute: Rated operational voltage (Ue), type: conditional}
+      - {attribute: Phase, type: conditional}
+      - {attribute: NEMA size, type: co-determined}
+    tier: 2
+
+  - name: Phase
+    structural_role: variant-defining
+    data_type: enumeration
+    unit: null
+    allowed_values: [1, 3]
+    intrinsic: true
+    standards_defined: true
+    cross_manufacturer_stability: high
+    tier: 2
+
+  - name: Making capacity
+    structural_role: descriptive
+    data_type: scalar
+    unit: {base_unit: A, unit_system: SI}
+    intrinsic: true
+    standards_defined: true
+    cross_manufacturer_stability: high
+    dependencies:
+      - {attribute: Rated operational current (Ie), type: derived}
+      - {attribute: Utilization category, type: conditional}
+    tier: 2
+
+  - name: Breaking capacity
+    structural_role: descriptive
+    data_type: scalar
+    unit: {base_unit: A, unit_system: SI}
+    intrinsic: true
+    standards_defined: true
+    cross_manufacturer_stability: high
+    dependencies:
+      - {attribute: Rated operational current (Ie), type: derived}
+      - {attribute: Utilization category, type: conditional}
+    tier: 2
+
+  # --- Tier 3: supplementary ---
+  - name: Weight
+    structural_role: descriptive
+    data_type: scalar
+    unit: {base_unit: kg, unit_system: SI}
+    intrinsic: true
+    standards_defined: false
+    cross_manufacturer_stability: low
+    tier: 3
+
+  - name: Dimensions (H x W x D)
+    structural_role: descriptive
+    data_type: composite
+    unit: {base_unit: mm, unit_system: SI}
+    intrinsic: true
+    standards_defined: false
+    cross_manufacturer_stability: low
+    tier: 3
+
+  - name: Coil power (pick-up)
+    structural_role: descriptive
+    data_type: scalar
+    unit: {base_unit: VA, unit_system: SI}
+    intrinsic: true
+    standards_defined: false
+    cross_manufacturer_stability: medium
+    dependencies:
+      - {attribute: Rated coil voltage (Us), type: derived}
+      - {attribute: Coil resistance, type: derived}
+    tier: 3
+
+  - name: Coil power (holding)
+    structural_role: descriptive
+    data_type: scalar
+    unit: {base_unit: VA, unit_system: SI}
+    intrinsic: true
+    standards_defined: false
+    cross_manufacturer_stability: medium
+    tier: 3
+
+  - name: Coil resistance
+    structural_role: descriptive
+    data_type: scalar
+    unit: {base_unit: Ω, unit_system: SI}
+    intrinsic: true
+    standards_defined: false
+    cross_manufacturer_stability: medium
+    tier: 3
+
+  - name: Pick-up time
+    structural_role: descriptive
+    data_type: scalar
+    unit: {base_unit: ms, unit_system: SI}
+    intrinsic: true
+    standards_defined: false
+    cross_manufacturer_stability: medium
+    tier: 3
+
+  - name: Drop-out time
+    structural_role: descriptive
+    data_type: scalar
+    unit: {base_unit: ms, unit_system: SI}
+    intrinsic: true
+    standards_defined: false
+    cross_manufacturer_stability: medium
+    tier: 3
+
+  - name: Contact material
+    structural_role: descriptive
+    data_type: enumeration
+    unit: null
+    allowed_values: [AgSnO2, AgCdO, AgNi, Cu]
+    intrinsic: true
+    standards_defined: false
+    cross_manufacturer_stability: medium
+    tier: 3
+
+  - name: Contact resistance
+    structural_role: descriptive
+    data_type: scalar
+    unit: {base_unit: mΩ, unit_system: SI}
+    intrinsic: true
+    standards_defined: true
+    cross_manufacturer_stability: medium
+    tier: 3
+
+  - name: Pollution degree
+    structural_role: descriptive
+    data_type: enumeration
+    unit: null
+    allowed_values: [1, 2, 3, 4]
+    intrinsic: false
+    standards_defined: true
+    cross_manufacturer_stability: high
+    tier: 3
+
+  - name: Altitude limit
+    structural_role: descriptive
+    data_type: scalar
+    unit: {base_unit: m, unit_system: SI}
+    intrinsic: false
+    standards_defined: true
+    cross_manufacturer_stability: high
+    tier: 3
+
+  - name: Ambient temperature range
+    structural_role: descriptive
+    data_type: range
+    unit: {base_unit: °C, unit_system: SI}
+    intrinsic: true
+    standards_defined: true
+    cross_manufacturer_stability: medium
+    tier: 3
+
+  - name: Wire size range
+    structural_role: descriptive
+    data_type: range
+    unit: {base_unit: mm², unit_system: SI}
+    intrinsic: true
+    standards_defined: false
+    cross_manufacturer_stability: medium
+    tier: 3
+
+  - name: Rated impulse withstand voltage (Uimp)
+    structural_role: descriptive
+    data_type: scalar
+    unit: {base_unit: kV, unit_system: SI}
+    intrinsic: true
+    standards_defined: true
+    cross_manufacturer_stability: high
+    tier: 3
+
+  - name: Conditional short-circuit current (Iq)
+    structural_role: descriptive
+    data_type: scalar
+    unit: {base_unit: kA, unit_system: SI}
+    intrinsic: true
+    standards_defined: true
+    cross_manufacturer_stability: medium
+    dependencies:
+      - {attribute: SCPD type, type: co-determined}
+    tier: 3
+
+  - name: Maximum operating frequency
+    structural_role: descriptive
+    data_type: scalar
+    unit: {base_unit: ops/hour, unit_system: custom}
+    intrinsic: true
+    standards_defined: true
+    cross_manufacturer_stability: medium
+    tier: 3
+
+  - name: Surge suppressor type
+    structural_role: descriptive
+    data_type: enumeration
+    unit: null
+    allowed_values: [RC, Varistor, Diode, None]
+    intrinsic: true
+    standards_defined: false
+    cross_manufacturer_stability: low
+    tier: 3
+
+  - name: Dielectric strength
+    structural_role: descriptive
+    data_type: scalar
+    unit: {base_unit: V, unit_system: SI}
+    intrinsic: true
+    standards_defined: true
+    cross_manufacturer_stability: high
+    tier: 3
+
+  - name: Isolation voltage
+    structural_role: descriptive
+    data_type: scalar
+    unit: {base_unit: V, unit_system: SI}
+    intrinsic: true
+    standards_defined: true
+    cross_manufacturer_stability: high
+    tier: 3
+
+  - name: Product description
+    structural_role: descriptive
+    data_type: scalar
+    unit: null
+    intrinsic: false
+    standards_defined: false
+    cross_manufacturer_stability: low
+    tier: 3
+
+# ---------------------------------------------------------------------------
+# Invariants
+# ---------------------------------------------------------------------------
+invariants:
+  - id: INV-01
+    rule: "Ui >= Ue"
+    description: Rated insulation voltage is always >= rated operational voltage.
+
+  - id: INV-02
+    rule: "Ie(AC-1) >= Ie(AC-3) >= Ie(AC-4)"
+    description: Current rating decreases with increasing switching severity.
+
+  - id: INV-03
+    rule: "MechanicalDurability >> ElectricalDurability"
+    description: Mechanical lifecycle is at least 10x the electrical lifecycle.
+
+  - id: INV-04
+    rule: "NumberOfPoles >= MainNOContacts"
+    description: Number of poles constrains maximum main NO contact count.
+
+  - id: INV-05
+    rule: "HP = f(Voltage, Phase, NEMA_Size)"
+    description: Horsepower is never standalone; always conditional on voltage and phase.
+
+  - id: INV-06
+    rule: "ContactConfig = f(NO_count, NC_count)"
+    description: Contact configuration is a composite derived from NO and NC counts.
+
+  - id: INV-07
+    rule: "CoilVoltage independent of OperationalVoltage"
+    description: Control circuit voltage is independent of power circuit voltage.
+
+  - id: INV-08
+    rule: "Every installation requires coordinated SCPD"
+    description: A contactor cannot be installed without upstream short-circuit protection.
+
+# ---------------------------------------------------------------------------
+# Normalization patterns
+# ---------------------------------------------------------------------------
+normalization:
+  multi_value_separator: " || "
+  contact_config:
+    pattern: '(\d+)\s*(NO|NC)'
+    canonical: "{n}NO+{m}NC"
+    examples:
+      - input: "2 NO||2 NC"
+        output: "2NO+2NC"
+      - input: "1NC+1NO"
+        output: "1NO+1NC"
+  poles:
+    pattern: '(\d+)\s*(P|Pole|Poles)?'
+    canonical: "{n}"
+    examples:
+      - input: "3P"
+        output: "3"
+      - input: "3 Pole"
+        output: "3"
+      - input: "Three Pole"
+        output: "3"
+  mounting:
+    canonical_values:
+      - DIN Rail
+      - Panel Mount
+      - DIN Rail/Panel Mount
+      - Screw Mount
+    mappings:
+      "On Rail": "DIN Rail"
+      "35mm rail": "DIN Rail"
+      "Clip-On": "DIN Rail"
+      "Snap-On": "DIN Rail"
+      "Base Mount": "Panel Mount"
+  voltage:
+    unit_normalization:
+      - {pattern: '(\d+)\s*VAC', canonical: "{n} V AC"}
+      - {pattern: '(\d+)\s*VDC', canonical: "{n} V DC"}
+      - {pattern: '(\d+)\s*V\s*AC', canonical: "{n} V AC"}
+  certifications:
+    separator: " || "
+    canonical_values:
+      - UL Listed
+      - CSA Certified
+      - CE Approved
+      - GOST Certified
+      - RoHS Compliant
+
+# ---------------------------------------------------------------------------
+# Utilization category reference table
+# ---------------------------------------------------------------------------
+utilization_categories:
+  AC-1:
+    load_type: Non-inductive or slightly inductive loads
+    typical_application: Resistive heating, distribution
+    making_multiplier: 1.5
+    breaking_multiplier: 1.5
+  AC-2:
+    load_type: Slip-ring motors
+    typical_application: Crane motors, hoist motors
+    making_multiplier: 4.0
+    breaking_multiplier: 4.0
+  AC-3:
+    load_type: Squirrel-cage motors — starting, switching off during running
+    typical_application: General motor control (most common)
+    making_multiplier: 10.0
+    breaking_multiplier: 8.0
+  AC-4:
+    load_type: Squirrel-cage motors — starting, plugging, inching
+    typical_application: Reversing, jogging
+    making_multiplier: 12.0
+    breaking_multiplier: 10.0

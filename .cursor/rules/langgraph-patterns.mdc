@@ -1,0 +1,119 @@
+---
+description: LangGraph workflow, state management, LLM factory, and node patterns for the normalization rules pipeline
+globs: "src/normalisation_rules/graph.py,src/normalisation_rules/state.py,src/normalisation_rules/models.py"
+alwaysApply: false
+---
+
+# LangGraph Patterns
+
+## State Definition (`state.py`)
+
+Define state as `TypedDict` with `total=False` so nodes only need to return the keys they modify. Use `Annotated` with `operator.add` for fields that accumulate across iterations:
+
+```python
+import operator
+from typing import Annotated, TypedDict
+
+class RuleDerivationState(TypedDict, total=False):
+    current_attribute: dict
+    web_context: str
+    curated_values: str
+    rules: Annotated[list[str], operator.add]  # appends across invocations
+    error: str
+```
+
+## Graph Construction (`graph.py`)
+
+Build linear pipelines with explicit `add_node` and `add_edge`. Each node is a thin wrapper calling a private implementation function:
+
+```python
+from langgraph.graph import StateGraph, START, END
+
+graph = StateGraph(RuleDerivationState)
+
+graph.add_node("fetch_context", fetch_context)
+graph.add_node("derive_rules", derive_rules)
+
+graph.add_edge(START, "fetch_context")
+graph.add_edge("fetch_context", "derive_rules")
+graph.add_edge("derive_rules", END)
+```
+
+Current pipeline: `START -> fetch_context -> fetch_manufacturer_context -> curate_values -> derive_rules -> END`
+
+## Node Functions
+
+- Accept `state: RuleDerivationState` as the only parameter (bind extra args via closures)
+- Return a `dict` containing only the state keys being updated
+- Never raise exceptions; catch and return `{"error": str(e)}`
+
+```python
+def _fetch_context_node(state: RuleDerivationState) -> dict:
+    if not state.get("use_tavily", True):
+        return {"web_context": "", "error": ""}
+    # ... search logic ...
+    return {"web_context": context, "error": ""}
+
+def _derive_rules_node(state: RuleDerivationState, llm: BaseChatModel) -> dict:
+    # llm is bound via closure in build_rule_derivation_graph
+    try:
+        response = llm.invoke(messages)
+    except Exception as e:
+        return {"rules": [], "error": str(e)}
+    return {"rules": parsed_rules, "error": ""}
+```
+
+## Compilation and Execution
+
+Compile the graph, then invoke with a fully populated initial state dict:
+
+```python
+compiled = build_rule_derivation_graph(llm).compile()
+result = compiled.invoke(initial_state)
+rules = result.get("rules") or []
+```
+
+The graph is rebuilt per attribute in `run_for_attribute()` to keep each invocation independent.
+
+## LLM Factory (`models.py`)
+
+Single factory function supporting two providers. Default temperature is 0.2 for deterministic output:
+
+```python
+def get_llm(
+    provider: Literal["openai", "groq"] = "openai",
+    model: str | None = None,
+    temperature: float = 0.2,
+) -> BaseChatModel:
+```
+
+- OpenAI default model: `gpt-4o`
+- Groq default model: `llama-3.1-8b-instant`
+- Imports are lazy (inside the function body) to avoid errors when a provider SDK is not installed
+
+## LLM Invocation Pattern
+
+Use `SystemMessage` + `HumanMessage` from `langchain_core.messages`:
+
+```python
+from langchain_core.messages import HumanMessage, SystemMessage
+
+messages = [
+    SystemMessage(content=SYSTEM_PROMPT),
+    HumanMessage(content=user_text),
+]
+response = llm.invoke(messages)
+content = getattr(response, "content", "") or str(response)
+```
+
+For direct OpenAI client calls (hierarchy/attribute resolver), use `response_format={"type": "json_object"}` and parse with `json.loads()` wrapped in try/except.
+
+## Output Parsing
+
+LLM output is parsed line-by-line, filtering for tab-separated rule lines. Safety cap of 3 rules per attribute:
+
+```python
+lines = [s.strip() for s in content.splitlines() if s.strip()]
+rules = [line for line in lines if "\t" in line]
+rules = rules[:max_rules_per_attribute]
+```

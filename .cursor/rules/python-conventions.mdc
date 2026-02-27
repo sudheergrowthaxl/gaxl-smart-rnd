@@ -1,0 +1,108 @@
+---
+description: Python coding conventions and patterns used across the normalisation-rules codebase
+globs: "**/*.py"
+alwaysApply: false
+---
+
+# Python Conventions
+
+## Type Hints
+
+Use Python 3.10+ union syntax. Do not use `from __future__ import annotations`.
+
+```python
+# Correct
+def foo(name: str | None = None) -> list[str]:
+    ...
+
+# Wrong
+def foo(name: Optional[str] = None) -> List[str]:
+    ...
+```
+
+Use `Literal` for constrained string parameters:
+
+```python
+from typing import Literal
+
+def get_llm(provider: Literal["openai", "groq"] = "openai") -> BaseChatModel:
+    ...
+```
+
+Use `TypedDict` with `total=False` for state schemas, `Annotated` with reducers for accumulator fields:
+
+```python
+class RuleDerivationState(TypedDict, total=False):
+    rules: Annotated[list[str], operator.add]
+    error: str
+```
+
+## Module Structure
+
+- Every module starts with a triple-quoted docstring describing its purpose
+- Imports grouped: stdlib, then third-party, then local (`normalisation_rules.*`)
+- Use `pathlib.Path` for all file paths, never raw string paths
+
+## Lazy Imports
+
+Heavy dependencies (openai, langchain providers, pandas, openpyxl, tabula) are imported inside functions, not at module top level. This avoids import errors when optional features are unused:
+
+```python
+def get_openai_client():
+    from openai import OpenAI
+    return OpenAI(api_key=key)
+```
+
+## Naming
+
+- Modules: `snake_case.py`
+- Private functions: prefix with `_` (e.g., `_fetch_context_node`, `_parse_rule_line`)
+- Constants: `UPPER_SNAKE_CASE` (e.g., `PRIORITY_ZZ_ATTRS`, `DEFAULT_MANUFACTURERS`)
+- Classes: `PascalCase` (e.g., `RuleDerivationState`)
+
+## Error Handling
+
+LLM and API calls never raise to the caller. Catch exceptions and return error dicts:
+
+```python
+try:
+    content = response.choices[0].message.content
+    out = json.loads(content)
+    out.setdefault("attributes", [])
+    return out
+except (json.JSONDecodeError, TypeError):
+    return {"error": "JSON parse failed", "confidence": 0}
+```
+
+Use `setdefault` on parsed JSON to ensure expected keys always exist.
+
+## Configuration
+
+- All paths and API keys live in `config.py`, loaded from `.env` via `python-dotenv`
+- Never hardcode API keys or file paths in other modules
+- Use `config.PROJECT_ROOT` as the base for all relative paths
+
+## Data I/O Patterns
+
+- **JSON**: `json.load` / `json.dump` with `indent=2, ensure_ascii=False, encoding="utf-8"`
+- **Excel**: `openpyxl` for reading/writing `.xlsx` (with `Font(bold=True)` headers, explicit column widths)
+- **CSV**: `pandas.DataFrame.to_csv(index=False, encoding="utf-8")`
+- **HTML**: `BeautifulSoup(html, "html.parser")` for scraping
+- **Directories**: Always `path.parent.mkdir(parents=True, exist_ok=True)` before writing
+
+## CLI Pattern
+
+Use `argparse` with `Path` types for file arguments. Interactive yes/no prompts via `input()`:
+
+```python
+parser.add_argument("--profiling", type=Path, default=DEFAULT_PROFILING_JSON)
+```
+
+## Print-based Logging
+
+The project uses `print()` with bracketed prefixes for progress output, not the `logging` module (except in `python_profiling.py`):
+
+```python
+print(f"  [Tavily/Standards] Searching for attribute: {name} (depth={search_depth})")
+print(f"  [{i + 1}/{len(attributes)}] Processing: {name}")
+```

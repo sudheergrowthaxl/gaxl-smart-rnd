@@ -168,19 +168,23 @@ def _run_attribute_resolver() -> None:
     """Run the attribute resolution pipeline for Contactors."""
     from normalisation_rules.attribute_resolver.resolver import standardize_attributes
 
-    result, rows = standardize_attributes(
+    result, rows, run_log = standardize_attributes(
         category="contactors",
         output_json_path=str(ATTRIBUTE_RESOLVER_OUTPUT_JSON),
         output_csv_path=str(ATTRIBUTE_RESOLVER_OUTPUT_CSV),
     )
 
+    backbone = result.get("backbone", [])
+    lenses = result.get("lenses", {})
     reasoning_preview = (result.get("reasoning") or "")[:200]
     if reasoning_preview:
         print(f"  Reasoning  : {reasoning_preview}...")
-    print(f"  Supply chain attributes: {len(result.get('supply_chain_attributes', []))}")
-    print(f"  Ecommerce attributes   : {len(result.get('ecommerce_attributes', []))}")
+    print(f"  Backbone attributes    : {len(backbone)}")
+    print(f"  Supply chain view      : {len(lenses.get('supply_chain', []))} attributes")
+    print(f"  Ecommerce view         : {len(lenses.get('ecommerce', []))} attributes")
     print(f"  Saved attributes JSON  : {ATTRIBUTE_RESOLVER_OUTPUT_JSON}")
     print(f"  Saved attributes CSV   : {ATTRIBUTE_RESOLVER_OUTPUT_CSV}")
+    print(f"  Full run log           : {run_log}")
 
 
 # ---------------------------------------------------------------------------

@@ -1,0 +1,123 @@
+---
+description: Domain knowledge (Electrical Equipment / Contactors), prompt engineering patterns, Tavily integration, and the two-lens approach
+globs: "src/normalisation_rules/prompts/**/*.py"
+alwaysApply: false
+---
+
+# Prompts and Domain Knowledge
+
+## Domain Context
+
+This project operates in the **Electrical Equipment** domain, specifically **Contactors** (motor control devices). Key standards and organizations:
+
+- **IEC 60947** / **IEC 60947-4-1**: International standard for low-voltage switchgear, specifically contactors
+- **NEMA ICS**: National Electrical Manufacturers Association Industrial Control and Systems standards
+- **UNSPSC**: United Nations Standard Products and Services Code (product taxonomy)
+
+Key manufacturers referenced throughout: ABB, Eaton Cutler Hammer, Schneider Electric, Siemens, Square D.
+
+Priority attributes (domain-specific): `zz_Auxiliary Contact`, `zz_Number of Poles`, `zz_Mounting Type`, `zz_Type`.
+
+## Two-Lens Approach
+
+Both the hierarchy and attribute resolver pipelines produce results through two perspectives:
+
+1. **Supply chain lens (ERP/procurement)**: Attributes and paths for sourcing, inventory, logistics, standards-aligned classification (UNSPSC, IEC, NEMA)
+2. **Ecommerce lens (selling/channel)**: Attributes and paths for buyer navigation, product discovery, merchandising, and filtering
+
+An attribute or hierarchy path may serve both lenses. Always reason about which lens a recommendation serves and why.
+
+## Prompt Structure
+
+Prompts are built as large f-string templates in dedicated builder functions. Follow this pattern:
+
+```python
+def build_some_prompt(context: str, category: str) -> str:
+    return f"""You are an expert in ...
+
+    From the text below, extract ...
+
+    Output ONLY valid JSON:
+    {{
+        "field": "value",
+        ...
+    }}
+
+    Text: {context[:8000]}
+    """
+```
+
+Key conventions:
+- Role declaration first ("You are an expert in ...")
+- Clear task description with numbered instructions when multi-step
+- JSON output schema embedded directly in the prompt with example structure
+- Input text truncated to a char limit (e.g., `[:8000]`, `[:12000]`) to fit context windows
+- Use double braces `{{` `}}` for literal JSON braces inside f-strings
+
+## Normalization Rules Output Format
+
+Rules follow a strict tab-separated format with no header line:
+
+```
+Entity\tAttribute\tNormalization\tRule description
+```
+
+Example:
+```
+Contactors\tzz_Auxiliary Contact\tNormalization\tNormalize to format 1NO+1NC
+Contactors\tzz_Number of Poles\tNormalization\t"3P", "3 Pole" normalize them to 3
+```
+
+Constraints enforced in prompts:
+- 1-2 rules per attribute (3 only if clearly needed)
+- Generalized rules, not per-value mappings
+- Exclude any rule about NULL/missing values
+- Use attribute-level statistics and patterns to infer rules
+
+## Chain-of-Thought (CoT) Pattern
+
+The attribute resolver uses explicit CoT reasoning. The prompt instructs the LLM to:
+
+```
+1. Reason step-by-step (Chain-of-Thought): consider what attributes are needed
+2. Produce explicit reasoning ("Step 1: ... Step 2: ... Therefore ...")
+3. For each attribute, provide description, rationale, and source alignment
+```
+
+The output JSON includes a `"reasoning"` field capturing the step-by-step thought process.
+
+## Tavily Web Search Integration
+
+Two search functions exist in `tavily_context.py`:
+
+1. **Standards search** (`search_attribute_context`): Queries for IEC/NEMA standard values
+2. **Manufacturer search** (`search_manufacturer_values`): Queries for catalog values from specific manufacturers
+
+Both return `(context_string, query_used)` tuples. Skip logic avoids searching for attributes that won't benefit (dates, IDs, part numbers):
+
+```python
+_SKIP_KEYWORDS = ["date", "expiry", "row number", "part number", "character description", "mfr part"]
+```
+
+Search depth: `"basic"` (faster, cheaper) or `"advanced"` (deeper crawl, richer context). Advanced mode increases `max_results` and `max_content_chars`.
+
+Query construction includes sample values from the data for targeted results:
+
+```python
+query = (
+    f"Standard accepted values for '{label}' in {domain}. "
+    f"Observed variations: {top_vals}. "
+    f"What are the canonical forms per IEC 60947 or NEMA ICS standards?"
+)
+```
+
+## AI Extraction Pattern (Hierarchy / Attributes)
+
+For hierarchy and attribute resolution, the pattern is:
+1. Gather raw text (UNSPSC scraping, Tavily search, dataset columns)
+2. Build a prompt with the raw text + JSON output schema
+3. Call OpenAI with `response_format={"type": "json_object"}`, temperature 0.1
+4. Parse response with `json.loads()`, use `setdefault` for missing keys
+5. Return dict with extracted fields + confidence score
+
+Always handle empty responses and JSON parse failures gracefully, returning a dict with `"error"` key and empty/default values for all expected fields.

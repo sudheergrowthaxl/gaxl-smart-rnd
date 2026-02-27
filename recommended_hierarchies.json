@@ -2,10 +2,10 @@
   {
     "category": "contactors",
     "recommended_path": "Electrical Systems and Lighting and Components and Accessories and Supplies > Electrical equipment and components and supplies > Electrical controls and accessories > Contactors",
-    "ecommerce_recommended_path": "Siemens: Global > Products > Automation > Industrial Controls > Sirius > Sirius Control > Contactors",
+    "ecommerce_recommended_path": "Home > All products > Industrial Automation and Control > Contactors and Protection Relays > Contactors",
     "global_generalized_hierarchy_path": "Electrical Systems and Lighting and Components and Accessories and Supplies > Electrical equipment and components and supplies > Electrical controls and accessories > Contactors",
     "supply_chain_reason": "I chose the UNSPSC path because it provides a standardized classification that aligns with procurement processes, ensuring consistency in sourcing and inventory management. This path is sourced from the UNSPSC hierarchy.",
-    "ecommerce_reason": "I selected the Siemens path as it reflects a clear and structured navigation that aligns with how buyers typically search for and discover products in an ecommerce context. This path is derived from the manufacturer’s site structure.",
+    "ecommerce_reason": "I selected the Schneider Electric path as it reflects a clear and intuitive navigation structure that aligns with how buyers typically search for and discover products in an ecommerce context. This path is derived from a customer ecommerce site.",
     "unspsc_code": "39121529",
     "standard": "UNSPSC/Manufacturer",
     "confidence": 0.95,
@@ -14,8 +14,8 @@
       "extracted_hierarchy": {
         "hierarchy_path": "Electrical Systems and Lighting and Components and Accessories and Supplies > Electrical equipment and components and supplies > Electrical controls and accessories > Contactors",
         "ecommerce_hierarchy_path": "Industrial Controls > Contactors & Accessories > Contactors",
-        "unspsc_code": "39121529",
-        "standard": "IEC/NEMA/UNSPSC/Manufacturer",
+        "unspsc_code": "39121504",
+        "standard": "IEC 60947-4-1, IEC 60947-1, NEMA ICS 2, UNSPSC",
         "confidence": 0.95
       }
     },
@@ -48,10 +48,10 @@
       {
         "source_name": "Eaton",
         "url": "https://www.eaton.com/in/en-us/products/controls-drives-automation-sensors/contactors-and-starters.html",
-        "excerpt_from_site": "Request failed: HTTPSConnectionPool(host='www.eaton.com', port=443): Read timed out. (read timeout=30)",
+        "excerpt_from_site": "Request failed: ('Connection aborted.', ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None))",
         "extracted_hierarchy": {
           "crawled_path": "",
-          "error": "HTTPSConnectionPool(host='www.eaton.com', port=443): Read timed out. (read timeout=30)"
+          "error": "('Connection aborted.', ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None))"
         }
       }
     ]

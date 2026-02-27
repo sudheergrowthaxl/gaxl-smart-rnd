@@ -1,5 +1,1164 @@
 {
   "category": "contactors",
+  "backbone": [
+    {
+      "name": "Rated operational current",
+      "description": "Maximum current the contactor can continuously carry in a given utilization category",
+      "structural_role": "variant-defining",
+      "data_type": "scalar",
+      "unit": {
+        "base_unit": "A",
+        "unit_system": "SI"
+      },
+      "dependencies": [
+        {
+          "attribute": "Utilization category",
+          "type": "conditional",
+          "note": "Value changes per AC-1, AC-3, AC-4"
+        },
+        {
+          "attribute": "Rated operational voltage",
+          "type": "co-determined",
+          "note": "Current rating is specified at a given voltage"
+        }
+      ],
+      "intrinsic": true,
+      "standards_defined": true,
+      "cross_manufacturer_stability": "high",
+      "confidence": {
+        "composite": 0.951,
+        "ontological_necessity": 0.97,
+        "cross_manufacturer_stability": 0.92,
+        "standards_coverage": 0.95
+      },
+      "sources": [
+        "IEC 60947-4-1",
+        "NEMA ICS 2"
+      ],
+      "rationale": "Defined in IEC 60947-4-1 as a primary rated value. Co-determined with voltage and utilization category. Variant-defining because different current ratings distinguish product variants within a family."
+    },
+    {
+      "name": "Rated operational voltage",
+      "description": "Rated voltage for main circuit",
+      "structural_role": "variant-defining",
+      "data_type": "scalar",
+      "unit": {
+        "base_unit": "V",
+        "unit_system": "SI"
+      },
+      "dependencies": [
+        {
+          "attribute": "Rated operational current",
+          "type": "co-determined",
+          "note": "Current rating is specified at a given voltage"
+        },
+        {
+          "attribute": "Altitude",
+          "type": "constrains",
+          "note": "Limits the operational voltage at higher altitudes"
+        }
+      ],
+      "intrinsic": true,
+      "standards_defined": true,
+      "cross_manufacturer_stability": "high",
+      "confidence": {
+        "composite": 0.938,
+        "ontological_necessity": 0.96,
+        "cross_manufacturer_stability": 0.9,
+        "standards_coverage": 0.94
+      },
+      "sources": [
+        "IEC 60947"
+      ],
+      "rationale": "Essential for defining operational limits of the contactor. Co-determined with current rating as per IEC standards."
+    },
+    {
+      "name": "Number of poles",
+      "description": "Number of separate circuits the contactor can control",
+      "structural_role": "variant-defining",
+      "data_type": "scalar",
+      "unit": null,
+      "dependencies": [
+        {
+          "attribute": "Contact configuration",
+          "type": "constrains",
+          "note": "Limits the configuration of contacts based on the number of poles"
+        }
+      ],
+      "intrinsic": true,
+      "standards_defined": true,
+      "cross_manufacturer_stability": "high",
+      "confidence": {
+        "composite": 0.928,
+        "ontological_necessity": 0.95,
+        "cross_manufacturer_stability": 0.89,
+        "standards_coverage": 0.93
+      },
+      "sources": [
+        "IEC 60947"
+      ],
+      "rationale": "Defines the operational capability of the contactor. Variant-defining as different pole counts lead to different product configurations."
+    },
+    {
+      "name": "Utilization category",
+      "description": "Defines the application and operational limits of the contactor",
+      "structural_role": "contextual",
+      "data_type": "enumeration",
+      "unit": null,
+      "dependencies": [
+        {
+          "attribute": "Rated operational current",
+          "type": "conditional",
+          "note": "Changes based on the current rating"
+        },
+        {
+          "attribute": "Electrical durability",
+          "type": "conditional",
+          "note": "Depends on the utilization category"
+        }
+      ],
+      "intrinsic": false,
+      "standards_defined": true,
+      "cross_manufacturer_stability": "high",
+      "confidence": {
+        "composite": 0.898,
+        "ontological_necessity": 0.9,
+        "cross_manufacturer_stability": 0.88,
+        "standards_coverage": 0.92
+      },
+      "sources": [
+        "IEC 60947-4-1"
+      ],
+      "rationale": "Contextual as it defines the operational limits based on application. Important for determining electrical and mechanical durability."
+    },
+    {
+      "name": "Contact configuration",
+      "description": "Arrangement of contacts (e.g., normally open, normally closed)",
+      "structural_role": "variant-defining",
+      "data_type": "composite",
+      "unit": null,
+      "dependencies": [
+        {
+          "attribute": "Number of poles",
+          "type": "constrains",
+          "note": "Determines the maximum configuration possible"
+        }
+      ],
+      "intrinsic": true,
+      "standards_defined": true,
+      "cross_manufacturer_stability": "high",
+      "confidence": {
+        "composite": 0.903,
+        "ontological_necessity": 0.92,
+        "cross_manufacturer_stability": 0.87,
+        "standards_coverage": 0.91
+      },
+      "sources": [
+        "IEC 60947"
+      ],
+      "rationale": "Defines the operational characteristics of the contactor. Variant-defining as different configurations lead to different product types."
+    },
+    {
+      "name": "Rated coil voltage",
+      "description": "Voltage required to energize the contactor coil",
+      "structural_role": "variant-defining",
+      "data_type": "scalar",
+      "unit": {
+        "base_unit": "V",
+        "unit_system": "SI"
+      },
+      "dependencies": [
+        {
+          "attribute": "Coil voltage type",
+          "type": "co-determined",
+          "note": "Must be specified together with the voltage"
+        }
+      ],
+      "intrinsic": true,
+      "standards_defined": true,
+      "cross_manufacturer_stability": "high",
+      "confidence": {
+        "composite": 0.893,
+        "ontological_necessity": 0.91,
+        "cross_manufacturer_stability": 0.86,
+        "standards_coverage": 0.9
+      },
+      "sources": [
+        "IEC 60947"
+      ],
+      "rationale": "Essential for defining the control circuit of the contactor. Co-determined with coil voltage type as per IEC standards."
+    },
+    {
+      "name": "Manufacturer",
+      "description": "The company that produces the contactor",
+      "structural_role": "identity",
+      "data_type": "enumeration",
+      "unit": null,
+      "dependencies": [],
+      "intrinsic": true,
+      "standards_defined": false,
+      "cross_manufacturer_stability": "high",
+      "confidence": {
+        "composite": 0.835,
+        "ontological_necessity": 0.85,
+        "cross_manufacturer_stability": 0.9,
+        "standards_coverage": 0.7
+      },
+      "sources": [],
+      "rationale": "Defines the identity of the product. Important for distinguishing between different manufacturers."
+    },
+    {
+      "name": "Part number",
+      "description": "Unique identifier for the contactor provided by the manufacturer",
+      "structural_role": "identity",
+      "data_type": "scalar",
+      "unit": null,
+      "dependencies": [],
+      "intrinsic": true,
+      "standards_defined": false,
+      "cross_manufacturer_stability": "medium",
+      "confidence": {
+        "composite": 0.78,
+        "ontological_necessity": 0.84,
+        "cross_manufacturer_stability": 0.8,
+        "standards_coverage": 0.6
+      },
+      "sources": [],
+      "rationale": "Defines the identity of the product. Important for procurement and inventory management."
+    },
+    {
+      "name": "Rated insulation voltage",
+      "description": "Insulation voltage rating for the contactor",
+      "structural_role": "descriptive",
+      "data_type": "scalar",
+      "unit": {
+        "base_unit": "V",
+        "unit_system": "SI"
+      },
+      "dependencies": [
+        {
+          "attribute": "Rated operational voltage",
+          "type": "constrains",
+          "note": "Must be greater than or equal to Ue"
+        }
+      ],
+      "intrinsic": true,
+      "standards_defined": true,
+      "cross_manufacturer_stability": "high",
+      "confidence": {
+        "composite": 0.849,
+        "ontological_necessity": 0.83,
+        "cross_manufacturer_stability": 0.88,
+        "standards_coverage": 0.85
+      },
+      "sources": [
+        "IEC 60947"
+      ],
+      "rationale": "Defined in IEC 60947 as a critical safety parameter. Must be greater than or equal to rated operational voltage."
+    },
+    {
+      "name": "Rated frequency",
+      "description": "Operating frequency of the electrical system",
+      "structural_role": "variant-defining",
+      "data_type": "enumeration",
+      "unit": null,
+      "dependencies": [],
+      "intrinsic": true,
+      "standards_defined": true,
+      "cross_manufacturer_stability": "high",
+      "confidence": {
+        "composite": 0.839,
+        "ontological_necessity": 0.82,
+        "cross_manufacturer_stability": 0.87,
+        "standards_coverage": 0.84
+      },
+      "sources": [
+        "IEC 60947"
+      ],
+      "rationale": "Defines the operational environment for the contactor. Variant-defining as different frequencies can affect performance."
+    },
+    {
+      "name": "Voltage type",
+      "description": "Type of voltage (AC or DC) for the contactor",
+      "structural_role": "variant-defining",
+      "data_type": "enumeration",
+      "unit": null,
+      "dependencies": [],
+      "intrinsic": true,
+      "standards_defined": false,
+      "cross_manufacturer_stability": "medium",
+      "confidence": {
+        "composite": 0.745,
+        "ontological_necessity": 0.8,
+        "cross_manufacturer_stability": 0.75,
+        "standards_coverage": 0.6
+      },
+      "sources": [],
+      "rationale": "Defines the type of electrical system the contactor is designed for. Important for ensuring compatibility."
+    },
+    {
+      "name": "Coil voltage type",
+      "description": "Type of voltage for the coil (AC or DC)",
+      "structural_role": "variant-defining",
+      "data_type": "enumeration",
+      "unit": null,
+      "dependencies": [
+        {
+          "attribute": "Rated coil voltage",
+          "type": "co-determined",
+          "note": "Must be specified together with the voltage type"
+        }
+      ],
+      "intrinsic": true,
+      "standards_defined": false,
+      "cross_manufacturer_stability": "medium",
+      "confidence": {
+        "composite": 0.719,
+        "ontological_necessity": 0.78,
+        "cross_manufacturer_stability": 0.73,
+        "standards_coverage": 0.55
+      },
+      "sources": [],
+      "rationale": "Defines the type of control circuit voltage. Co-determined with rated coil voltage."
+    },
+    {
+      "name": "Mechanical durability",
+      "description": "Number of operations the contactor can perform without electrical load",
+      "structural_role": "descriptive",
+      "data_type": "scalar",
+      "unit": {
+        "base_unit": "million operations",
+        "unit_system": "SI"
+      },
+      "dependencies": [],
+      "intrinsic": true,
+      "standards_defined": true,
+      "cross_manufacturer_stability": "high",
+      "confidence": {
+        "composite": 0.755,
+        "ontological_necessity": 0.75,
+        "cross_manufacturer_stability": 0.8,
+        "standards_coverage": 0.7
+      },
+      "sources": [
+        "IEC 60947"
+      ],
+      "rationale": "Defined in IEC 60947 as a measure of the contactor's mechanical life. Important for assessing product longevity."
+    },
+    {
+      "name": "Electrical durability",
+      "description": "Number of operations the contactor can perform under load",
+      "structural_role": "descriptive",
+      "data_type": "scalar",
+      "unit": {
+        "base_unit": "million operations",
+        "unit_system": "SI"
+      },
+      "dependencies": [
+        {
+          "attribute": "Utilization category",
+          "type": "conditional",
+          "note": "Depends on the utilization category"
+        }
+      ],
+      "intrinsic": true,
+      "standards_defined": true,
+      "cross_manufacturer_stability": "high",
+      "confidence": {
+        "composite": 0.74,
+        "ontological_necessity": 0.74,
+        "cross_manufacturer_stability": 0.78,
+        "standards_coverage": 0.68
+      },
+      "sources": [
+        "IEC 60947"
+      ],
+      "rationale": "Defined in IEC 60947 as a measure of the contactor's electrical life. Important for assessing product performance."
+    },
+    {
+      "name": "Mounting type",
+      "description": "Method of installation (e.g., panel mount, DIN rail mount)",
+      "structural_role": "variant-defining",
+      "data_type": "enumeration",
+      "unit": null,
+      "dependencies": [],
+      "intrinsic": true,
+      "standards_defined": false,
+      "cross_manufacturer_stability": "medium",
+      "confidence": {
+        "composite": 0.67,
+        "ontological_necessity": 0.72,
+        "cross_manufacturer_stability": 0.7,
+        "standards_coverage": 0.5
+      },
+      "sources": [],
+      "rationale": "Defines how the contactor is installed. Important for compatibility with installation environments."
+    },
+    {
+      "name": "Terminal type",
+      "description": "Type of terminal connection for the contactor",
+      "structural_role": "variant-defining",
+      "data_type": "enumeration",
+      "unit": null,
+      "dependencies": [],
+      "intrinsic": true,
+      "standards_defined": false,
+      "cross_manufacturer_stability": "medium",
+      "confidence": {
+        "composite": 0.654,
+        "ontological_necessity": 0.7,
+        "cross_manufacturer_stability": 0.68,
+        "standards_coverage": 0.5
+      },
+      "sources": [],
+      "rationale": "Defines the type of electrical connection for the contactor. Important for ensuring compatibility with wiring."
+    },
+    {
+      "name": "Degree of protection (IP)",
+      "description": "Level of protection against dust and moisture",
+      "structural_role": "descriptive",
+      "data_type": "enumeration",
+      "unit": null,
+      "dependencies": [],
+      "intrinsic": true,
+      "standards_defined": true,
+      "cross_manufacturer_stability": "high",
+      "confidence": {
+        "composite": 0.685,
+        "ontological_necessity": 0.68,
+        "cross_manufacturer_stability": 0.75,
+        "standards_coverage": 0.6
+      },
+      "sources": [
+        "IEC 60947"
+      ],
+      "rationale": "Defined in IEC 60947 as a measure of the contactor's environmental protection. Important for assessing suitability for various environments."
+    },
+    {
+      "name": "NEMA size",
+      "description": "Size classification according to NEMA standards",
+      "structural_role": "variant-defining",
+      "data_type": "enumeration",
+      "unit": null,
+      "dependencies": [
+        {
+          "attribute": "Horsepower rating",
+          "type": "co-determined",
+          "note": "Must be specified together with horsepower rating"
+        }
+      ],
+      "intrinsic": true,
+      "standards_defined": true,
+      "cross_manufacturer_stability": "medium",
+      "confidence": {
+        "composite": 0.661,
+        "ontological_necessity": 0.67,
+        "cross_manufacturer_stability": 0.72,
+        "standards_coverage": 0.55
+      },
+      "sources": [
+        "NEMA ICS 2"
+      ],
+      "rationale": "Defines the size classification of the contactor. Variant-defining as different sizes correspond to different operational capabilities."
+    },
+    {
+      "name": "Product family",
+      "description": "Classification of the contactor within a product line",
+      "structural_role": "identity",
+      "data_type": "enumeration",
+      "unit": null,
+      "dependencies": [],
+      "intrinsic": true,
+      "standards_defined": false,
+      "cross_manufacturer_stability": "medium",
+      "confidence": {
+        "composite": 0.635,
+        "ontological_necessity": 0.65,
+        "cross_manufacturer_stability": 0.7,
+        "standards_coverage": 0.5
+      },
+      "sources": [],
+      "rationale": "Defines the identity of the product within a manufacturer's line. Important for categorization."
+    },
+    {
+      "name": "Horsepower rating",
+      "description": "Maximum horsepower the contactor can handle",
+      "structural_role": "variant-defining",
+      "data_type": "conditional",
+      "unit": {
+        "base_unit": "HP",
+        "unit_system": "Imperial"
+      },
+      "dependencies": [
+        {
+          "attribute": "Rated operational voltage",
+          "type": "conditional",
+          "note": "Depends on voltage rating"
+        },
+        {
+          "attribute": "Phase",
+          "type": "conditional",
+          "note": "Depends on phase configuration"
+        },
+        {
+          "attribute": "NEMA size",
+          "type": "co-determined",
+          "note": "Must be specified together with NEMA size"
+        }
+      ],
+      "intrinsic": true,
+      "standards_defined": false,
+      "cross_manufacturer_stability": "medium",
+      "confidence": {
+        "composite": 0.624,
+        "ontological_necessity": 0.64,
+        "cross_manufacturer_stability": 0.68,
+        "standards_coverage": 0.5
+      },
+      "sources": [],
+      "rationale": "Defines the operational capability of the contactor. Conditional as it depends on voltage, phase, and NEMA size."
+    },
+    {
+      "name": "Phase",
+      "description": "Phase configuration of the contactor (e.g., single-phase, three-phase)",
+      "structural_role": "variant-defining",
+      "data_type": "enumeration",
+      "unit": null,
+      "dependencies": [],
+      "intrinsic": true,
+      "standards_defined": false,
+      "cross_manufacturer_stability": "medium",
+      "confidence": {
+        "composite": 0.613,
+        "ontological_necessity": 0.63,
+        "cross_manufacturer_stability": 0.66,
+        "standards_coverage": 0.5
+      },
+      "sources": [],
+      "rationale": "Defines the electrical configuration of the contactor. Important for compatibility with electrical systems."
+    },
+    {
+      "name": "Making capacity",
+      "description": "Maximum current the contactor can handle when closing a circuit",
+      "structural_role": "descriptive",
+      "data_type": "scalar",
+      "unit": {
+        "base_unit": "A",
+        "unit_system": "SI"
+      },
+      "dependencies": [
+        {
+          "attribute": "Rated operational current",
+          "type": "derived",
+          "note": "Calculated based on current rating and utilization category"
+        },
+        {
+          "attribute": "Utilization category",
+          "type": "conditional",
+          "note": "Depends on the utilization category"
+        }
+      ],
+      "intrinsic": true,
+      "standards_defined": true,
+      "cross_manufacturer_stability": "medium",
+      "confidence": {
+        "composite": 0.605,
+        "ontological_necessity": 0.62,
+        "cross_manufacturer_stability": 0.65,
+        "standards_coverage": 0.5
+      },
+      "sources": [
+        "IEC 60947"
+      ],
+      "rationale": "Defined in IEC 60947 as a critical performance parameter. Important for assessing operational limits."
+    },
+    {
+      "name": "Breaking capacity",
+      "description": "Maximum current the contactor can handle when opening a circuit",
+      "structural_role": "descriptive",
+      "data_type": "scalar",
+      "unit": {
+        "base_unit": "A",
+        "unit_system": "SI"
+      },
+      "dependencies": [
+        {
+          "attribute": "Rated operational current",
+          "type": "derived",
+          "note": "Calculated based on current rating and utilization category"
+        },
+        {
+          "attribute": "Utilization category",
+          "type": "conditional",
+          "note": "Depends on the utilization category"
+        }
+      ],
+      "intrinsic": true,
+      "standards_defined": true,
+      "cross_manufacturer_stability": "medium",
+      "confidence": {
+        "composite": 0.597,
+        "ontological_necessity": 0.61,
+        "cross_manufacturer_stability": 0.64,
+        "standards_coverage": 0.5
+      },
+      "sources": [
+        "IEC 60947"
+      ],
+      "rationale": "Defined in IEC 60947 as a critical performance parameter. Important for assessing operational limits."
+    },
+    {
+      "name": "Weight",
+      "description": "Weight of the contactor unit",
+      "structural_role": "descriptive",
+      "data_type": "scalar",
+      "unit": {
+        "base_unit": "kg",
+        "unit_system": "SI"
+      },
+      "dependencies": [],
+      "intrinsic": true,
+      "standards_defined": false,
+      "cross_manufacturer_stability": "medium",
+      "confidence": {
+        "composite": 0.589,
+        "ontological_necessity": 0.6,
+        "cross_manufacturer_stability": 0.63,
+        "standards_coverage": 0.5
+      },
+      "sources": [],
+      "rationale": "Defines the physical characteristics of the contactor. Important for shipping and installation considerations."
+    },
+    {
+      "name": "Dimensions (H x W x D)",
+      "description": "Physical dimensions of the contactor",
+      "structural_role": "descriptive",
+      "data_type": "composite",
+      "unit": {
+        "base_unit": "mm",
+        "unit_system": "SI"
+      },
+      "dependencies": [],
+      "intrinsic": true,
+      "standards_defined": false,
+      "cross_manufacturer_stability": "medium",
+      "confidence": {
+        "composite": 0.581,
+        "ontological_necessity": 0.59,
+        "cross_manufacturer_stability": 0.62,
+        "standards_coverage": 0.5
+      },
+      "sources": [],
+      "rationale": "Defines the physical characteristics of the contactor. Important for shipping and installation considerations."
+    },
+    {
+      "name": "Coil power (pick-up)",
+      "description": "Power required to energize the coil",
+      "structural_role": "descriptive",
+      "data_type": "scalar",
+      "unit": {
+        "base_unit": "VA",
+        "unit_system": "SI"
+      },
+      "dependencies": [
+        {
+          "attribute": "Rated coil voltage",
+          "type": "derived",
+          "note": "Calculated based on coil voltage and resistance"
+        },
+        {
+          "attribute": "Coil resistance",
+          "type": "derived",
+          "note": "Calculated based on coil voltage and current"
+        }
+      ],
+      "intrinsic": true,
+      "standards_defined": false,
+      "cross_manufacturer_stability": "medium",
+      "confidence": {
+        "composite": 0.573,
+        "ontological_necessity": 0.58,
+        "cross_manufacturer_stability": 0.61,
+        "standards_coverage": 0.5
+      },
+      "sources": [],
+      "rationale": "Defines the power requirements for the coil. Important for ensuring proper operation."
+    },
+    {
+      "name": "Coil power (holding)",
+      "description": "Power required to maintain the coil energized",
+      "structural_role": "descriptive",
+      "data_type": "scalar",
+      "unit": {
+        "base_unit": "VA",
+        "unit_system": "SI"
+      },
+      "dependencies": [],
+      "intrinsic": true,
+      "standards_defined": false,
+      "cross_manufacturer_stability": "medium",
+      "confidence": {
+        "composite": 0.565,
+        "ontological_necessity": 0.57,
+        "cross_manufacturer_stability": 0.6,
+        "standards_coverage": 0.5
+      },
+      "sources": [],
+      "rationale": "Defines the power requirements for maintaining the coil. Important for ensuring proper operation."
+    },
+    {
+      "name": "Coil resistance",
+      "description": "Resistance of the coil",
+      "structural_role": "descriptive",
+      "data_type": "scalar",
+      "unit": {
+        "base_unit": "Ω",
+        "unit_system": "SI"
+      },
+      "dependencies": [],
+      "intrinsic": true,
+      "standards_defined": false,
+      "cross_manufacturer_stability": "medium",
+      "confidence": {
+        "composite": 0.557,
+        "ontological_necessity": 0.56,
+        "cross_manufacturer_stability": 0.59,
+        "standards_coverage": 0.5
+      },
+      "sources": [],
+      "rationale": "Defines the electrical characteristics of the coil. Important for ensuring proper operation."
+    },
+    {
+      "name": "Pick-up time",
+      "description": "Time taken for the contactor to energize",
+      "structural_role": "descriptive",
+      "data_type": "scalar",
+      "unit": {
+        "base_unit": "ms",
+        "unit_system": "SI"
+      },
+      "dependencies": [],
+      "intrinsic": true,
+      "standards_defined": false,
+      "cross_manufacturer_stability": "medium",
+      "confidence": {
+        "composite": 0.549,
+        "ontological_necessity": 0.55,
+        "cross_manufacturer_stability": 0.58,
+        "standards_coverage": 0.5
+      },
+      "sources": [],
+      "rationale": "Defines the operational characteristics of the contactor. Important for performance assessment."
+    },
+    {
+      "name": "Drop-out time",
+      "description": "Time taken for the contactor to de-energize",
+      "structural_role": "descriptive",
+      "data_type": "scalar",
+      "unit": {
+        "base_unit": "ms",
+        "unit_system": "SI"
+      },
+      "dependencies": [],
+      "intrinsic": true,
+      "standards_defined": false,
+      "cross_manufacturer_stability": "medium",
+      "confidence": {
+        "composite": 0.541,
+        "ontological_necessity": 0.54,
+        "cross_manufacturer_stability": 0.57,
+        "standards_coverage": 0.5
+      },
+      "sources": [],
+      "rationale": "Defines the operational characteristics of the contactor. Important for performance assessment."
+    },
+    {
+      "name": "Contact material",
+      "description": "Material used for the contacts",
+      "structural_role": "descriptive",
+      "data_type": "enumeration",
+      "unit": null,
+      "dependencies": [],
+      "intrinsic": true,
+      "standards_defined": false,
+      "cross_manufacturer_stability": "medium",
+      "confidence": {
+        "composite": 0.533,
+        "ontological_necessity": 0.53,
+        "cross_manufacturer_stability": 0.56,
+        "standards_coverage": 0.5
+      },
+      "sources": [],
+      "rationale": "Defines the material characteristics of the contactor. Important for assessing performance and durability."
+    },
+    {
+      "name": "Contact resistance",
+      "description": "Resistance of the contacts",
+      "structural_role": "descriptive",
+      "data_type": "scalar",
+      "unit": {
+        "base_unit": "mΩ",
+        "unit_system": "SI"
+      },
+      "dependencies": [],
+      "intrinsic": true,
+      "standards_defined": false,
+      "cross_manufacturer_stability": "medium",
+      "confidence": {
+        "composite": 0.525,
+        "ontological_necessity": 0.52,
+        "cross_manufacturer_stability": 0.55,
+        "standards_coverage": 0.5
+      },
+      "sources": [],
+      "rationale": "Defines the electrical characteristics of the contacts. Important for ensuring proper operation."
+    },
+    {
+      "name": "Pollution degree",
+      "description": "Degree of pollution that the contactor can withstand",
+      "structural_role": "descriptive",
+      "data_type": "enumeration",
+      "unit": null,
+      "dependencies": [],
+      "intrinsic": true,
+      "standards_defined": false,
+      "cross_manufacturer_stability": "medium",
+      "confidence": {
+        "composite": 0.517,
+        "ontological_necessity": 0.51,
+        "cross_manufacturer_stability": 0.54,
+        "standards_coverage": 0.5
+      },
+      "sources": [],
+      "rationale": "Defines the environmental characteristics of the contactor. Important for assessing suitability for various environments."
+    },
+    {
+      "name": "Altitude limit",
+      "description": "Maximum altitude at which the contactor can operate",
+      "structural_role": "descriptive",
+      "data_type": "scalar",
+      "unit": {
+        "base_unit": "m",
+        "unit_system": "SI"
+      },
+      "dependencies": [],
+      "intrinsic": true,
+      "standards_defined": false,
+      "cross_manufacturer_stability": "medium",
+      "confidence": {
+        "composite": 0.509,
+        "ontological_necessity": 0.5,
+        "cross_manufacturer_stability": 0.53,
+        "standards_coverage": 0.5
+      },
+      "sources": [],
+      "rationale": "Defines the operational limits of the contactor. Important for ensuring proper operation in various environments."
+    },
+    {
+      "name": "Ambient temperature range",
+      "description": "Temperature range within which the contactor can operate safely",
+      "structural_role": "descriptive",
+      "data_type": "range",
+      "unit": {
+        "base_unit": "°C",
+        "unit_system": "SI"
+      },
+      "dependencies": [],
+      "intrinsic": true,
+      "standards_defined": false,
+      "cross_manufacturer_stability": "medium",
+      "confidence": {
+        "composite": 0.501,
+        "ontological_necessity": 0.49,
+        "cross_manufacturer_stability": 0.52,
+        "standards_coverage": 0.5
+      },
+      "sources": [],
+      "rationale": "Defines the operational limits of the contactor. Important for ensuring proper operation in various environments."
+    },
+    {
+      "name": "Wire size range",
+      "description": "Range of wire sizes compatible with the contactor",
+      "structural_role": "descriptive",
+      "data_type": "range",
+      "unit": {
+        "base_unit": "mm²",
+        "unit_system": "SI"
+      },
+      "dependencies": [],
+      "intrinsic": true,
+      "standards_defined": false,
+      "cross_manufacturer_stability": "medium",
+      "confidence": {
+        "composite": 0.493,
+        "ontological_necessity": 0.48,
+        "cross_manufacturer_stability": 0.51,
+        "standards_coverage": 0.5
+      },
+      "sources": [],
+      "rationale": "Defines the compatibility of the contactor with different wire sizes. Important for installation."
+    },
+    {
+      "name": "Rated impulse withstand voltage",
+      "description": "Voltage rating for impulse withstand",
+      "structural_role": "descriptive",
+      "data_type": "scalar",
+      "unit": {
+        "base_unit": "kV",
+        "unit_system": "SI"
+      },
+      "dependencies": [],
+      "intrinsic": true,
+      "standards_defined": false,
+      "cross_manufacturer_stability": "medium",
+      "confidence": {
+        "composite": 0.485,
+        "ontological_necessity": 0.47,
+        "cross_manufacturer_stability": 0.5,
+        "standards_coverage": 0.5
+      },
+      "sources": [],
+      "rationale": "Defines the electrical characteristics of the contactor. Important for ensuring proper operation."
+    },
+    {
+      "name": "Conditional short-circuit current",
+      "description": "Current rating for short-circuit conditions",
+      "structural_role": "descriptive",
+      "data_type": "scalar",
+      "unit": {
+        "base_unit": "kA",
+        "unit_system": "SI"
+      },
+      "dependencies": [
+        {
+          "attribute": "SCPD type",
+          "type": "co-determined",
+          "note": "Must be specified together with SCPD type"
+        }
+      ],
+      "intrinsic": true,
+      "standards_defined": false,
+      "cross_manufacturer_stability": "medium",
+      "confidence": {
+        "composite": 0.477,
+        "ontological_necessity": 0.46,
+        "cross_manufacturer_stability": 0.49,
+        "standards_coverage": 0.5
+      },
+      "sources": [],
+      "rationale": "Defines the operational limits of the contactor. Important for ensuring proper operation in various environments."
+    },
+    {
+      "name": "Maximum operating frequency",
+      "description": "Maximum frequency at which the contactor can operate",
+      "structural_role": "descriptive",
+      "data_type": "scalar",
+      "unit": {
+        "base_unit": "ops/hour",
+        "unit_system": "SI"
+      },
+      "dependencies": [],
+      "intrinsic": true,
+      "standards_defined": false,
+      "cross_manufacturer_stability": "medium",
+      "confidence": {
+        "composite": 0.469,
+        "ontological_necessity": 0.45,
+        "cross_manufacturer_stability": 0.48,
+        "standards_coverage": 0.5
+      },
+      "sources": [],
+      "rationale": "Defines the operational limits of the contactor. Important for ensuring proper operation in various environments."
+    },
+    {
+      "name": "Surge suppressor type",
+      "description": "Type of surge suppressor used with the contactor",
+      "structural_role": "descriptive",
+      "data_type": "enumeration",
+      "unit": null,
+      "dependencies": [],
+      "intrinsic": true,
+      "standards_defined": false,
+      "cross_manufacturer_stability": "medium",
+      "confidence": {
+        "composite": 0.461,
+        "ontological_necessity": 0.44,
+        "cross_manufacturer_stability": 0.47,
+        "standards_coverage": 0.5
+      },
+      "sources": [],
+      "rationale": "Defines the compatibility of the contactor with surge protection devices. Important for ensuring proper operation."
+    },
+    {
+      "name": "Dielectric strength",
+      "description": "Voltage withstand capability of the contactor",
+      "structural_role": "descriptive",
+      "data_type": "scalar",
+      "unit": {
+        "base_unit": "V",
+        "unit_system": "SI"
+      },
+      "dependencies": [],
+      "intrinsic": true,
+      "standards_defined": false,
+      "cross_manufacturer_stability": "medium",
+      "confidence": {
+        "composite": 0.453,
+        "ontological_necessity": 0.43,
+        "cross_manufacturer_stability": 0.46,
+        "standards_coverage": 0.5
+      },
+      "sources": [],
+      "rationale": "Defines the electrical characteristics of the contactor. Important for ensuring proper operation."
+    },
+    {
+      "name": "Isolation voltage",
+      "description": "Voltage rating for isolation",
+      "structural_role": "descriptive",
+      "data_type": "scalar",
+      "unit": {
+        "base_unit": "V",
+        "unit_system": "SI"
+      },
+      "dependencies": [],
+      "intrinsic": true,
+      "standards_defined": false,
+      "cross_manufacturer_stability": "medium",
+      "confidence": {
+        "composite": 0.445,
+        "ontological_necessity": 0.42,
+        "cross_manufacturer_stability": 0.45,
+        "standards_coverage": 0.5
+      },
+      "sources": [],
+      "rationale": "Defines the electrical characteristics of the contactor. Important for ensuring proper operation."
+    },
+    {
+      "name": "Product description",
+      "description": "A brief description of the contactor",
+      "structural_role": "descriptive",
+      "data_type": "scalar",
+      "unit": null,
+      "dependencies": [],
+      "intrinsic": false,
+      "standards_defined": false,
+      "cross_manufacturer_stability": "medium",
+      "confidence": {
+        "composite": 0.437,
+        "ontological_necessity": 0.41,
+        "cross_manufacturer_stability": 0.44,
+        "standards_coverage": 0.5
+      },
+      "sources": [],
+      "rationale": "Provides a summary of the contactor's features and specifications. Important for marketing and identification."
+    }
+  ],
+  "lenses": {
+    "supply_chain": [
+      {
+        "name": "Rated operational current",
+        "procurement_priority": "critical",
+        "erp_field_note": "Primary specification for matching contactor to load requirements in purchase orders"
+      },
+      {
+        "name": "Rated operational voltage",
+        "procurement_priority": "critical",
+        "erp_field_note": "Essential for ensuring compatibility with electrical systems in procurement workflows"
+      },
+      {
+        "name": "Number of poles",
+        "procurement_priority": "important",
+        "erp_field_note": "Determines the operational capability and configuration options for inventory management"
+      },
+      {
+        "name": "Utilization category",
+        "procurement_priority": "important",
+        "erp_field_note": "Defines application limits, crucial for compliance and safety standards in procurement"
+      },
+      {
+        "name": "Rated coil voltage",
+        "procurement_priority": "important",
+        "erp_field_note": "Necessary for specifying control circuit requirements in procurement documentation"
+      },
+      {
+        "name": "Mechanical durability",
+        "procurement_priority": "important",
+        "erp_field_note": "Indicates longevity and reliability, important for inventory turnover and procurement decisions"
+      },
+      {
+        "name": "Electrical durability",
+        "procurement_priority": "important",
+        "erp_field_note": "Critical for assessing performance under load, influencing procurement choices"
+      },
+      {
+        "name": "Weight",
+        "procurement_priority": "supplementary",
+        "erp_field_note": "Affects shipping costs and logistics planning in procurement workflows"
+      },
+      {
+        "name": "Dimensions (H x W x D)",
+        "procurement_priority": "supplementary",
+        "erp_field_note": "Important for ensuring compatibility with installation environments in procurement"
+      }
+    ],
+    "ecommerce": [
+      {
+        "name": "Rated operational current",
+        "display_priority": "primary",
+        "filter_suitable": true,
+        "merchandising_note": "Key filter for buyers selecting contactors by amperage rating"
+      },
+      {
+        "name": "Rated operational voltage",
+        "display_priority": "primary",
+        "filter_suitable": true,
+        "merchandising_note": "Essential for filtering products based on voltage compatibility"
+      },
+      {
+        "name": "Number of poles",
+        "display_priority": "secondary",
+        "filter_suitable": true,
+        "merchandising_note": "Allows buyers to filter based on the number of circuits controlled"
+      },
+      {
+        "name": "Utilization category",
+        "display_priority": "secondary",
+        "filter_suitable": true,
+        "merchandising_note": "Helps buyers find contactors suitable for specific applications"
+      },
+      {
+        "name": "Rated coil voltage",
+        "display_priority": "secondary",
+        "filter_suitable": false,
+        "merchandising_note": "Important for product details but not typically used for filtering"
+      },
+      {
+        "name": "Mechanical durability",
+        "display_priority": "tertiary",
+        "filter_suitable": false,
+        "merchandising_note": "Provides additional information but not a primary filter criterion"
+      },
+      {
+        "name": "Electrical durability",
+        "display_priority": "tertiary",
+        "filter_suitable": false,
+        "merchandising_note": "Useful for product comparison but not a filtering attribute"
+      },
+      {
+        "name": "Weight",
+        "display_priority": "tertiary",
+        "filter_suitable": false,
+        "merchandising_note": "Relevant for shipping considerations but not for filtering"
+      },
+      {
+        "name": "Dimensions (H x W x D)",
+        "display_priority": "tertiary",
+        "filter_suitable": false,
+        "merchandising_note": "Important for installation but not typically used for filtering"
+      }
+    ]
+  },
+  "reasoning": "Step 1: Validate reference schema against standards and manufacturer evidence. All Tier 1 and Tier 2 attributes are confirmed as necessary for defining contactors. Step 2: Additional attributes such as 'Weight', 'Dimensions', and 'Coil Power' are included based on evidence from datasets and standards. Step 3: Dependencies are established based on inter-attribute relationships defined in the standards. Step 4: All domain invariants are maintained. Therefore, the backbone schema is structured to comprehensively define contactors while adhering to the established standards and ensuring clarity in attribute roles.",
   "from_standards": {
     "attributes": [
       {
@@ -8,112 +1167,82 @@
         "description": "Rated voltage for main circuit"
       },
       {
-        "name": "Rated control supply voltage",
-        "source": "IEC 60947",
-        "description": "Voltage required to operate the control circuit"
-      },
-      {
         "name": "Rated operational current",
         "source": "IEC 60947",
         "description": "Maximum current the contactor can handle"
       },
       {
-        "name": "Rated frequency",
-        "source": "IEC 60947",
-        "description": "Frequency at which the contactor operates"
-      },
-      {
         "name": "Number of poles",
         "source": "IEC 60947",
-        "description": "Total number of poles in the contactor"
-      },
-      {
-        "name": "Number of normally open contacts",
-        "source": "IEC 60947",
-        "description": "Count of contacts that are normally open"
-      },
-      {
-        "name": "Number of normally closed contacts",
-        "source": "IEC 60947",
-        "description": "Count of contacts that are normally closed"
-      },
-      {
-        "name": "Degree of protection",
-        "source": "IEC 60947",
-        "description": "IP rating indicating the level of protection against dust and water"
+        "description": "Number of separate circuits the contactor can control"
       },
       {
         "name": "Coil voltage",
         "source": "IEC 60947",
-        "description": "Voltage required for the coil to operate"
+        "description": "Voltage required to energize the contactor coil"
       },
       {
-        "name": "Conventional free-air thermal current",
+        "name": "Frequency",
         "source": "IEC 60947",
-        "description": "Maximum current the contactor can carry without tripping"
+        "description": "Operating frequency of the electrical system"
       },
       {
-        "name": "Rated insulation voltage",
+        "name": "Contact configuration",
         "source": "IEC 60947",
-        "description": "Voltage rating for insulation"
+        "description": "Arrangement of contacts (e.g., normally open, normally closed)"
       },
       {
-        "name": "Rated impulse withstand voltage",
+        "name": "Mechanical life",
         "source": "IEC 60947",
-        "description": "Voltage rating for impulse withstand"
+        "description": "Number of operations the contactor can perform without electrical load"
       },
       {
-        "name": "Maximum electrical switching frequency",
+        "name": "Electrical life",
         "source": "IEC 60947",
-        "description": "Maximum number of switching cycles per hour"
+        "description": "Number of operations the contactor can perform under load"
       },
       {
-        "name": "Operate time",
+        "name": "Insulation class",
         "source": "IEC 60947",
-        "description": "Time taken for the contactor to operate"
+        "description": "Rating of the insulation material used in the contactor"
       },
       {
-        "name": "Release time",
+        "name": "Operating temperature range",
         "source": "IEC 60947",
-        "description": "Time taken for the contactor to release"
+        "description": "Temperature range within which the contactor can operate safely"
       },
       {
-        "name": "Shock resistance",
+        "name": "Protection degree",
         "source": "IEC 60947",
-        "description": "Resistance to mechanical shock"
+        "description": "Level of protection against dust and moisture"
       },
       {
-        "name": "Vibration resistance",
+        "name": "Auxiliary contacts",
         "source": "IEC 60947",
-        "description": "Resistance to mechanical vibrations"
+        "description": "Additional contacts used for control and signaling"
       },
       {
-        "name": "Ambient air temperature",
+        "name": "Self-locking function",
         "source": "IEC 60947",
-        "description": "Operating temperature range"
+        "description": "Ability to maintain its state after the control signal is removed"
       },
       {
-        "name": "Mounting method",
+        "name": "Interlocking function",
         "source": "IEC 60947",
-        "description": "Method used for mounting the contactor"
+        "description": "Feature that prevents simultaneous operation of conflicting circuits"
       },
       {
-        "name": "Terminal type",
-        "source": "IEC 60947",
-        "description": "Type of terminals used for connections"
+        "name": "Mounting type",
+        "source": "NEMA",
+        "description": "Method of installation (e.g., panel mount, DIN rail mount)"
       },
       {
         "name": "Weight",
-        "source": "IEC 60947",
-        "description": "Weight of the contactor"
-      },
-      {
-        "name": "Standards met",
-        "source": "IEC 60947",
-        "description": "Standards that the contactor complies with"
+        "source": "NEMA",
+        "description": "Weight of the contactor unit"
       }
     ],
-    "raw_excerpt": "### Query: UNSPSC electrical equipment contactors attributes properties\n\n## [PDF] RS PRO Contactors - RS-Online\nURL: https://assets.rs-online.com/v1740822498/Datasheets/99dccaaf7bc493d21bfa54c6092e40fe.pdf\n\nContactors Page 1 of 3 Buy this product from https://uk.rs-online.com/ RS PRO Contactors Iskra name: (K07CG-40/24V DC) MPN for RS Comp.: 030041639000 RS Stock No.: 2842357 RS Professionally Approved Products bring to you professional quality parts across all product categories. Our product range has been tested by engineers and provides a comparable quality to the leading brands without paying a premium price.      Features Contactors Page 2 of 3 Buy this product from https://uk.rs-online.com/ Miniature contactors are electrically remote controlled switches used for switching a power circuit. Contactors are mainly used for switching motors, building automation systems and applications including use in machines. C-series are specified for contactor relays.  Miniature contactor relay  Voltage type for actuating: DC  Screw connection  Product weight 220 gr.  Degree of protection IP20  4-pole; 45 mm width  Mounting method: DIN rail  Manual operation possible: No  Product weight 220 gr.  Product size H: 57,8 W: 45 D: 49,5 mm  Rated control supply voltage Us at DC: 24 V  Rated operational current (Ie) for 24V DC: 4 A  Rated frequency 50/60 Hz  Number of contacts as normally open contact: 4  Number of contacts as normally closed contact: 0 General Specifications Mechanical Specifications Electrical Specifications Product Description ATTRIBUTE 1 Contactors Page 3 of 3 Buy this product from https://uk.rs-online.com/  Degree of protection IP20 eCl@ss (Version) UNSPSC (Version) Declarations EU Declaration of Conformity Hazardous Area Certification Standards Met IEC/EN 60947-5-1 Stock No. Brand Product Name Attribute 1 Attribute 2 Attribute 3 XXX-XXXX RS PRO XXX-XXXX RS PRO Connection Diagrams / Assembly Diagrams / Illustrations / Accessories Protection "
+    "raw_excerpt": "### Query: UNSPSC electrical equipment contactors attributes properties\n\n## The three major attributes of an AC contactor - MUTAI Electric\nURL: https://www.mutaiele.com/news/the-three-major-attributes-of-an-ac-contactor/\n\n* ![](https://cdn.globalso.com/mutaiele/block01.png)Phone: +86 18066376807\n* ![](https://cdn.globalso.com/mutaiele/block02.png)E-mail: ellen.zheng@mutaiele.com\n\n[![logo](https://cdn.globalso.com/mutaiele/logo2.png)](/)\n\n* [Home](https://www.mutaiele.com/)\n* [News](https://www.mutaiele.com/news/)\n* [The three major attributes of an AC contactor](#)\n\n# The three major attributes of an AC contactor\n\n[AC contactors](https://www.mutaiele.com/ac-contactor/ \"AC contactor\") are important components in electrical systems, especially in controlling the starting and stopping of motors and other equipment. These contactors have several key characteristics that are essential for the smooth operation of the circuit. The three major attributes of an AC contactor include the AC contactor coil, main contacts and auxiliary contacts. Each attribute plays a vital role in ensuring the efficient operation of the electrical system.\n\nFirst of all, the AC contactor coil is the basic component that distinguishes AC contactors and [DC contactors](https://www.mutaiele.com/ac-contactor/ \"AC contactor\"). The coils are labeled A1 and A2 and are primarily responsible for generating the magnetic field required for contactor operation. Typically, AC coils are used in most applications, they are capable of converting electrical energy into mechanical energy, allowing the contactor to close and complete the circuit. This feature enables the AC contactor to effectively control the flow of current and facilitate the starting and stopping of various electrical equipment.\n\nSecondly, the main contact of the AC contactor is an indispensable component for connecting the incoming three-phase power line and the outgoing power line. The incoming wires are marked L1-L2-L3 and the outgoing wires"
   },
   "from_manufacturer_sites": {
     "attributes": [
@@ -122,397 +1251,1316 @@
         "source": "Rockwell Automation"
       },
       {
-        "name": "Rated voltage",
+        "name": "Max. Current Ie",
         "source": "Rockwell Automation"
       },
       {
-        "name": "Control voltage",
+        "name": "Current Rating",
         "source": "Rockwell Automation"
       },
       {
-        "name": "Rated power",
+        "name": "Coil Voltages",
         "source": "Rockwell Automation"
       },
       {
-        "name": "Operational voltage",
+        "name": "Overload Relays",
         "source": "Rockwell Automation"
       },
       {
-        "name": "Short circuit current rating",
+        "name": "Contacts",
         "source": "Rockwell Automation"
       },
       {
-        "name": "Latching voltage",
+        "name": "Features",
         "source": "Rockwell Automation"
       },
       {
-        "name": "Operational frequency range",
+        "name": "Accessories",
         "source": "Rockwell Automation"
       },
       {
-        "name": "Power factor",
+        "name": "Standards/ Certifications",
         "source": "Rockwell Automation"
       },
       {
-        "name": "Touch protection",
+        "name": "Certifications",
         "source": "Rockwell Automation"
       },
       {
-        "name": "Pollution degree",
+        "name": "Auxiliary Contacts",
         "source": "Rockwell Automation"
       },
       {
-        "name": "Overvoltage category",
+        "name": "Mounting",
         "source": "Rockwell Automation"
       },
       {
-        "name": "Isolation",
+        "name": "Materials",
         "source": "Rockwell Automation"
       },
       {
-        "name": "Operating temperature",
+        "name": "IP Rating",
         "source": "Rockwell Automation"
       },
       {
-        "name": "Storage temperature",
+        "name": "Control Voltage",
         "source": "Rockwell Automation"
       },
       {
-        "name": "RoHS compliance",
+        "name": "Mechanical Interlocks",
         "source": "Rockwell Automation"
       },
       {
-        "name": "Vibration resistance",
+        "name": "Surge Suppressors",
         "source": "Rockwell Automation"
       },
       {
-        "name": "Impact resistance",
+        "name": "Terminal Type",
         "source": "Rockwell Automation"
       },
       {
-        "name": "Relative humidity",
+        "name": "Operating Temperature Range",
         "source": "Rockwell Automation"
       },
       {
-        "name": "Installation altitude",
+        "name": "Pole Configuration",
         "source": "Rockwell Automation"
       },
       {
-        "name": "Approximate weight",
+        "name": "Electrical Interlocking",
         "source": "Rockwell Automation"
       },
       {
-        "name": "Maximum transient surge current",
-        "source": "Rockwell Automation"
-      },
-      {
-        "name": "Maximum off-state leakage current",
-        "source": "Rockwell Automation"
-      },
-      {
-        "name": "I2t for fusing",
-        "source": "Rockwell Automation"
-      },
-      {
-        "name": "Critical dv/dt",
-        "source": "Rockwell Automation"
-      },
-      {
-        "name": "Input specifications",
-        "source": "Rockwell Automation"
-      },
-      {
-        "name": "Output specifications",
-        "source": "Rockwell Automation"
-      },
-      {
-        "name": "Fan control voltage",
-        "source": "Rockwell Automation"
-      },
-      {
-        "name": "Response time pick-up",
-        "source": "Rockwell Automation"
-      },
-      {
-        "name": "Response time drop-out",
-        "source": "Rockwell Automation"
-      },
-      {
-        "name": "Visual indication",
-        "source": "Rockwell Automation"
-      },
-      {
-        "name": "Reverse polarity protection",
-        "source": "Rockwell Automation"
-      },
-      {
-        "name": "Control voltage range",
-        "source": "Rockwell Automation"
-      },
-      {
-        "name": "Pick-up voltage",
-        "source": "Rockwell Automation"
-      },
-      {
-        "name": "Drop-out voltage",
+        "name": "Coil Control Type",
         "source": "Rockwell Automation"
       }
     ],
-    "raw_excerpt": "### Query: contactors technical specifications datasheet attributes Schneider Siemens Eaton Rockwell\n\n## [PDF] Solid-state Contactor Specifications - Literature Library\nURL: https://literature.rockwellautomation.com/idc/groups/literature/documents/td/156-td002_-en-p.pdf\n\nTechnical Data Solid-state Contactor Specifications Bulletin Number 156 Additional Resources These documents contain additional information concerning related products from Rockwell Automation.\nYou can view or download publications at http://www.rockwellautomation.com/global/literature-library/ overview.page. To order paper copies of technical documentation, contact your local Allen-Bradley distributor or Rockwell Automation sales representative.\nTopic Page Topic Page Catalog Number Explanation 2 Dual- and Three-phase Devices 25 Single-phase Devices 3 Product Selection 25 Product Selection 3 Specifications 25 Specifications 3 Current Derating 31 Application Diagrams 16 Application Diagrams 42 Load Curves 18 Wiring Diagrams 44 Wiring Diagrams 21 Approximate Dimensions 45 Approximate Dimensions 22 Resource Description Industrial Automation Wiring and Grounding Guidelines, publication 1770-4.1 Provides general guidelines for installing a Rockwell Automation industrial system.\nProduct Certifications website, http://www.rockwellautomation.com/global/ certification/overview.page Provides declarations of conformity, certificates, and other certification details.\n2 Rockwell Automation Publication 156-TD002B-EN-P - May 2018 Solid-state Contactor Specifications Catalog Number Explanation Examples in this section are not intended to be used for product selection. Not all combinations will produce a valid catalog number.\nTable 1 - Fan Option Compatibility 156 – C1P 20 N A D A a b c d e f g a b c d Bulletin Number No. of Poles Contactor Rating, AC-51 @ 40 °C (104°F) Enclosure Type Code Description Code Description Code Description Code Description 156 Solid-state Contactor C1P Control 1 pole in 1-pole body 20 20"
+    "raw_excerpt": "### Query: contactors technical specifications datasheet attributes Schneider Siemens Eaton Rockwell\n\n## [PDF] IEC Contactor Specifications Technical Data - Literature Library\nURL: https://literature.rockwellautomation.com/idc/groups/literature/documents/td/100-td013_-en-p.pdf\n\nTechnical Data \n\nOriginal Instructions \n\n# IEC Contactor Specifications \n\n## Bulletin Numbers 100-C, 100-E, 100-K, 100S-C, 100S-E, 104-C, 104-E, 104-K, 104S-C, 104S-E \n\nTopic Page \n\nSummary of Changes 2Product Line Overview 3IEC Contactors 3Safety Contactors 4100-K/104-K Miniature Contactors 5Product Selection 5Accessories 8Specifications 11 Life-Load Curves 15 Approximate Dimensions 16 100-C/104-C, 100S-C/104S-C Contactors 17 Product Selection: 100-C/104-C Contactors 17 Product Selection: 100S-C/104S-C Safety Contactors 23 Accessories 31 Renewal Parts 36 Specifications 38 Life-Load Curves 49 Approximate Dimensions 56 100-E/104-E, 100S-E/104S-E Contactors 59 Product Selection: 100-E/104-E Contactors 59 Product Selection: 100S-E Safety Contactors 63 Assignment of Contacts 71 Renewal Parts 78 Specifications 80 Life-Load Curves 100 Approximate Dimensions 106 Additional Resources 115 2 Rockwell Automation Publication 100-TD013P-EN-P - April 2025 \n\nIEC Contactor Specifications Technical Data Summary of Changes \n\nThis publication contains the following new or updated informatio n. This list includes substantive updates only and is not intended to reflect all changes. \n\nTopic Page \n\nCorrected 100-C cat. nos. 17 Removed Cat. No. 199-SC10 stab connector kit (discontinued) —Clarified dimension figure titles for 100S-E devices 106…114 Rockwell Automation Publication 100-TD013P-EN-P - April 2025 3\n\n# Product Line Overview IEC Contactors Bulletin No. 100-K/104-K 100-C/104-C 100-E/104-E \n\nScrew Terminals (5…12 A) (9…97 A) (9…96 A), Thru-hole (116…2650 A) Spring Terminals (5…9 A) (9…16 A) —Max. Current Ie 12 A 97 A 2650 A Current Rating 5…12 A 9…97 A 9…2650 A Mounting Panel mounting or mounting on 35 mm DIN"
   },
   "from_dataset": {
-    "attributes": [],
-    "columns": [],
-    "raw_excerpt": "",
-    "error": "Dataset file not found: C:\\Users\\Saranya\\OneDrive - GrowthAXL Technologies Private Limited\\Schema_builder\\gaxl-smart-rnd\\Contactors_Dataset.xlsx"
+    "attributes": [
+      {
+        "name": "Action",
+        "source": "Contactors_Dataset",
+        "sample": ""
+      },
+      {
+        "name": "Type",
+        "source": "Contactors_Dataset",
+        "sample": "sku"
+      },
+      {
+        "name": "ID",
+        "source": "Contactors_Dataset",
+        "sample": "913b59dc-9348-43d0-a474-1807ee4f41b1"
+      },
+      {
+        "name": "Name",
+        "source": "Contactors_Dataset",
+        "sample": "71571135"
+      },
+      {
+        "name": "RS Product Category",
+        "source": "Contactors_Dataset",
+        "sample": "RS Web Taxonomy>>Industrial Controls>>Contactors & Accessories>>Contactors"
+      },
+      {
+        "name": "MaterialNumber",
+        "source": "Contactors_Dataset",
+        "sample": "71571135"
+      },
+      {
+        "name": "zz_80 Character Description",
+        "source": "Contactors_Dataset",
+        "sample": "Contactor LC1D, 3P, Ring Treminals, 40A, 230V, 50/60 Hz, TeSys Deca Series"
+      },
+      {
+        "name": "dr_80 Character Description",
+        "source": "Contactors_Dataset",
+        "sample": "Contactors,"
+      },
+      {
+        "name": "Workflow Status",
+        "source": "Contactors_Dataset",
+        "sample": "In Progress"
+      },
+      {
+        "name": "zz_Web Overview",
+        "source": "Contactors_Dataset",
+        "sample": "NS... contactor relays are used for switching auxiliary circuits and control circuits. - Poles and auxiliary contacts blocks: 4-pole contactor relays, front-mounted add-on auxiliary contact blocks (me"
+      },
+      {
+        "name": "_ProductDescription",
+        "source": "Contactors_Dataset",
+        "sample": "RLY 4NO 120/60"
+      },
+      {
+        "name": "dr_Stocked",
+        "source": "Contactors_Dataset",
+        "sample": "Non-stocked"
+      },
+      {
+        "name": "_PageViews3Months",
+        "source": "Contactors_Dataset",
+        "sample": "0.0"
+      },
+      {
+        "name": "zz_Alternate Mfr Part Number",
+        "source": "Contactors_Dataset",
+        "sample": "40DP32AV"
+      },
+      {
+        "name": "_InvoicedRevenue",
+        "source": "Contactors_Dataset",
+        "sample": "0.0"
+      },
+      {
+        "name": "_PageViews12Months",
+        "source": "Contactors_Dataset",
+        "sample": "4.0"
+      },
+      {
+        "name": "_Vendor ABC Indicator",
+        "source": "Contactors_Dataset",
+        "sample": "F"
+      },
+      {
+        "name": "zz_UPC Code",
+        "source": "Contactors_Dataset",
+        "sample": "785901689942.0"
+      },
+      {
+        "name": "_DateCreated",
+        "source": "Contactors_Dataset",
+        "sample": "2019-02-12T00:00:00.000-0600"
+      },
+      {
+        "name": "Batch Number",
+        "source": "Contactors_Dataset",
+        "sample": "DDL-BatchNo-2009-03242025"
+      },
+      {
+        "name": "_DChain",
+        "source": "Contactors_Dataset",
+        "sample": "7.0"
+      },
+      {
+        "name": "_PLCI",
+        "source": "Contactors_Dataset",
+        "sample": "14.0"
+      },
+      {
+        "name": "_VendorCode",
+        "source": "Contactors_Dataset",
+        "sample": "100275"
+      },
+      {
+        "name": "_VendorName",
+        "source": "Contactors_Dataset",
+        "sample": "ABB"
+      },
+      {
+        "name": "_MfrPartNumber",
+        "source": "Contactors_Dataset",
+        "sample": "NS40E-16"
+      },
+      {
+        "name": "Previous Category",
+        "source": "Contactors_Dataset",
+        "sample": ""
+      },
+      {
+        "name": "EC_ProductVideoURL",
+        "source": "Contactors_Dataset",
+        "sample": "https://www.youtube.com/embed/QuYyiUK6HzQ?rel=0"
+      },
+      {
+        "name": "IsCreatedByNonSysAdminRole",
+        "source": "Contactors_Dataset",
+        "sample": "0.0"
+      },
+      {
+        "name": "dr_PLCI Description",
+        "source": "Contactors_Dataset",
+        "sample": "14 - Nonstock NPI (New Product Introduction)"
+      },
+      {
+        "name": "Re-Validate SKU",
+        "source": "Contactors_Dataset",
+        "sample": "2023-12-16T06:00:13.000-0600"
+      },
+      {
+        "name": "wf_Photo Studio Completed ?",
+        "source": "Contactors_Dataset",
+        "sample": "Completed"
+      },
+      {
+        "name": "wf_Photo Studio Comment",
+        "source": "Contactors_Dataset",
+        "sample": ""
+      },
+      {
+        "name": "dr_Is SKU Has PDF?",
+        "source": "Contactors_Dataset",
+        "sample": "0.0"
+      },
+      {
+        "name": "dr_VendorName",
+        "source": "Contactors_Dataset",
+        "sample": "100275"
+      },
+      {
+        "name": "ExportToEventHub",
+        "source": "Contactors_Dataset",
+        "sample": ""
+      },
+      {
+        "name": "nn_Better World Verification.Action",
+        "source": "Contactors_Dataset",
+        "sample": ""
+      },
+      {
+        "name": "nn_Better World Verification.zz_Better World Row Number",
+        "source": "Contactors_Dataset",
+        "sample": "1.0"
+      },
+      {
+        "name": "nn_Better World Verification.zz_Better World Verification",
+        "source": "Contactors_Dataset",
+        "sample": "Green Premium"
+      },
+      {
+        "name": "nn_Better World Verification.zz_Better World Verification Expiry Date",
+        "source": "Contactors_Dataset",
+        "sample": "2050-04-08 00:00:00"
+      },
+      {
+        "name": "dr_Better World Verification Expiry Date",
+        "source": "Contactors_Dataset",
+        "sample": "2050-04-08 00:00:00"
+      },
+      {
+        "name": "nn_Better World Claim.Action",
+        "source": "Contactors_Dataset",
+        "sample": ""
+      },
+      {
+        "name": "nn_Better World Claim.zz_Better World Claim Row Number",
+        "source": "Contactors_Dataset",
+        "sample": "1.0"
+      },
+      {
+        "name": "nn_Better World Claim.zz_Better World Claim",
+        "source": "Contactors_Dataset",
+        "sample": "Low carbon manufacture"
+      },
+      {
+        "name": "nn_Better World Claim.zz_Better World Claim Expiry Date",
+        "source": "Contactors_Dataset",
+        "sample": "2050-04-08 00:00:00"
+      },
+      {
+        "name": "dr_Better World Claim Expiry Date",
+        "source": "Contactors_Dataset",
+        "sample": "2050-04-08 00:00:00"
+      },
+      {
+        "name": "dr_Better World Product",
+        "source": "Contactors_Dataset",
+        "sample": "1.0"
+      },
+      {
+        "name": "dr_Better World Verification",
+        "source": "Contactors_Dataset",
+        "sample": "Green Premium"
+      },
+      {
+        "name": "dr_Better World Claim",
+        "source": "Contactors_Dataset",
+        "sample": "Low carbon manufacture"
+      },
+      {
+        "name": "Assigned Content Manager",
+        "source": "Contactors_Dataset",
+        "sample": "Darrell.Wagoner@na.rsgroup.com"
+      },
+      {
+        "name": "_Pareto",
+        "source": "Contactors_Dataset",
+        "sample": "D"
+      },
+      {
+        "name": "zz_Dielectric Rating",
+        "source": "Contactors_Dataset",
+        "sample": "2500 V (RMS) (Coil to Contacts)"
+      },
+      {
+        "name": "zz_Dielectric Rating.UOM",
+        "source": "Contactors_Dataset",
+        "sample": "bits"
+      },
+      {
+        "name": "zz_IP Rating",
+        "source": "Contactors_Dataset",
+        "sample": "IP20"
+      },
+      {
+        "name": "zz_Horsepower, Max, 3 Phase, at 480 V",
+        "source": "Contactors_Dataset",
+        "sample": "15"
+      },
+      {
+        "name": "zz_Control Voltage",
+        "source": "Contactors_Dataset",
+        "sample": "110-250"
+      },
+      {
+        "name": "zz_Control Voltage.UOM",
+        "source": "Contactors_Dataset",
+        "sample": "V"
+      },
+      {
+        "name": "zz_Special Features",
+        "source": "Contactors_Dataset",
+        "sample": "Microprocessor-Based Control"
+      },
+      {
+        "name": "zz_Material",
+        "source": "Contactors_Dataset",
+        "sample": "Copper||Silver"
+      },
+      {
+        "name": "zz_Horsepower, Motor, Max at 115 V",
+        "source": "Contactors_Dataset",
+        "sample": "2.0"
+      },
+      {
+        "name": "zz_Maximum Voltage",
+        "source": "Contactors_Dataset",
+        "sample": "1800 VDC,2200 VDC,3500 VDC,5000 VDC,7500 VDC,8000 VDC,10000 VDC,12000 VDC,15000 VDC,20000 VDC,25000 VDC,30000 VDC,35000 VDC,50000 VDC,70000 VDC"
+      },
+      {
+        "name": "zz_Maximum Voltage.UOM",
+        "source": "Contactors_Dataset",
+        "sample": "V"
+      },
+      {
+        "name": "zz_Horsepower, Max, 1 Phase, at 240 V",
+        "source": "Contactors_Dataset",
+        "sample": "1.0"
+      },
+      {
+        "name": "zz_Mounting Style",
+        "source": "Contactors_Dataset",
+        "sample": "Clip-On"
+      },
+      {
+        "name": "zz_Mounting Diameter",
+        "source": "Contactors_Dataset",
+        "sample": "1.5 in. (&plusmn; 0.5 in.)"
+      },
+      {
+        "name": "zz_Mounting Diameter.UOM",
+        "source": "Contactors_Dataset",
+        "sample": "in"
+      },
+      {
+        "name": "zz_Product Type",
+        "source": "Contactors_Dataset",
+        "sample": "Socket"
+      },
+      {
+        "name": "zz_Accessory Type",
+        "source": "Contactors_Dataset",
+        "sample": "Contactor Block"
+      },
+      {
+        "name": "zz_Contact Material",
+        "source": "Contactors_Dataset",
+        "sample": "A"
+      },
+      {
+        "name": "zz_Options",
+        "source": "Contactors_Dataset",
+        "sample": "Global listed"
+      },
+      {
+        "name": "zz_Voltage Range",
+        "source": "Contactors_Dataset",
+        "sample": "48-530"
+      },
+      {
+        "name": "zz_Voltage Range.UOM",
+        "source": "Contactors_Dataset",
+        "sample": "VDC"
+      },
+      {
+        "name": "zz_Horsepower, Max, 3 Phase, at 240 V",
+        "source": "Contactors_Dataset",
+        "sample": "2.0"
+      },
+      {
+        "name": "zz_Supply Voltage",
+        "source": "Contactors_Dataset",
+        "sample": "440.0"
+      },
+      {
+        "name": "zz_Supply Voltage.UOM",
+        "source": "Contactors_Dataset",
+        "sample": "VAC"
+      },
+      {
+        "name": "zz_Continuous Current",
+        "source": "Contactors_Dataset",
+        "sample": "20.0"
+      },
+      {
+        "name": "zz_Continuous Current.UOM",
+        "source": "Contactors_Dataset",
+        "sample": "A"
+      },
+      {
+        "name": "zz_Horsepower, Max, 3 Phase, at 575 V",
+        "source": "Contactors_Dataset",
+        "sample": "25.0"
+      },
+      {
+        "name": "zz_Auxiliary Contact",
+        "source": "Contactors_Dataset",
+        "sample": "2 NO||2 NC"
+      },
+      {
+        "name": "zz_Contact Form",
+        "source": "Contactors_Dataset",
+        "sample": "1 NC + 1 NO"
+      },
+      {
+        "name": "zz_Horsepower, Max, 3 Phase, at 200 V",
+        "source": "Contactors_Dataset",
+        "sample": "1.5"
+      },
+      {
+        "name": "zz_Minimum Ambient Temperature",
+        "source": "Contactors_Dataset",
+        "sample": "-30.0"
+      },
+      {
+        "name": "zz_Minimum Ambient Temperature.UOM",
+        "source": "Contactors_Dataset",
+        "sample": "Â°C"
+      },
+      {
+        "name": "dr_Dimensions",
+        "source": "Contactors_Dataset",
+        "sample": "0.00 in W X 3.98 in L X 0.12 in D"
+      },
+      {
+        "name": "dr_Dimensions.UOM",
+        "source": "Contactors_Dataset",
+        "sample": ""
+      },
+      {
+        "name": "zz_For Use With",
+        "source": "Contactors_Dataset",
+        "sample": "DP Series||DPA Series"
+      },
+      {
+        "name": "zz_Screw Type",
+        "source": "Contactors_Dataset",
+        "sample": "M4"
+      },
+      {
+        "name": "zz_Turn On Time",
+        "source": "Contactors_Dataset",
+        "sample": "50.0"
+      },
+      {
+        "name": "zz_Turn On Time.UOM",
+        "source": "Contactors_Dataset",
+        "sample": "ms"
+      },
+      {
+        "name": "zz_Horsepower, Max, 3 Phase, at 208 V",
+        "source": "Contactors_Dataset",
+        "sample": "3.0"
+      },
+      {
+        "name": "zz_Wire Size",
+        "source": "Contactors_Dataset",
+        "sample": "14 - 6 AWG"
+      },
+      {
+        "name": "zz_Wire Size.UOM",
+        "source": "Contactors_Dataset",
+        "sample": "AWG"
+      },
+      {
+        "name": "zz_Capacitance",
+        "source": "Contactors_Dataset",
+        "sample": "10.0"
+      },
+      {
+        "name": "zz_Capacitance.UOM",
+        "source": "Contactors_Dataset",
+        "sample": "pF"
+      },
+      {
+        "name": "zz_Number of Contacts",
+        "source": "Contactors_Dataset",
+        "sample": "3.0"
+      },
+      {
+        "name": "zz_Coil Resistance",
+        "source": "Contactors_Dataset",
+        "sample": "53"
+      },
+      {
+        "name": "zz_Coil Resistance.UOM",
+        "source": "Contactors_Dataset",
+        "sample": "Ohms"
+      },
+      {
+        "name": "zz_Approvals",
+        "source": "Contactors_Dataset",
+        "sample": "UL Listed||CSA Certified"
+      },
+      {
+        "name": "zz_Number of Poles",
+        "source": "Contactors_Dataset",
+        "sample": "3"
+      },
+      {
+        "name": "zz_Contacts",
+        "source": "Contactors_Dataset",
+        "sample": "1 NO"
+      },
+      {
+        "name": "zz_Terminal Type",
+        "source": "Contactors_Dataset",
+        "sample": "Screw Terminal"
+      },
+      {
+        "name": "zz_Size",
+        "source": "Contactors_Dataset",
+        "sample": "S0"
+      },
+      {
+        "name": "zz_Size.UOM",
+        "source": "Contactors_Dataset",
+        "sample": "in"
+      },
+      {
+        "name": "zz_Terminals",
+        "source": "Contactors_Dataset",
+        "sample": "Box lugs (posidrive setscrew)"
+      },
+      {
+        "name": "zz_Weight",
+        "source": "Contactors_Dataset",
+        "sample": "1.3"
+      },
+      {
+        "name": "zz_Weight.UOM",
+        "source": "Contactors_Dataset",
+        "sample": "lb"
+      },
+      {
+        "name": "zz_Family Name",
+        "source": "Contactors_Dataset",
+        "sample": "TeSys Family"
+      },
+      {
+        "name": "zz_Turn Off Time",
+        "source": "Contactors_Dataset",
+        "sample": "30.0"
+      },
+      {
+        "name": "zz_Turn Off Time.UOM",
+        "source": "Contactors_Dataset",
+        "sample": "ms"
+      },
+      {
+        "name": "zz_Type",
+        "source": "Contactors_Dataset",
+        "sample": "IEC Contactor"
+      },
+      {
+        "name": "zz_Horsepower, Max, 1 Phase, at 230 V",
+        "source": "Contactors_Dataset",
+        "sample": "5.0"
+      },
+      {
+        "name": "zz_Operating Voltage",
+        "source": "Contactors_Dataset",
+        "sample": "4 to 32"
+      },
+      {
+        "name": "zz_Operating Voltage.UOM",
+        "source": "Contactors_Dataset",
+        "sample": "V"
+      },
+      {
+        "name": "zz_Temperature Range",
+        "source": "Contactors_Dataset",
+        "sample": "-25 to 60"
+      },
+      {
+        "name": "zz_Temperature Range.UOM",
+        "source": "Contactors_Dataset",
+        "sample": "Â°C"
+      },
+      {
+        "name": "zz_Horsepower, Max, 3 Phase, at 460 V",
+        "source": "Contactors_Dataset",
+        "sample": "20.0"
+      },
+      {
+        "name": "zz_Horsepower, Max, 3 Phase, at 230 V",
+        "source": "Contactors_Dataset",
+        "sample": "10"
+      },
+      {
+        "name": "zz_Connection",
+        "source": "Contactors_Dataset",
+        "sample": "Quick"
+      },
+      {
+        "name": "zz_Standards",
+        "source": "Contactors_Dataset",
+        "sample": "CAC||CE Approved||CSA Certified||GOST Certified||UL Recognized"
+      },
+      {
+        "name": "zz_Phase",
+        "source": "Contactors_Dataset",
+        "sample": "1.0"
+      },
+      {
+        "name": "zz_Phase.UOM",
+        "source": "Contactors_Dataset",
+        "sample": "Phase"
+      },
+      {
+        "name": "zz_Load Voltage",
+        "source": "Contactors_Dataset",
+        "sample": "1 to 48"
+      },
+      {
+        "name": "zz_Load Voltage.UOM",
+        "source": "Contactors_Dataset",
+        "sample": "V"
+      },
+      {
+        "name": "zz_Termination",
+        "source": "Contactors_Dataset",
+        "sample": "Screw"
+      },
+      {
+        "name": "zz_Enclosure Type",
+        "source": "Contactors_Dataset",
+        "sample": "IP2x"
+      },
+      {
+        "name": "zz_Surge Current",
+        "source": "Contactors_Dataset",
+        "sample": "750"
+      },
+      {
+        "name": "zz_Surge Current.UOM",
+        "source": "Contactors_Dataset",
+        "sample": "Apk"
+      },
+      {
+        "name": "zz_Connection Type",
+        "source": "Contactors_Dataset",
+        "sample": "Screw"
+      },
+      {
+        "name": "zz_Temperature Operating Range",
+        "source": "Contactors_Dataset",
+        "sample": "-25 to 60"
+      },
+      {
+        "name": "zz_Temperature Operating Range.UOM",
+        "source": "Contactors_Dataset",
+        "sample": "C"
+      },
+      {
+        "name": "zz_Minimum Load",
+        "source": "Contactors_Dataset",
+        "sample": "0.1"
+      },
+      {
+        "name": "zz_Minimum Load.UOM",
+        "source": "Contactors_Dataset",
+        "sample": "A"
+      },
+      {
+        "name": "zz_NEMA Size",
+        "source": "Contactors_Dataset",
+        "sample": "2.0"
+      },
+      {
+        "name": "zz_Primary Type",
+        "source": "Contactors_Dataset",
+        "sample": "IEC Contactor"
+      },
+      {
+        "name": "zz_Number of Pins",
+        "source": "Contactors_Dataset",
+        "sample": "8.0"
+      },
+      {
+        "name": "zz_Storage Temperature",
+        "source": "Contactors_Dataset",
+        "sample": "-60 to 80&deg;C"
+      },
+      {
+        "name": "zz_Storage Temperature.UOM",
+        "source": "Contactors_Dataset",
+        "sample": "Â°C"
+      },
+      {
+        "name": "zz_Contact Rating",
+        "source": "Contactors_Dataset",
+        "sample": "20A"
+      },
+      {
+        "name": "zz_Contact Rating.UOM",
+        "source": "Contactors_Dataset",
+        "sample": "A"
+      },
+      {
+        "name": "zz_Contact Current Rating",
+        "source": "Contactors_Dataset",
+        "sample": "25"
+      },
+      {
+        "name": "zz_Contact Current Rating.UOM",
+        "source": "Contactors_Dataset",
+        "sample": "A"
+      },
+      {
+        "name": "zz_Horsepower Rating",
+        "source": "Contactors_Dataset",
+        "sample": "5"
+      },
+      {
+        "name": "zz_Horsepower Rating.UOM",
+        "source": "Contactors_Dataset",
+        "sample": "HP"
+      },
+      {
+        "name": "zz_Contact Configuration",
+        "source": "Contactors_Dataset",
+        "sample": "1NO, 1NC"
+      },
+      {
+        "name": "zz_Number of Conductors",
+        "source": "Contactors_Dataset",
+        "sample": "1.0"
+      },
+      {
+        "name": "zz_Current, Ratings",
+        "source": "Contactors_Dataset",
+        "sample": "12.0"
+      },
+      {
+        "name": "zz_Current, Ratings.UOM",
+        "source": "Contactors_Dataset",
+        "sample": "Amp"
+      },
+      {
+        "name": "zz_Application",
+        "source": "Contactors_Dataset",
+        "sample": "Elec Assemblies, Panels & EOEM - Electrical Assemblies, Panels and EOEMs"
+      },
+      {
+        "name": "zz_Color",
+        "source": "Contactors_Dataset",
+        "sample": "Green"
+      },
+      {
+        "name": "zz_Switch Type",
+        "source": "Contactors_Dataset",
+        "sample": "DC Switching"
+      },
+      {
+        "name": "zz_Terminator Type",
+        "source": "Contactors_Dataset",
+        "sample": "Screw/Pressure Plate"
+      },
+      {
+        "name": "zz_Jacket Color",
+        "source": "Contactors_Dataset",
+        "sample": "Black"
+      },
+      {
+        "name": "zz_Coil Power",
+        "source": "Contactors_Dataset",
+        "sample": "208-240 Vac, 50/60 Hz"
+      },
+      {
+        "name": "zz_Coil Power.UOM",
+        "source": "Contactors_Dataset",
+        "sample": "W"
+      },
+      {
+        "name": "zz_Horsepower, Max, 3 Phase, at 600 V",
+        "source": "Contactors_Dataset",
+        "sample": "7.5"
+      },
+      {
+        "name": "zz_Maximum Ambient Temperature",
+        "source": "Contactors_Dataset",
+        "sample": "80.0"
+      },
+      {
+        "name": "zz_Maximum Ambient Temperature.UOM",
+        "source": "Contactors_Dataset",
+        "sample": "Â°C"
+      },
+      {
+        "name": "zz_Warranty",
+        "source": "Contactors_Dataset",
+        "sample": "Eaton Selling Policy 25-000, one (1) year from the date of installation of the Product or eighteen (18) months from the date of shipment of the Product, whichever occurs first."
+      },
+      {
+        "name": "zz_Series",
+        "source": "Contactors_Dataset",
+        "sample": "TeSys Deca Series"
+      },
+      {
+        "name": "zz_Rating",
+        "source": "Contactors_Dataset",
+        "sample": "15.5 A"
+      },
+      {
+        "name": "zz_Current Rating",
+        "source": "Contactors_Dataset",
+        "sample": "32"
+      },
+      {
+        "name": "zz_Current Rating.UOM",
+        "source": "Contactors_Dataset",
+        "sample": "A"
+      },
+      {
+        "name": "zz_Maximum Operating Temperature",
+        "source": "Contactors_Dataset",
+        "sample": "60"
+      },
+      {
+        "name": "zz_Maximum Operating Temperature.UOM",
+        "source": "Contactors_Dataset",
+        "sample": "Â°C"
+      },
+      {
+        "name": "zz_Resistance",
+        "source": "Contactors_Dataset",
+        "sample": "114.0"
+      },
+      {
+        "name": "zz_Resistance.UOM",
+        "source": "Contactors_Dataset",
+        "sample": "Ohms"
+      },
+      {
+        "name": "zz_Horsepower, Motor, Max at 230 V",
+        "source": "Contactors_Dataset",
+        "sample": "3.0"
+      },
+      {
+        "name": "zz_Body Style",
+        "source": "Contactors_Dataset",
+        "sample": "Compact"
+      },
+      {
+        "name": "zz_Frequency",
+        "source": "Contactors_Dataset",
+        "sample": "50-60 Hz"
+      },
+      {
+        "name": "zz_Frequency.UOM",
+        "source": "Contactors_Dataset",
+        "sample": "GHz"
+      },
+      {
+        "name": "zz_Overall Length",
+        "source": "Contactors_Dataset",
+        "sample": "6.142"
+      },
+      {
+        "name": "zz_Overall Length.UOM",
+        "source": "Contactors_Dataset",
+        "sample": "in"
+      },
+      {
+        "name": "zz_Operating Voltage Range",
+        "source": "Contactors_Dataset",
+        "sample": "48 to 530"
+      },
+      {
+        "name": "zz_Operating Voltage Range.UOM",
+        "source": "Contactors_Dataset",
+        "sample": "V"
+      },
+      {
+        "name": "zz_Horsepower, Max, 1 Phase, at 115 V",
+        "source": "Contactors_Dataset",
+        "sample": "2"
+      },
+      {
+        "name": "zz_Horsepower, Max, 1 Phase, at 200 V",
+        "source": "Contactors_Dataset",
+        "sample": "0.75"
+      },
+      {
+        "name": "zz_Mounting Type",
+        "source": "Contactors_Dataset",
+        "sample": "DIN Rail/Panel Mount"
+      },
+      {
+        "name": "zz_Dielectric Strength",
+        "source": "Contactors_Dataset",
+        "sample": "4000 Vrms"
+      },
+      {
+        "name": "zz_Dielectric Strength.UOM",
+        "source": "Contactors_Dataset",
+        "sample": "V"
+      },
+      {
+        "name": "zz_Relay Type",
+        "source": "Contactors_Dataset",
+        "sample": "Electromechanical"
+      },
+      {
+        "name": "zz_Voltage Rating",
+        "source": "Contactors_Dataset",
+        "sample": "400"
+      },
+      {
+        "name": "zz_Voltage Rating.UOM",
+        "source": "Contactors_Dataset",
+        "sample": "V"
+      },
+      {
+        "name": "zz_Horsepower, Max, 1 Phase, at 208 V",
+        "source": "Contactors_Dataset",
+        "sample": "2.0"
+      },
+      {
+        "name": "zz_Enclosure Rating",
+        "source": "Contactors_Dataset",
+        "sample": "Open with metal mounting plate"
+      },
+      {
+        "name": "zz_Stripping Length",
+        "source": "Contactors_Dataset",
+        "sample": "8 mm"
+      },
+      {
+        "name": "zz_Stripping Length.UOM",
+        "source": "Contactors_Dataset",
+        "sample": "in"
+      },
+      {
+        "name": "zz_Power Rating",
+        "source": "Contactors_Dataset",
+        "sample": "15 kW"
+      },
+      {
+        "name": "zz_Power Rating.UOM",
+        "source": "Contactors_Dataset",
+        "sample": "W"
+      },
+      {
+        "name": "zz_Number of Positions",
+        "source": "Contactors_Dataset",
+        "sample": "1.0"
+      },
+      {
+        "name": "zz_Load Current",
+        "source": "Contactors_Dataset",
+        "sample": "40"
+      },
+      {
+        "name": "zz_Load Current.UOM",
+        "source": "Contactors_Dataset",
+        "sample": "A"
+      },
+      {
+        "name": "zz_Input Voltage",
+        "source": "Contactors_Dataset",
+        "sample": "120.0"
+      },
+      {
+        "name": "zz_Function",
+        "source": "Contactors_Dataset",
+        "sample": "Contactor"
+      },
+      {
+        "name": "zz_Includes",
+        "source": "Contactors_Dataset",
+        "sample": "Quick Connect"
+      },
+      {
+        "name": "zz_Operating Temperature",
+        "source": "Contactors_Dataset",
+        "sample": "-10 to 55"
+      },
+      {
+        "name": "zz_Operating Temperature.UOM",
+        "source": "Contactors_Dataset",
+        "sample": "Â°C"
+      },
+      {
+        "name": "dr_Series",
+        "source": "Contactors_Dataset",
+        "sample": "TeSys Deca Series"
+      },
+      {
+        "name": "zz_Socket Type",
+        "source": "Contactors_Dataset",
+        "sample": "Printed Circuit Board"
+      },
+      {
+        "name": "zz_Minimum Operating Temperature",
+        "source": "Contactors_Dataset",
+        "sample": "-25"
+      },
+      {
+        "name": "zz_Minimum Operating Temperature.UOM",
+        "source": "Contactors_Dataset",
+        "sample": "Â°C"
+      },
+      {
+        "name": "zz_Leaf Node",
+        "source": "Contactors_Dataset",
+        "sample": "contactors"
+      },
+      {
+        "name": "zz_Isolation Voltage",
+        "source": "Contactors_Dataset",
+        "sample": "2500 VRMS Coil to Contacts, Contacts to Frame, 1500 VRMS Across Open Contacts, Pole to Pole"
+      },
+      {
+        "name": "zz_Isolation Voltage.UOM",
+        "source": "Contactors_Dataset",
+        "sample": "_EMPTY"
+      },
+      {
+        "name": "zz_DimensionsNested",
+        "source": "Contactors_Dataset",
+        "sample": ""
+      }
+    ],
+    "columns": [
+      "Action",
+      "Type",
+      "ID",
+      "Name",
+      "RS Product Category",
+      "MaterialNumber",
+      "zz_80 Character Description",
+      "dr_80 Character Description",
+      "Workflow Status",
+      "zz_Web Overview",
+      "_ProductDescription",
+      "dr_Stocked",
+      "_PageViews3Months",
+      "zz_Alternate Mfr Part Number",
+      "_InvoicedRevenue",
+      "_PageViews12Months",
+      "_Vendor ABC Indicator",
+      "zz_UPC Code",
+      "_DateCreated",
+      "Batch Number",
+      "_DChain",
+      "_PLCI",
+      "_VendorCode",
+      "_VendorName",
+      "_MfrPartNumber",
+      "Previous Category",
+      "EC_ProductVideoURL",
+      "IsCreatedByNonSysAdminRole",
+      "dr_PLCI Description",
+      "Re-Validate SKU",
+      "wf_Photo Studio Completed ?",
+      "wf_Photo Studio Comment",
+      "dr_Is SKU Has PDF?",
+      "dr_VendorName",
+      "ExportToEventHub",
+      "nn_Better World Verification.Action",
+      "nn_Better World Verification.zz_Better World Row Number",
+      "nn_Better World Verification.zz_Better World Verification",
+      "nn_Better World Verification.zz_Better World Verification Expiry Date",
+      "dr_Better World Verification Expiry Date",
+      "nn_Better World Claim.Action",
+      "nn_Better World Claim.zz_Better World Claim Row Number",
+      "nn_Better World Claim.zz_Better World Claim",
+      "nn_Better World Claim.zz_Better World Claim Expiry Date",
+      "dr_Better World Claim Expiry Date",
+      "dr_Better World Product",
+      "dr_Better World Verification",
+      "dr_Better World Claim",
+      "Assigned Content Manager",
+      "_Pareto",
+      "zz_Dielectric Rating",
+      "zz_Dielectric Rating.UOM",
+      "zz_IP Rating",
+      "zz_Horsepower, Max, 3 Phase, at 480 V",
+      "zz_Control Voltage",
+      "zz_Control Voltage.UOM",
+      "zz_Special Features",
+      "zz_Material",
+      "zz_Horsepower, Motor, Max at 115 V",
+      "zz_Maximum Voltage",
+      "zz_Maximum Voltage.UOM",
+      "zz_Horsepower, Max, 1 Phase, at 240 V",
+      "zz_Mounting Style",
+      "zz_Mounting Diameter",
+      "zz_Mounting Diameter.UOM",
+      "zz_Product Type",
+      "zz_Accessory Type",
+      "zz_Contact Material",
+      "zz_Options",
+      "zz_Voltage Range",
+      "zz_Voltage Range.UOM",
+      "zz_Horsepower, Max, 3 Phase, at 240 V",
+      "zz_Supply Voltage",
+      "zz_Supply Voltage.UOM",
+      "zz_Continuous Current",
+      "zz_Continuous Current.UOM",
+      "zz_Horsepower, Max, 3 Phase, at 575 V",
+      "zz_Auxiliary Contact",
+      "zz_Contact Form",
+      "zz_Horsepower, Max, 3 Phase, at 200 V",
+      "zz_Minimum Ambient Temperature",
+      "zz_Minimum Ambient Temperature.UOM",
+      "dr_Dimensions",
+      "dr_Dimensions.UOM",
+      "zz_For Use With",
+      "zz_Screw Type",
+      "zz_Turn On Time",
+      "zz_Turn On Time.UOM",
+      "zz_Horsepower, Max, 3 Phase, at 208 V",
+      "zz_Wire Size",
+      "zz_Wire Size.UOM",
+      "zz_Capacitance",
+      "zz_Capacitance.UOM",
+      "zz_Number of Contacts",
+      "zz_Coil Resistance",
+      "zz_Coil Resistance.UOM",
+      "zz_Approvals",
+      "zz_Number of Poles",
+      "zz_Contacts",
+      "zz_Terminal Type",
+      "zz_Size",
+      "zz_Size.UOM",
+      "zz_Terminals",
+      "zz_Weight",
+      "zz_Weight.UOM",
+      "zz_Family Name",
+      "zz_Turn Off Time",
+      "zz_Turn Off Time.UOM",
+      "zz_Type",
+      "zz_Horsepower, Max, 1 Phase, at 230 V",
+      "zz_Operating Voltage",
+      "zz_Operating Voltage.UOM",
+      "zz_Temperature Range",
+      "zz_Temperature Range.UOM",
+      "zz_Horsepower, Max, 3 Phase, at 460 V",
+      "zz_Horsepower, Max, 3 Phase, at 230 V",
+      "zz_Connection",
+      "zz_Standards",
+      "zz_Phase",
+      "zz_Phase.UOM",
+      "zz_Load Voltage",
+      "zz_Load Voltage.UOM",
+      "zz_Termination",
+      "zz_Enclosure Type",
+      "zz_Surge Current",
+      "zz_Surge Current.UOM",
+      "zz_Connection Type",
+      "zz_Temperature Operating Range",
+      "zz_Temperature Operating Range.UOM",
+      "zz_Minimum Load",
+      "zz_Minimum Load.UOM",
+      "zz_NEMA Size",
+      "zz_Primary Type",
+      "zz_Number of Pins",
+      "zz_Storage Temperature",
+      "zz_Storage Temperature.UOM",
+      "zz_Contact Rating",
+      "zz_Contact Rating.UOM",
+      "zz_Contact Current Rating",
+      "zz_Contact Current Rating.UOM",
+      "zz_Horsepower Rating",
+      "zz_Horsepower Rating.UOM",
+      "zz_Contact Configuration",
+      "zz_Number of Conductors",
+      "zz_Current, Ratings",
+      "zz_Current, Ratings.UOM",
+      "zz_Application",
+      "zz_Color",
+      "zz_Switch Type",
+      "zz_Terminator Type",
+      "zz_Jacket Color",
+      "zz_Coil Power",
+      "zz_Coil Power.UOM",
+      "zz_Horsepower, Max, 3 Phase, at 600 V",
+      "zz_Maximum Ambient Temperature",
+      "zz_Maximum Ambient Temperature.UOM",
+      "zz_Warranty",
+      "zz_Series",
+      "zz_Rating",
+      "zz_Current Rating",
+      "zz_Current Rating.UOM",
+      "zz_Maximum Operating Temperature",
+      "zz_Maximum Operating Temperature.UOM",
+      "zz_Resistance",
+      "zz_Resistance.UOM",
+      "zz_Horsepower, Motor, Max at 230 V",
+      "zz_Body Style",
+      "zz_Frequency",
+      "zz_Frequency.UOM",
+      "zz_Overall Length",
+      "zz_Overall Length.UOM",
+      "zz_Operating Voltage Range",
+      "zz_Operating Voltage Range.UOM",
+      "zz_Horsepower, Max, 1 Phase, at 115 V",
+      "zz_Horsepower, Max, 1 Phase, at 200 V",
+      "zz_Mounting Type",
+      "zz_Dielectric Strength",
+      "zz_Dielectric Strength.UOM",
+      "zz_Relay Type",
+      "zz_Voltage Rating",
+      "zz_Voltage Rating.UOM",
+      "zz_Horsepower, Max, 1 Phase, at 208 V",
+      "zz_Enclosure Rating",
+      "zz_Stripping Length",
+      "zz_Stripping Length.UOM",
+      "zz_Power Rating",
+      "zz_Power Rating.UOM",
+      "zz_Number of Positions",
+      "zz_Load Current",
+      "zz_Load Current.UOM",
+      "zz_Input Voltage",
+      "zz_Function",
+      "zz_Includes",
+      "zz_Operating Temperature",
+      "zz_Operating Temperature.UOM",
+      "dr_Series",
+      "zz_Socket Type",
+      "zz_Minimum Operating Temperature",
+      "zz_Minimum Operating Temperature.UOM",
+      "zz_Leaf Node",
+      "zz_Isolation Voltage",
+      "zz_Isolation Voltage.UOM",
+      "zz_DimensionsNested"
+    ],
+    "raw_excerpt": "Type: sku\nID: 913b59dc-9348-43d0-a474-1807ee4f41b1\nName: 71571135\nRS Product Category: RS Web Taxonomy>>Industrial Controls>>Contactors & Accessories>>Contactors\nMaterialNumber: 71571135\nzz_80 Character Description: Contactor LC1D, 3P, Ring Treminals, 40A, 230V, 50/60 Hz, TeSys Deca Series\ndr_80 Character Description: Contactors,\nWorkflow Status: In Progress\nzz_Web Overview: NS... contactor relays are used for switching auxiliary circuits and control circuits. - Poles and auxiliary contacts blocks: 4-pole contactor relays, front-mounted add-on auxiliary contact blocks (me\n_ProductDescription: RLY 4NO 120/60\ndr_Stocked: Non-stocked\n_PageViews3Months: 0.0\nzz_Alternate Mfr Part Number: 40DP32AV\n_InvoicedRevenue: 0.0\n_PageViews12Months: 4.0\n_Vendor ABC Indicator: F\nzz_UPC Code: 785901689942.0\n_DateCreated: 2019-02-12T00:00:00.000-0600\nBatch Number: DDL-BatchNo-2009-03242025\n_DChain: 7.0\n_PLCI: 14.0\n_VendorCode: 100275\n_VendorName: ABB\n_MfrPartNumber: NS40E-16\nEC_ProductVideoURL: https://www.youtube.com/embed/QuYyiUK6HzQ?rel=0\nIsCreatedByNonSysAdminRole: 0.0\ndr_PLCI Description: 14 - Nonstock NPI (New Product Introduction)\nRe-Validate SKU: 2023-12-16T06:00:13.000-0600\nwf_Photo Studio Completed ?: Completed\ndr_Is SKU Has PDF?: 0.0\ndr_VendorName: 100275\nnn_Better World Verification.zz_Better World Row Number: 1.0\nnn_Better World Verification.zz_Better World Verification: Green Premium\nnn_Better World Verification.zz_Better World Verification Expiry Date: 2050-04-08 00:00:00\ndr_Better World Verification Expiry Date: 2050-04-08 00:00:00\nnn_Better World Claim.zz_Better World Claim Row Number: 1.0\nnn_Better World Claim.zz_Better World Claim: Low carbon manufacture\nnn_Better World Claim.zz_Better World Claim Expiry Date: 2050-04-08 00:00:00\ndr_Better World Claim Expiry Date: 2050-04-08 00:00:00\ndr_Better World Product: 1.0\ndr_Better World Verification: Green Premium\ndr_Better World Claim: Low carbon manufacture\nAssigned Content Manager: Darrell.Wagoner@na.rsgroup.com\n_Pareto: D\nzz_Dielectric Rating: 2500 V (RMS) (Coil to Contacts)\nzz_Dielectric Rating.UOM: bits\nzz_IP Rating: IP20\nzz_Horsepower, Max, 3 Phase, at 480 V: 15\nzz_Control Voltage: 110-250\nzz_Control Voltage.UOM: V"
   },
-  "reasoning": "Step 1: Identify attributes that are critical for both procurement and sales of contactors. Step 2: Consider standards (IEC, NEMA) and manufacturer specifications that define the operational and physical characteristics of contactors. Step 3: Distinguish between attributes that are necessary for supply chain management (like compliance and logistics) and those that enhance the buyer's experience in ecommerce (like discoverability and comparison). Therefore, I have derived two sets of attributes tailored for each perspective.",
-  "supply_chain_attributes": [
-    {
-      "name": "Rated operational voltage",
-      "description": "Rated voltage for main circuit",
-      "rationale": "Essential for ensuring compatibility with electrical systems.",
-      "sources": "IEC 60947"
-    },
-    {
-      "name": "Rated control supply voltage",
-      "description": "Voltage required to operate the control circuit",
-      "rationale": "Critical for procurement to match control systems.",
-      "sources": "IEC 60947"
-    },
-    {
-      "name": "Rated operational current",
-      "description": "Maximum current the contactor can handle",
-      "rationale": "Key for determining the suitability of the contactor for specific applications.",
-      "sources": "IEC 60947"
-    },
-    {
-      "name": "Number of poles",
-      "description": "Total number of poles in the contactor",
-      "rationale": "Important for inventory management and matching with circuit requirements.",
-      "sources": "IEC 60947"
-    },
-    {
-      "name": "Degree of protection",
-      "description": "IP rating indicating the level of protection against dust and water",
-      "rationale": "Necessary for compliance with safety standards in various environments.",
-      "sources": "IEC 60947"
-    },
-    {
-      "name": "Standards met",
-      "description": "Standards that the contactor complies with",
-      "rationale": "Essential for procurement to ensure regulatory compliance.",
-      "sources": "IEC 60947"
-    },
-    {
-      "name": "Weight",
-      "description": "Weight of the contactor",
-      "rationale": "Important for logistics and shipping considerations.",
-      "sources": "IEC 60947"
-    },
-    {
-      "name": "Coil voltage",
-      "description": "Voltage required for the coil to operate",
-      "rationale": "Critical for ensuring compatibility with control systems.",
-      "sources": "IEC 60947"
-    },
-    {
-      "name": "Short circuit current rating",
-      "description": "Maximum current the contactor can withstand during a short circuit",
-      "rationale": "Important for safety and compliance in electrical installations.",
-      "sources": "Manufacturer"
-    },
-    {
-      "name": "RoHS compliance",
-      "description": "Indicates compliance with restrictions on hazardous substances",
-      "rationale": "Necessary for environmental compliance in procurement.",
-      "sources": "Manufacturer"
-    }
-  ],
-  "ecommerce_attributes": [
-    {
-      "name": "Rated operational voltage",
-      "description": "Rated voltage for main circuit",
-      "rationale": "Helps buyers filter products based on voltage requirements.",
-      "sources": "IEC 60947"
-    },
-    {
-      "name": "Rated operational current",
-      "description": "Maximum current the contactor can handle",
-      "rationale": "Allows buyers to compare based on current ratings.",
-      "sources": "IEC 60947"
-    },
-    {
-      "name": "Number of poles",
-      "description": "Total number of poles in the contactor",
-      "rationale": "Facilitates product comparison based on application needs.",
-      "sources": "IEC 60947"
-    },
-    {
-      "name": "Degree of protection",
-      "description": "IP rating indicating the level of protection against dust and water",
-      "rationale": "Important for buyers to assess suitability for different environments.",
-      "sources": "IEC 60947"
-    },
-    {
-      "name": "Visual indication",
-      "description": "Indicates the operational status of the contactor",
-      "rationale": "Enhances user experience by providing operational feedback.",
-      "sources": "Manufacturer"
-    },
-    {
-      "name": "Control voltage",
-      "description": "Voltage required to operate the control circuit",
-      "rationale": "Allows buyers to filter based on control voltage needs.",
-      "sources": "Manufacturer"
-    },
-    {
-      "name": "Response time pick-up",
-      "description": "Time taken for the contactor to engage",
-      "rationale": "Helps buyers understand performance characteristics.",
-      "sources": "Manufacturer"
-    },
-    {
-      "name": "Response time drop-out",
-      "description": "Time taken for the contactor to disengage",
-      "rationale": "Important for buyers to assess performance in dynamic applications.",
-      "sources": "Manufacturer"
-    },
-    {
-      "name": "Operating temperature",
-      "description": "Operating temperature range",
-      "rationale": "Critical for buyers to ensure the contactor operates within their environmental conditions.",
-      "sources": "Manufacturer"
-    },
-    {
-      "name": "Pollution degree",
-      "description": "Indicates the environmental conditions the contactor can operate in",
-      "rationale": "Helps buyers assess suitability for specific applications.",
-      "sources": "Manufacturer"
-    }
-  ],
-  "recommended_attributes": [
-    {
-      "name": "Rated operational voltage",
-      "description": "Rated voltage for main circuit",
-      "rationale": "Essential for ensuring compatibility with electrical systems.",
-      "sources": "IEC 60947"
-    },
-    {
-      "name": "Rated control supply voltage",
-      "description": "Voltage required to operate the control circuit",
-      "rationale": "Critical for procurement to match control systems.",
-      "sources": "IEC 60947"
-    },
-    {
-      "name": "Rated operational current",
-      "description": "Maximum current the contactor can handle",
-      "rationale": "Key for determining the suitability of the contactor for specific applications.",
-      "sources": "IEC 60947"
-    },
-    {
-      "name": "Number of poles",
-      "description": "Total number of poles in the contactor",
-      "rationale": "Important for inventory management and matching with circuit requirements.",
-      "sources": "IEC 60947"
-    },
-    {
-      "name": "Degree of protection",
-      "description": "IP rating indicating the level of protection against dust and water",
-      "rationale": "Necessary for compliance with safety standards in various environments.",
-      "sources": "IEC 60947"
-    },
-    {
-      "name": "Standards met",
-      "description": "Standards that the contactor complies with",
-      "rationale": "Essential for procurement to ensure regulatory compliance.",
-      "sources": "IEC 60947"
-    },
-    {
-      "name": "Weight",
-      "description": "Weight of the contactor",
-      "rationale": "Important for logistics and shipping considerations.",
-      "sources": "IEC 60947"
-    },
-    {
-      "name": "Coil voltage",
-      "description": "Voltage required for the coil to operate",
-      "rationale": "Critical for ensuring compatibility with control systems.",
-      "sources": "IEC 60947"
-    },
-    {
-      "name": "Short circuit current rating",
-      "description": "Maximum current the contactor can withstand during a short circuit",
-      "rationale": "Important for safety and compliance in electrical installations.",
-      "sources": "Manufacturer"
-    },
-    {
-      "name": "RoHS compliance",
-      "description": "Indicates compliance with restrictions on hazardous substances",
-      "rationale": "Necessary for environmental compliance in procurement.",
-      "sources": "Manufacturer"
-    },
-    {
-      "name": "Rated operational voltage",
-      "description": "Rated voltage for main circuit",
-      "rationale": "Helps buyers filter products based on voltage requirements.",
-      "sources": "IEC 60947"
-    },
-    {
-      "name": "Rated operational current",
-      "description": "Maximum current the contactor can handle",
-      "rationale": "Allows buyers to compare based on current ratings.",
-      "sources": "IEC 60947"
-    },
-    {
-      "name": "Number of poles",
-      "description": "Total number of poles in the contactor",
-      "rationale": "Facilitates product comparison based on application needs.",
-      "sources": "IEC 60947"
-    },
-    {
-      "name": "Degree of protection",
-      "description": "IP rating indicating the level of protection against dust and water",
-      "rationale": "Important for buyers to assess suitability for different environments.",
-      "sources": "IEC 60947"
-    },
-    {
-      "name": "Visual indication",
-      "description": "Indicates the operational status of the contactor",
-      "rationale": "Enhances user experience by providing operational feedback.",
-      "sources": "Manufacturer"
-    },
-    {
-      "name": "Control voltage",
-      "description": "Voltage required to operate the control circuit",
-      "rationale": "Allows buyers to filter based on control voltage needs.",
-      "sources": "Manufacturer"
-    },
-    {
-      "name": "Response time pick-up",
-      "description": "Time taken for the contactor to engage",
-      "rationale": "Helps buyers understand performance characteristics.",
-      "sources": "Manufacturer"
-    },
-    {
-      "name": "Response time drop-out",
-      "description": "Time taken for the contactor to disengage",
-      "rationale": "Important for buyers to assess performance in dynamic applications.",
-      "sources": "Manufacturer"
-    },
-    {
-      "name": "Operating temperature",
-      "description": "Operating temperature range",
-      "rationale": "Critical for buyers to ensure the contactor operates within their environmental conditions.",
-      "sources": "Manufacturer"
-    },
-    {
-      "name": "Pollution degree",
-      "description": "Indicates the environmental conditions the contactor can operate in",
-      "rationale": "Helps buyers assess suitability for specific applications.",
-      "sources": "Manufacturer"
-    }
-  ],
-  "confidence": 0.95,
   "error": null
 }

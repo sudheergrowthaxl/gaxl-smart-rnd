@@ -1,6 +1,36 @@
-"""Prompt builders for hierarchy resolution."""
+"""Prompt builders for hierarchy resolution.
+
+Loads domain backbone context for entity classification and UNSPSC grounding.
+"""
 
 from typing import List
+
+from normalisation_rules.config import load_domain_backbone
+
+
+def _get_backbone_hierarchy_context() -> str:
+    """Extract hierarchy-relevant context from the domain backbone."""
+    bb = load_domain_backbone()
+    if not bb:
+        return ""
+
+    lines = []
+    domain = bb.get("domain", {})
+    if domain:
+        lines.append(f"Domain: {domain.get('name', '?')} > {domain.get('sub_domain', '?')} > {domain.get('focus_entity', '?')}")
+        standards = domain.get("standards_basis", [])
+        if standards:
+            lines.append(f"Standards basis: {', '.join(standards)}")
+        manufacturers = domain.get("manufacturers", [])
+        if manufacturers:
+            lines.append(f"Key manufacturers: {', '.join(manufacturers)}")
+
+    entities = bb.get("entities", {})
+    primary = entities.get("primary", [])
+    if primary:
+        lines.append("Primary entities: " + ", ".join(e.get("name", "") for e in primary))
+
+    return "\n".join(lines)
 
 
 def build_extract_hierarchy_prompt(
@@ -19,13 +49,21 @@ def build_extract_hierarchy_prompt(
     {paths_preview}
     """
 
+    backbone_ctx = _get_backbone_hierarchy_context()
+    backbone_block = ""
+    if backbone_ctx:
+        backbone_block = f"""
+    Domain backbone reference (authoritative classification):
+    {backbone_ctx}
+    """
+
     return f"""
     You are an expert in electrical equipment standards (UNSPSC, IEC 60947, NEMA) and in product taxonomy for both supply chain and ecommerce.
 
     Most organizations think about product data through two lenses:
     1) Supply chain lens (ERP): procurement, inventory, logistics, standards (UNSPSC, IEC, NEMA). Paths are often segment > family > class, aligned to how items are sourced and stored.
     2) Selling/commerce lens (ecommerce, channel, assortment): how products are presented and sold to buyers (e.g. web taxonomy, category navigation, merchandising).
-
+    {backbone_block}
     From the text below (UNSPSC/manufacturer catalog/commerce site), extract for '{category}' TWO recommended hierarchy paths:
     - hierarchy_path: recommended path from a SUPPLY CHAIN (ERP) perspective.
     - ecommerce_hierarchy_path: recommended path from an ECOMMERCE/SELLING (channel, assortment) perspective.
@@ -75,6 +113,14 @@ def build_recommend_paths_prompt(
         for c in manufacturer_crawled_paths
     )
 
+    backbone_ctx = _get_backbone_hierarchy_context()
+    backbone_block = ""
+    if backbone_ctx:
+        backbone_block = f"""
+    Domain backbone reference (authoritative classification — use to validate your choices):
+    {backbone_ctx}
+    """
+
     return f"""
     You are an expert in product taxonomy for supply chain (ERP) and ecommerce (channel, assortment).
 
@@ -84,7 +130,7 @@ def build_recommend_paths_prompt(
     {customer_block}
     - Manufacturer/ecommerce site paths (crawled from real sites):
     {manufacturer_block}
-
+    {backbone_block}
     You must REASON and CHOOSE — do not default supply_chain to UNSPSC or ecommerce to manufacturer without explicit reasoning.
 
     1) supply_chain_recommended_path (ERP/procurement):
