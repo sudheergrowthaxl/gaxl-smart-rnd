@@ -1,11 +1,10 @@
 """Prompts for normalisation rule derivation.
 
-Loads canonical normalization patterns from the knowledge base when available,
-so the LLM produces rules aligned with the domain model. Works with any
-product category — no hardcoded category references.
+Uses runtime domain model context for normalization guidance.
+No static YAML backbone files.
 """
 
-from normalisation_rules.config import get_backbone_normalization_for_attribute
+from normalisation_rules.config import get_domain_normalization_context
 
 
 def get_system_prompt(domain: str) -> str:
@@ -53,6 +52,7 @@ def build_user_prompt(
     curated_context: str,
     few_shot_examples: str,
     domain: str,
+    domain_model: dict | None = None,
 ) -> str:
     """Build the user message for the LLM."""
     name = attribute.get("name", "")
@@ -62,7 +62,7 @@ def build_user_prompt(
     range_val = attribute.get("range")
     values = attribute.get("values", [])
 
-    backbone_guidance = get_backbone_normalization_for_attribute(name, category=domain)
+    dm_guidance = get_domain_normalization_context(domain_model, name) if domain_model else ""
 
     lines = [
         "--- Few-shot examples (output 1–2 rules per attribute in this style, general not per-value) ---",
@@ -70,10 +70,10 @@ def build_user_prompt(
         "",
     ]
 
-    if backbone_guidance:
+    if dm_guidance:
         lines.extend([
-            "--- Domain backbone reference (use as context to guide reasoning, not as absolute constraint) ---",
-            backbone_guidance,
+            "--- Domain model context (use as primary guide for reasoning) ---",
+            dm_guidance,
             "",
         ])
 

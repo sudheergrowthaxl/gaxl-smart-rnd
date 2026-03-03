@@ -1,0 +1,447 @@
+{
+  "domain_overview": {
+    "domain": "Industrial Component",
+    "sub_domain": "Electrical Equipment",
+    "category": "Power Relays",
+    "domain_summary": "The industrial component domain encompasses various parts and devices used in industrial applications, focusing on their design, function, and integration. It ensures the efficient operation of machinery and systems.",
+    "sub_domain_summary": "Electrical equipment within the industrial component domain includes devices that control, distribute, and convert electrical power. These components are critical for the safe and efficient operation of industrial systems.",
+    "functional_purpose": "Power relays are used to control high-power circuits with low-power signals, providing isolation and protection for control circuits. They play a crucial role in automation and safety systems.",
+    "system_boundaries": "Power relays interact with control systems, power distribution networks, and safety systems. Their boundaries include the electrical circuits they control and the physical enclosures they are housed in."
+  },
+  "entities": {
+    "primary": [
+      {
+        "name": "Power Relay",
+        "type": "physical",
+        "description": "A device that opens or closes electrical contacts to control the flow of electricity in a circuit."
+      }
+    ],
+    "supporting_infrastructure": [
+      {
+        "name": "Relay Socket",
+        "type": "physical",
+        "description": "A base that holds the relay and connects it to the circuit."
+      },
+      {
+        "name": "Control Circuit",
+        "type": "logical",
+        "description": "The circuit that sends signals to the relay to control its operation."
+      }
+    ],
+    "control_and_monitoring": [
+      {
+        "name": "Relay Controller",
+        "type": "logical",
+        "description": "A device or system that sends control signals to the relay."
+      },
+      {
+        "name": "Monitoring System",
+        "type": "logical",
+        "description": "A system that monitors the status and performance of the relay."
+      }
+    ],
+    "safety_and_protection": [
+      {
+        "name": "Circuit Breaker",
+        "type": "physical",
+        "description": "A device that automatically interrupts the flow of electricity in case of a fault."
+      },
+      {
+        "name": "Surge Protector",
+        "type": "physical",
+        "description": "A device that protects the relay and circuit from voltage spikes."
+      }
+    ],
+    "governance": [
+      {
+        "name": "IEC 61810",
+        "type": "standard",
+        "description": "International standard for electromechanical elementary relays."
+      },
+      {
+        "name": "UL Certification",
+        "type": "standard",
+        "description": "Certification indicating compliance with safety standards."
+      }
+    ]
+  },
+  "property_model": {
+    "Power Relay": {
+      "electrical_characteristics": [
+        "coil voltage",
+        "contact current rating",
+        "insulation resistance"
+      ],
+      "mechanical_characteristics": [
+        "contact material",
+        "dimensions",
+        "weight"
+      ],
+      "performance_metrics": [
+        "switching time",
+        "operational cycles",
+        "contact resistance"
+      ],
+      "durability_and_environmental": [
+        "temperature range",
+        "humidity tolerance",
+        "vibration resistance"
+      ],
+      "safety_and_protection": [
+        "dielectric strength",
+        "overload protection",
+        "arc suppression"
+      ],
+      "functional_capabilities": [
+        "normally open/closed",
+        "latching capability",
+        "multi-pole configuration"
+      ],
+      "standards_and_compliance": [
+        "IEC 61810 compliance",
+        "UL certification",
+        "RoHS compliance"
+      ],
+      "identification_and_commercial": [
+        "model number",
+        "manufacturer",
+        "warranty period"
+      ]
+    }
+  },
+  "ontology": {
+    "namespace_prefix": "fso",
+    "triplets": [
+      [
+        "fso:PowerRelay",
+        "rdf:type",
+        "fso:Device"
+      ],
+      [
+        "fso:PowerRelay",
+        "fso:controls",
+        "fso:ElectricalCircuit"
+      ],
+      [
+        "fso:PowerRelay",
+        "fso:hasPart",
+        "fso:RelaySocket"
+      ],
+      [
+        "fso:RelaySocket",
+        "fso:connectsTo",
+        "fso:ControlCircuit"
+      ],
+      [
+        "fso:ControlCircuit",
+        "fso:sendsSignalTo",
+        "fso:PowerRelay"
+      ],
+      [
+        "fso:RelayController",
+        "fso:monitors",
+        "fso:PowerRelay"
+      ],
+      [
+        "fso:MonitoringSystem",
+        "fso:reportsStatusOf",
+        "fso:PowerRelay"
+      ],
+      [
+        "fso:PowerRelay",
+        "fso:protectedBy",
+        "fso:CircuitBreaker"
+      ],
+      [
+        "fso:PowerRelay",
+        "fso:protectedBy",
+        "fso:SurgeProtector"
+      ],
+      [
+        "fso:PowerRelay",
+        "fso:compliesWith",
+        "fso:IEC61810"
+      ],
+      [
+        "fso:PowerRelay",
+        "fso:compliesWith",
+        "fso:ULCertification"
+      ],
+      [
+        "fso:PowerRelay",
+        "fso:hasAttribute",
+        "fso:coilVoltage"
+      ],
+      [
+        "fso:PowerRelay",
+        "fso:hasAttribute",
+        "fso:contactCurrentRating"
+      ],
+      [
+        "fso:PowerRelay",
+        "fso:hasAttribute",
+        "fso:insulationResistance"
+      ],
+      [
+        "fso:PowerRelay",
+        "fso:hasAttribute",
+        "fso:switchingTime"
+      ],
+      [
+        "fso:PowerRelay",
+        "fso:hasAttribute",
+        "fso:operationalCycles"
+      ],
+      [
+        "fso:PowerRelay",
+        "fso:hasAttribute",
+        "fso:contactResistance"
+      ],
+      [
+        "fso:PowerRelay",
+        "fso:hasAttribute",
+        "fso:temperatureRange"
+      ],
+      [
+        "fso:PowerRelay",
+        "fso:hasAttribute",
+        "fso:humidityTolerance"
+      ],
+      [
+        "fso:PowerRelay",
+        "fso:hasAttribute",
+        "fso:vibrationResistance"
+      ],
+      [
+        "fso:PowerRelay",
+        "fso:hasAttribute",
+        "fso:dielectricStrength"
+      ],
+      [
+        "fso:PowerRelay",
+        "fso:hasAttribute",
+        "fso:overloadProtection"
+      ],
+      [
+        "fso:PowerRelay",
+        "fso:hasAttribute",
+        "fso:arcSuppression"
+      ],
+      [
+        "fso:PowerRelay",
+        "fso:hasAttribute",
+        "fso:normallyOpenClosed"
+      ],
+      [
+        "fso:PowerRelay",
+        "fso:hasAttribute",
+        "fso:latchingCapability"
+      ],
+      [
+        "fso:PowerRelay",
+        "fso:hasAttribute",
+        "fso:multiPoleConfiguration"
+      ],
+      [
+        "fso:PowerRelay",
+        "fso:hasAttribute",
+        "fso:modelNumber"
+      ],
+      [
+        "fso:PowerRelay",
+        "fso:hasAttribute",
+        "fso:manufacturer"
+      ],
+      [
+        "fso:PowerRelay",
+        "fso:hasAttribute",
+        "fso:warrantyPeriod"
+      ]
+    ]
+  },
+  "terminology": [
+    {
+      "term": "Power Relay",
+      "definition": "An electromechanical switch used to control a high-power circuit with a low-power signal.",
+      "functional_role": "Central component for controlling electrical circuits in industrial systems.",
+      "related_terms": [
+        "Relay Socket",
+        "Control Circuit",
+        "Relay Controller"
+      ]
+    },
+    {
+      "term": "Relay Socket",
+      "definition": "A base that holds the relay and connects it to the circuit.",
+      "functional_role": "Provides a secure and reliable connection for the relay.",
+      "related_terms": [
+        "Power Relay",
+        "Control Circuit"
+      ]
+    },
+    {
+      "term": "Control Circuit",
+      "definition": "A circuit that sends signals to the relay to control its operation.",
+      "functional_role": "Enables the relay to perform its switching function.",
+      "related_terms": [
+        "Power Relay",
+        "Relay Controller"
+      ]
+    },
+    {
+      "term": "Relay Controller",
+      "definition": "A device or system that sends control signals to the relay.",
+      "functional_role": "Manages the operation of the relay based on input signals.",
+      "related_terms": [
+        "Control Circuit",
+        "Monitoring System"
+      ]
+    },
+    {
+      "term": "Monitoring System",
+      "definition": "A system that monitors the status and performance of the relay.",
+      "functional_role": "Ensures the relay operates within specified parameters.",
+      "related_terms": [
+        "Relay Controller",
+        "Power Relay"
+      ]
+    },
+    {
+      "term": "Circuit Breaker",
+      "definition": "A device that automatically interrupts the flow of electricity in case of a fault.",
+      "functional_role": "Protects the relay and circuit from damage due to overloads.",
+      "related_terms": [
+        "Power Relay",
+        "Surge Protector"
+      ]
+    },
+    {
+      "term": "Surge Protector",
+      "definition": "A device that protects the relay and circuit from voltage spikes.",
+      "functional_role": "Prevents damage to the relay from electrical surges.",
+      "related_terms": [
+        "Power Relay",
+        "Circuit Breaker"
+      ]
+    },
+    {
+      "term": "IEC 61810",
+      "definition": "International standard for electromechanical elementary relays.",
+      "functional_role": "Ensures relays meet international safety and performance standards.",
+      "related_terms": [
+        "UL Certification",
+        "Standards"
+      ]
+    },
+    {
+      "term": "UL Certification",
+      "definition": "Certification indicating compliance with safety standards.",
+      "functional_role": "Provides assurance of relay safety and reliability.",
+      "related_terms": [
+        "IEC 61810",
+        "Standards"
+      ]
+    },
+    {
+      "term": "Coil Voltage",
+      "definition": "The voltage required to energize the relay coil.",
+      "functional_role": "Determines the control signal needed to operate the relay.",
+      "related_terms": [
+        "Power Relay",
+        "Control Circuit"
+      ]
+    },
+    {
+      "term": "Contact Current Rating",
+      "definition": "The maximum current the relay contacts can carry.",
+      "functional_role": "Specifies the load capacity of the relay.",
+      "related_terms": [
+        "Power Relay",
+        "Electrical Characteristics"
+      ]
+    },
+    {
+      "term": "Insulation Resistance",
+      "definition": "The resistance between electrically isolated parts of the relay.",
+      "functional_role": "Ensures electrical isolation and safety.",
+      "related_terms": [
+        "Power Relay",
+        "Safety"
+      ]
+    },
+    {
+      "term": "Switching Time",
+      "definition": "The time it takes for the relay to switch from one state to another.",
+      "functional_role": "Affects the speed of operation in control systems.",
+      "related_terms": [
+        "Power Relay",
+        "Performance Metrics"
+      ]
+    },
+    {
+      "term": "Operational Cycles",
+      "definition": "The number of times the relay can operate before failure.",
+      "functional_role": "Indicates the durability and lifespan of the relay.",
+      "related_terms": [
+        "Power Relay",
+        "Durability"
+      ]
+    },
+    {
+      "term": "Contact Resistance",
+      "definition": "The resistance across the closed contacts of the relay.",
+      "functional_role": "Affects the efficiency and performance of the relay.",
+      "related_terms": [
+        "Power Relay",
+        "Performance Metrics"
+      ]
+    }
+  ],
+  "operational_logic": {
+    "workflows": [
+      "Step 1: Control circuit sends a signal to the relay coil.",
+      "Step 2: Relay coil energizes, creating a magnetic field.",
+      "Step 3: Magnetic field moves the relay armature, closing or opening contacts.",
+      "Step 4: Electrical circuit is completed or interrupted, controlling the load.",
+      "Step 5: Monitoring system checks relay status and performance."
+    ],
+    "energy_flow": "Control circuit sends a low-power signal to the relay coil, which controls a high-power circuit by opening or closing contacts.",
+    "failure_conditions": [
+      "Coil burnout due to excessive voltage.",
+      "Contact welding due to high current.",
+      "Mechanical failure of moving parts."
+    ],
+    "compliance_constraints": [
+      "Must comply with IEC 61810 standards.",
+      "Must have UL certification for safety.",
+      "Must meet RoHS compliance for environmental safety."
+    ]
+  },
+  "invariants": [
+    {
+      "id": "INV-01",
+      "rule": "fso:PowerRelay fso:mustHave fso:coilVoltage",
+      "description": "Every power relay must have a specified coil voltage."
+    },
+    {
+      "id": "INV-02",
+      "rule": "fso:PowerRelay fso:mustComplyWith fso:IEC61810",
+      "description": "Every power relay must comply with IEC 61810 standards."
+    },
+    {
+      "id": "INV-03",
+      "rule": "fso:PowerRelay fso:mustBeProtectedBy fso:CircuitBreaker",
+      "description": "Every power relay must be protected by a circuit breaker."
+    },
+    {
+      "id": "INV-04",
+      "rule": "fso:PowerRelay fso:mustBeMonitoredBy fso:MonitoringSystem",
+      "description": "Every power relay must be monitored by a monitoring system."
+    },
+    {
+      "id": "INV-05",
+      "rule": "fso:PowerRelay fso:mustHave fso:contactCurrentRating",
+      "description": "Every power relay must have a specified contact current rating."
+    }
+  ]
+}

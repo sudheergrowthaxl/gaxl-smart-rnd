@@ -32,8 +32,13 @@ from normalisation_rules.config import (
     get_openai_client,
     get_categories_from_docx,
     get_manufacturers_for_category,
-    load_domain_backbone,
+    get_domain_model_context,
+    get_domain_invariants_summary,
     PROJECT_ROOT,
+)
+from normalisation_rules.domain_model_generator import (
+    generate_domain_model,
+    detect_domain_overview,
 )
 
 
@@ -87,8 +92,13 @@ def _log_session_state(stage: str):
     """Snapshot current session state for debugging."""
     state = {
         "file_name": st.session_state.file_name,
+        "domain": st.session_state.domain,
+        "sub_domain": st.session_state.sub_domain,
         "category": st.session_state.category,
         "category_confidence": st.session_state.category_confidence,
+        "has_domain_model": st.session_state.domain_model is not None,
+        "domain_model_path": st.session_state.domain_model_path,
+        "awaiting_domain_confirm": st.session_state.awaiting_domain_confirm,
         "has_df": st.session_state.df is not None,
         "df_shape": list(st.session_state.df.shape) if st.session_state.df is not None else None,
         "profiling_columns": len(st.session_state.profiling) if st.session_state.profiling else 0,
@@ -149,9 +159,17 @@ _DEFAULTS = {
     "messages": [],
     "df": None,
     "file_name": None,
+    # Domain resolution
+    "domain": None,
+    "sub_domain": None,
     "category": None,
     "category_confidence": None,
     "category_reasoning": None,
+    "domain_model": None,
+    "domain_model_path": None,
+    "awaiting_domain_confirm": False,
+    "detected_domain_info": None,
+    # Data processing
     "column_mapping": None,
     "profiling": None,
     "profiling_path": None,
@@ -339,6 +357,13 @@ def _build_session_context_block() -> str:
     rules = st.session_state.derived_rules
     hier = st.session_state.hierarchy_result
 
+    dm = st.session_state.domain_model
+    if st.session_state.domain:
+        parts.append(f"Domain: {st.session_state.domain} > {st.session_state.sub_domain} > {cat}")
+    if dm:
+        dm_ctx = get_domain_model_context(dm)
+        if dm_ctx:
+            parts.append(f"Domain Model:\n{dm_ctx}")
     if st.session_state.file_name:
         parts.append(f"Dataset: {st.session_state.file_name}")
     if cat:
@@ -762,31 +787,53 @@ def _classify_intent(user_message: str) -> dict:
 #  Auto-pipeline
 # ===================================================================
 
-def _run_auto_pipeline():
+def _run_slim_pipeline(domain: str, sub_domain: str, category: str):
+    """Slim pipeline: generate domain model, strip prefixes, profile.
+
+    Attribute resolution and schema report are on-demand only.
+    """
     df = st.session_state.df
     filename = st.session_state.file_name
 
-    _log_block("PIPELINE", "AUTO-PIPELINE START",
-               f"File: {filename}\nShape: {df.shape}\nColumns: {list(df.columns)}")
+    _log_block("PIPELINE", "SLIM-PIPELINE START",
+               f"File: {filename}\nDomain: {domain} > {sub_domain} > {category}\n"
+               f"Shape: {df.shape}\nColumns: {list(df.columns)}")
 
     with st.status("🔍 Analyzing your data...", expanded=True) as status:
-        # --- Step 1: Category detection ---
-        st.write("**Step 1/5** — Detecting product category...")
-        _log("PIPELINE/CATEGORY", f"Starting category detection for '{filename}' with {len(df.columns)} columns")
-        from normalisation_rules.category_detector import detect_category
-        cat_result = detect_category(df, filename)
-        category = cat_result.get("category", "Unknown")
-        confidence = cat_result.get("confidence", 0)
-        reasoning = cat_result.get("reasoning", "")
-        st.session_state.category = category
-        st.session_state.category_confidence = confidence
-        st.session_state.category_reasoning = reasoning
-        _log_block("PIPELINE/CATEGORY", "CATEGORY DETECTED",
-                   f"Category: {category}\nConfidence: {confidence}\nReasoning: {reasoning}")
-        st.write(f"  → **{category}** (confidence: {confidence:.0%})")
+        # --- Step 1: Generate domain model ---
+        st.write(f"**Step 1/3** — Generating domain model for **{category}**...")
+        _log("PIPELINE/DOMAIN_MODEL", f"Generating 7-section domain model for {domain} > {sub_domain} > {category}")
+
+        columns = list(df.columns)
+        sample_vals: dict[str, list[str]] = {}
+        for c in columns:
+            sample_vals[c] = df[c].dropna().head(5).astype(str).tolist()
+
+        try:
+            dm, dm_path = generate_domain_model(
+                domain=domain, sub_domain=sub_domain, category=category,
+                user_columns=columns, sample_values=sample_vals,
+            )
+            st.session_state.domain_model = dm
+            st.session_state.domain_model_path = str(dm_path)
+            entity_count = sum(len(v) for v in dm.get("entities", {}).values() if isinstance(v, list))
+            prop_count = sum(
+                sum(len(p) for p in groups.values() if isinstance(p, list))
+                for groups in dm.get("property_model", {}).values()
+            )
+            triplet_count = len(dm.get("ontology", {}).get("triplets", []))
+            _log_block("PIPELINE/DOMAIN_MODEL", "DOMAIN MODEL GENERATED",
+                       f"Entities: {entity_count}, Properties: {prop_count}, Triplets: {triplet_count}\n"
+                       f"Saved to: {dm_path}")
+            st.write(f"  → Domain model: {entity_count} entities, {prop_count} properties, {triplet_count} ontology triplets")
+        except Exception as exc:
+            _log("PIPELINE/DOMAIN_MODEL", f"Domain model generation FAILED: {exc}", level="ERROR")
+            st.session_state.domain_model = {}
+            st.session_state.domain_model_path = None
+            st.write(f"  → Domain model error: {exc}")
 
         # --- Step 2: Prefix stripping ---
-        st.write("**Step 2/5** — Cleaning column names...")
+        st.write("**Step 2/3** — Cleaning column names...")
         _log("PIPELINE/PREFIX", f"Starting prefix stripping for category '{category}'")
         from normalisation_rules.prefix_stripper import strip_column_prefixes
         cleaned_df, mapping = strip_column_prefixes(df, category)
@@ -801,101 +848,135 @@ def _run_auto_pipeline():
             _log("PIPELINE/PREFIX", "No prefix changes needed")
 
         # --- Step 3: Profiling ---
-        st.write("**Step 3/5** — Profiling dataset...")
+        st.write("**Step 3/3** — Profiling dataset...")
         _log("PIPELINE/PROFILE", f"Profiling {len(cleaned_df.columns)} columns, {len(cleaned_df)} rows")
         from normalisation_rules.data_loader import profile_and_save
         profiling, profiling_path = profile_and_save(cleaned_df, filename, category)
         st.session_state.profiling = profiling
         st.session_state.profiling_path = str(profiling_path)
-        profile_summary = "\n".join(
-            f"  {col}: type={s.get('semantic_type','?')}, missing={s.get('missing_percentage',0)}%, distinct={s.get('distinct_count',0)}"
-            for col, s in profiling.items()
-        )
         _log_block("PIPELINE/PROFILE", f"PROFILING COMPLETE ({len(profiling)} columns)",
-                   f"Saved to: {profiling_path}\n{profile_summary}")
+                   f"Saved to: {profiling_path}")
         st.write(f"  → {len(profiling)} columns profiled")
-
-        # --- Step 4: Attribute resolution ---
-        st.write(f"**Step 4/5** — Resolving canonical schema for **{category}**...")
-        _log("PIPELINE/ATTRIBUTES", f"Starting attribute resolution for '{category}'")
-        from normalisation_rules.attribute_resolver.resolver import standardize_attributes
-        try:
-            result, rows, run_log = standardize_attributes(
-                category=category,
-                profiling_data=profiling,
-                output_dir=str(PROJECT_ROOT),
-            )
-            backbone = result.get("backbone", [])
-            lenses = result.get("lenses", {})
-            st.session_state.canonical_attributes = result
-            attr_summary = "\n".join(
-                f"  {a.get('name','?')} | role={a.get('structural_role','?')} | type={a.get('data_type','?')} | conf={a.get('confidence',{}).get('composite','?')}"
-                for a in backbone
-            )
-            lens_summary = ", ".join(f"{k}: {len(v)} attrs" for k, v in lenses.items()) if lenses else "(none)"
-            _log_block("PIPELINE/ATTRIBUTES", f"ATTRIBUTES RESOLVED ({len(backbone)})",
-                       f"Log: {run_log}\nLenses: {lens_summary}\n\n{attr_summary}")
-            st.write(f"  → **{len(backbone)}** canonical attributes")
-        except Exception as exc:
-            _log_block("PIPELINE/ATTRIBUTES", "ATTRIBUTE RESOLUTION ERROR",
-                       f"{exc}\n\n{traceback.format_exc()}", level="ERROR")
-            st.write(f"  → Error: {exc}")
-            st.session_state.canonical_attributes = {"backbone": [], "lenses": {}, "error": str(exc)}
-
-        # --- Step 5: Schema health report ---
-        st.write("**Step 5/5** — Schema health analysis...")
-        _log("PIPELINE/REPORT", "Generating schema health report")
-        if st.session_state.canonical_attributes.get("backbone"):
-            report = _generate_schema_report(profiling, st.session_state.canonical_attributes, category)
-            st.session_state.schema_report = report
-            _log_block("PIPELINE/REPORT", "SCHEMA REPORT GENERATED",
-                       f"Completeness: {report.get('schema_completeness_pct','?')}%\n"
-                       f"Present: {len(report.get('present_attributes',[]))}\n"
-                       f"Missing: {len(report.get('missing_attributes',[]))}\n"
-                       f"Decisions: {len(report.get('schema_decisions',[]))}\n"
-                       f"Target state: {report.get('target_state_summary','')}")
-        else:
-            st.session_state.schema_report = {}
-            _log("PIPELINE/REPORT", "Skipped — no backbone attributes", level="WARN")
 
         status.update(label="✅ Analysis complete", state="complete")
 
     _log_session_state("PIPELINE/DONE")
-
     st.session_state.auto_pipeline_done = True
 
-    # Build proactive summary
-    report = st.session_state.schema_report or {}
-    cat = st.session_state.category
-    conf = st.session_state.category_confidence or 0
-    backbone = (st.session_state.canonical_attributes or {}).get("backbone", [])
+    entity_count = sum(len(v) for v in (st.session_state.domain_model or {}).get("entities", {}).values() if isinstance(v, list))
+    prop_count = sum(
+        sum(len(p) for p in groups.values() if isinstance(p, list))
+        for groups in (st.session_state.domain_model or {}).get("property_model", {}).values()
+    )
+    triplet_count = len((st.session_state.domain_model or {}).get("ontology", {}).get("triplets", []))
 
     lines = [
-        f"I've analyzed **{st.session_state.file_name}** and built the canonical schema.\n",
-        f"**Category**: {cat} (confidence: {conf:.0%})",
+        f"Analysis of **{filename}** is complete.\n",
+        f"**Domain**: {domain} > {sub_domain} > {category}",
+        f"**Domain Model**: {entity_count} entities, {prop_count} properties, {triplet_count} ontology triplets",
     ]
-    if st.session_state.category_reasoning:
-        lines.append(f"_{st.session_state.category_reasoning[:200]}_\n")
     if changed:
         lines.append(f"**Cleaned**: {len(changed)} column prefixes stripped")
-    lines.append(f"**Profiled**: {len(st.session_state.profiling)} columns | **Canonical Schema**: {len(backbone)} attributes\n")
-
-    if report and not report.get("error"):
-        lines.append("---")
-        lines.append(_format_schema_report(report))
-
+    lines.append(f"**Profiled**: {len(profiling)} columns\n")
     lines.append("---\n")
     lines.append(
-        "Ask me anything about this schema:\n"
-        "- *\"Should I split the Type attribute?\"*\n"
-        "- *\"What regex pattern for Part Number?\"*\n"
-        "- *\"Is Utilization Category variant-defining or descriptive?\"*\n"
-        "- *\"Normalize the voltage column\"*\n"
-        "- *\"Show hierarchy / UNSPSC classification\"*\n"
+        "You can now ask me to:\n"
+        "- *\"Resolve attributes\"* — build the canonical attribute schema\n"
+        "- *\"Normalize [column]\"* — derive normalisation rules for a column\n"
+        "- *\"Show hierarchy\"* — recommend taxonomy classification\n"
+        "- *\"Should I split the Type attribute?\"* — schema design questions\n"
         "- *\"What naming conventions should I use?\"*\n"
         "- *\"Download results\"*"
     )
     _add("assistant", "\n".join(lines))
+
+
+def _run_attribute_resolution():
+    """Run attribute resolution on demand."""
+    cat = st.session_state.category
+    profiling = st.session_state.profiling or {}
+    dm = st.session_state.domain_model
+
+    _log("HANDLER/ATTR_RESOLVE", f"Running attribute resolution for '{cat}'")
+    with st.status(f"Resolving canonical schema for **{cat}**...", expanded=True) as status:
+        from normalisation_rules.attribute_resolver.resolver import standardize_attributes
+        try:
+            result, rows, run_log = standardize_attributes(
+                category=cat,
+                profiling_data=profiling,
+                output_dir=str(PROJECT_ROOT),
+                domain_model=dm,
+            )
+            backbone = result.get("backbone", [])
+            st.session_state.canonical_attributes = result
+            _log_block("HANDLER/ATTR_RESOLVE", f"ATTRIBUTES RESOLVED ({len(backbone)})",
+                       f"Log: {run_log}")
+            status.update(label=f"✅ {len(backbone)} attributes resolved", state="complete")
+        except Exception as exc:
+            _log("HANDLER/ATTR_RESOLVE", f"FAILED: {exc}\n{traceback.format_exc()}", level="ERROR")
+            st.session_state.canonical_attributes = {"backbone": [], "lenses": {}, "error": str(exc)}
+            status.update(label="Error", state="error")
+
+    # Generate schema health report too
+    if st.session_state.canonical_attributes and st.session_state.canonical_attributes.get("backbone"):
+        _log("HANDLER/ATTR_RESOLVE", "Generating schema health report")
+        report = _generate_schema_report(profiling, st.session_state.canonical_attributes, cat)
+        st.session_state.schema_report = report
+
+
+def _handle_domain_confirm(user_message: str) -> str:
+    """Handle user response to domain confirmation question."""
+    info = st.session_state.detected_domain_info or {}
+    msg_lower = user_message.strip().lower()
+
+    if msg_lower in ("yes", "y", "correct", "that's correct", "looks good", "proceed", "confirm", "ok", "yep", "yeah"):
+        domain = info.get("domain", "Unknown")
+        sub_domain = info.get("sub_domain", "Unknown")
+        category = info.get("category", "Unknown")
+    else:
+        _log("DOMAIN_CONFIRM", f"User correcting domain: {user_message}")
+        correction = _parse_domain_correction(user_message, info)
+        domain = correction.get("domain", info.get("domain", "Unknown"))
+        sub_domain = correction.get("sub_domain", info.get("sub_domain", "Unknown"))
+        category = correction.get("category", info.get("category", "Unknown"))
+
+    st.session_state.domain = domain
+    st.session_state.sub_domain = sub_domain
+    st.session_state.category = category
+    st.session_state.awaiting_domain_confirm = False
+    _log_block("DOMAIN_CONFIRM", "DOMAIN CONFIRMED",
+               f"Domain: {domain}\nSub-Domain: {sub_domain}\nCategory: {category}")
+
+    _run_slim_pipeline(domain, sub_domain, category)
+    return ""
+
+
+def _parse_domain_correction(user_message: str, current_info: dict) -> dict:
+    """Use LLM to parse user corrections to detected domain info."""
+    prompt = f"""The system detected these domain values from uploaded data:
+- Domain: {current_info.get('domain', 'Unknown')}
+- Sub-Domain: {current_info.get('sub_domain', 'Unknown')}
+- Category: {current_info.get('category', 'Unknown')}
+
+The user responded with corrections: "{user_message}"
+
+Extract the corrected values. If the user only corrected some fields, keep the
+original values for the unchanged fields.
+
+Output ONLY valid JSON:
+{{"domain": "...", "sub_domain": "...", "category": "..."}}
+"""
+    try:
+        client = get_openai_client()
+        resp = client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0.1,
+            response_format={"type": "json_object"},
+        )
+        return json.loads(resp.choices[0].message.content or "{}")
+    except Exception:
+        return current_info
 
 
 # ===================================================================
@@ -1064,8 +1145,9 @@ def _handle_hierarchy(params: dict) -> tuple[str, str | None]:
     with st.status(f"Resolving hierarchy for **{cat}**...", expanded=True) as status:
         from normalisation_rules.hierarchy.resolver import standardize_hierarchy
         df = pd.DataFrame({"category": [cat]})
+        dm = st.session_state.domain_model
         try:
-            _, json_records = standardize_hierarchy(df, "category")
+            _, json_records = standardize_hierarchy(df, "category", domain_model=dm)
             rec = json_records[0] if json_records else {}
             st.session_state.hierarchy_result = rec
             _log_block("HANDLER/HIERARCHY", "HIERARCHY RESOLVED", json.dumps(rec, indent=2, default=str)[:3000])
@@ -1122,7 +1204,13 @@ def _format_view(result: dict, view_type: str) -> str:
 def _handle_show_attributes(params: dict) -> tuple[str, str | None]:
     attrs = st.session_state.canonical_attributes
     if not attrs or not attrs.get("backbone"):
-        return "No attributes resolved yet. Upload a dataset first.", None
+        if st.session_state.df is not None and st.session_state.category:
+            _run_attribute_resolution()
+            attrs = st.session_state.canonical_attributes
+            if not attrs or not attrs.get("backbone"):
+                return "Attribute resolution did not produce results. Please try again.", None
+        else:
+            return "Upload a dataset first, then ask me to resolve attributes.", None
     backbone = attrs["backbone"]
     lines = [f"**Canonical Schema — {st.session_state.category}** ({len(backbone)} attributes):\n"]
     lines.append("| # | Attribute | Role | Type | Confidence |")
@@ -1130,6 +1218,11 @@ def _handle_show_attributes(params: dict) -> tuple[str, str | None]:
     for i, a in enumerate(backbone, 1):
         conf = a.get("confidence", {}).get("composite", "?")
         lines.append(f"| {i} | **{a.get('name','')}** | {a.get('structural_role','')} | {a.get('data_type','')} | {conf} |")
+
+    report = st.session_state.schema_report
+    if report and not report.get("error"):
+        lines.append("\n---")
+        lines.append(_format_schema_report(report))
     return "\n".join(lines), "attributes"
 
 
@@ -1151,6 +1244,16 @@ def _handle_show_rules(params: dict) -> tuple[str, str | None]:
     return "\n".join(lines), "rules"
 
 
+def _handle_resolve_attributes(params: dict) -> tuple[str, str | None]:
+    """Explicitly resolve canonical attributes on user demand."""
+    if st.session_state.df is None:
+        return "Upload a dataset first so I can resolve attributes for it.", None
+    if not st.session_state.category:
+        return "I need to know the product category first. Please confirm the domain detection or tell me the category.", None
+    _run_attribute_resolution()
+    return _handle_show_attributes(params)
+
+
 def _handle_change_category(params: dict) -> tuple[str, str | None]:
     new_cat = params.get("new_category")
     if not new_cat:
@@ -1159,6 +1262,8 @@ def _handle_change_category(params: dict) -> tuple[str, str | None]:
             return "Which category?\n\n" + "\n".join(f"- {c}" for c in cats[:20]), None
         return "Type the category name.", None
     st.session_state.category = new_cat
+    st.session_state.domain_model = None
+    st.session_state.domain_model_path = None
     for key in ("profiling", "profiling_path", "canonical_attributes", "schema_report"):
         st.session_state[key] = None
     st.session_state.derived_rules = {}
@@ -1170,6 +1275,8 @@ def _handle_change_category(params: dict) -> tuple[str, str | None]:
 
 def _handle_download(params: dict) -> tuple[str, str | None]:
     available = []
+    if st.session_state.domain_model:
+        available.append("domain model")
     if st.session_state.canonical_attributes and st.session_state.canonical_attributes.get("backbone"):
         available.append("attributes")
     if st.session_state.derived_rules:
@@ -1205,14 +1312,21 @@ def _render_download_buttons(download_key: str):
     cat = (st.session_state.category or "data").replace(" ", "_")
     cols = st.columns(4)
 
+    if download_key in ("domain_model", "all"):
+        dm = st.session_state.domain_model
+        if dm:
+            cols[0].download_button("🧠 Domain Model JSON",
+                json.dumps(dm, indent=2, ensure_ascii=False).encode("utf-8"),
+                f"{cat}_domain_model.json", "application/json", key=f"dl_dm_{download_key}")
+
     if download_key in ("attributes", "all"):
         attrs = st.session_state.canonical_attributes
         if attrs and attrs.get("backbone"):
             df_attr = _backbone_to_df(attrs["backbone"])
             if not df_attr.empty:
-                cols[0].download_button("📊 Attributes CSV", _df_to_csv_bytes(df_attr),
+                cols[1].download_button("📊 Attributes CSV", _df_to_csv_bytes(df_attr),
                     f"{cat}_attributes.csv", "text/csv", key=f"dl_ac_{download_key}")
-                cols[1].download_button("📊 Attributes Excel", _df_to_excel_bytes(df_attr),
+                cols[2].download_button("📊 Attributes Excel", _df_to_excel_bytes(df_attr),
                     f"{cat}_attributes.xlsx",
                     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                     key=f"dl_ax_{download_key}")
@@ -1222,24 +1336,24 @@ def _render_download_buttons(download_key: str):
         if rules:
             df_rules = _rules_to_df(rules)
             if not df_rules.empty:
-                cols[2].download_button("📋 Rules CSV", _df_to_csv_bytes(df_rules),
+                cols[3].download_button("📋 Rules CSV", _df_to_csv_bytes(df_rules),
                     f"{cat}_rules.csv", "text/csv", key=f"dl_rc_{download_key}")
 
     if download_key in ("hierarchy", "all"):
         hier = st.session_state.hierarchy_result
         if hier:
-            cols[3].download_button("🗂️ Hierarchy CSV", _df_to_csv_bytes(_hierarchy_to_df(hier)),
+            cols[0].download_button("🗂️ Hierarchy CSV", _df_to_csv_bytes(_hierarchy_to_df(hier)),
                 f"{cat}_hierarchy.csv", "text/csv", key=f"dl_hc_{download_key}")
 
     if download_key in ("profiling", "all"):
         if st.session_state.profiling:
-            cols[0].download_button("📈 Profiling JSON",
+            cols[1].download_button("📈 Profiling JSON",
                 json.dumps(st.session_state.profiling, indent=2, ensure_ascii=False).encode("utf-8"),
                 f"{cat}_profiling.json", "application/json", key=f"dl_pj_{download_key}")
 
     if download_key in ("schema report", "all"):
         if st.session_state.schema_report:
-            cols[1].download_button("📝 Schema Report",
+            cols[2].download_button("📝 Schema Report",
                 json.dumps(st.session_state.schema_report, indent=2, ensure_ascii=False).encode("utf-8"),
                 f"{cat}_schema_report.json", "application/json", key=f"dl_sr_{download_key}")
 
@@ -1287,8 +1401,47 @@ if uploaded is not None and st.session_state.df is None:
                    f"Name: {uploaded.name}\nRows: {len(df)}\nColumns: {len(df.columns)}\n"
                    f"Column names: {list(df.columns)}\nDtypes:\n{df.dtypes.to_string()}")
         _add("user", f"I uploaded **{uploaded.name}**.")
-        _add("assistant",
-             f"**{uploaded.name}** — {len(df):,} rows × {len(df.columns)} columns. Starting analysis...")
+
+        # Auto-detect domain/sub-domain/category
+        _log("UPLOAD/DETECT", "Auto-detecting domain overview from data...")
+        columns = list(df.columns)
+        sample_vals: dict[str, list[str]] = {}
+        for c in columns:
+            sample_vals[c] = df[c].dropna().head(5).astype(str).tolist()
+
+        from normalisation_rules.category_detector import detect_category
+        cat_result = detect_category(df, uploaded.name)
+        detected_cat = cat_result.get("category", "Unknown")
+
+        overview = detect_domain_overview(
+            columns=columns,
+            sample_values=sample_vals,
+            filename=uploaded.name,
+            detected_category=detected_cat,
+        )
+        _log_block("UPLOAD/DETECT", "DOMAIN OVERVIEW DETECTED", json.dumps(overview, indent=2))
+
+        st.session_state.detected_domain_info = overview
+        st.session_state.awaiting_domain_confirm = True
+        st.session_state.category_confidence = overview.get("confidence", cat_result.get("confidence", 0))
+        st.session_state.category_reasoning = overview.get("reasoning", cat_result.get("reasoning", ""))
+
+        domain_str = overview.get("domain", "Unknown")
+        sub_domain_str = overview.get("sub_domain", "Unknown")
+        category_str = overview.get("category", detected_cat)
+
+        confirm_msg = (
+            f"**{uploaded.name}** — {len(df):,} rows x {len(df.columns)} columns.\n\n"
+            f"I detected the following from your data:\n"
+            f"- **Domain**: {domain_str}\n"
+            f"- **Sub-Domain**: {sub_domain_str}\n"
+            f"- **Category**: {category_str}\n"
+            f"- **Confidence**: {overview.get('confidence', 0):.0%}\n\n"
+            f"_{overview.get('reasoning', '')}_\n\n"
+            f"**Is this correct?** Reply *\"yes\"* to proceed, or tell me the correct "
+            f"domain/sub-domain/category values."
+        )
+        _add("assistant", confirm_msg)
         st.rerun()
     except Exception as exc:
         _log("UPLOAD", f"File load FAILED: {exc}", level="ERROR")
@@ -1297,27 +1450,23 @@ if uploaded is not None and st.session_state.df is None:
 
 # Show compact preview if data loaded
 if st.session_state.df is not None:
-    with st.expander(f"📄 {st.session_state.file_name} — {len(st.session_state.df):,} rows × {len(st.session_state.df.columns)} cols", expanded=False):
+    with st.expander(f"📄 {st.session_state.file_name} — {len(st.session_state.df):,} rows x {len(st.session_state.df.columns)} cols", expanded=False):
         st.dataframe(st.session_state.df.head(5), use_container_width=True, height=180)
-
-# ===================================================================
-#  Auto-pipeline (runs once after upload)
-# ===================================================================
-if st.session_state.df is not None and not st.session_state.auto_pipeline_done:
-    _run_auto_pipeline()
-    st.rerun()
-
-if st.session_state.df is not None and st.session_state.category and not st.session_state.canonical_attributes:
-    _run_auto_pipeline()
-    st.rerun()
 
 # ===================================================================
 #  Sidebar status & downloads (only when data loaded)
 # ===================================================================
-if st.session_state.category:
+if st.session_state.category or st.session_state.domain:
     st.sidebar.markdown("---")
     st.sidebar.markdown("**📊 Session**")
-    st.sidebar.markdown(f"Category: **{st.session_state.category}**")
+    if st.session_state.domain:
+        st.sidebar.markdown(f"Domain: **{st.session_state.domain}**")
+        st.sidebar.markdown(f"Sub-Domain: **{st.session_state.sub_domain}**")
+    if st.session_state.category:
+        st.sidebar.markdown(f"Category: **{st.session_state.category}**")
+    if st.session_state.domain_model:
+        _ec = sum(len(v) for v in st.session_state.domain_model.get("entities", {}).values() if isinstance(v, list))
+        st.sidebar.markdown(f"Domain Model: **{_ec}** entities")
     if st.session_state.canonical_attributes:
         bb = st.session_state.canonical_attributes.get("backbone", [])
         st.sidebar.markdown(f"Schema: **{len(bb)}** attributes")
@@ -1331,8 +1480,14 @@ if st.session_state.category:
 
     st.sidebar.markdown("---")
     st.sidebar.markdown("**📥 Downloads**")
-    _cat = st.session_state.category.replace(" ", "_")
+    _cat = (st.session_state.category or "data").replace(" ", "_")
     _any_dl = False
+
+    if st.session_state.domain_model and st.session_state.domain_model_path:
+        _any_dl = True
+        st.sidebar.download_button("Domain Model (JSON)",
+            json.dumps(st.session_state.domain_model, indent=2, ensure_ascii=False).encode("utf-8"),
+            f"{_cat}_domain_model.json", "application/json", key="sb_dm")
 
     attrs = st.session_state.canonical_attributes
     if attrs and attrs.get("backbone"):
@@ -1397,18 +1552,88 @@ if prompt := st.chat_input("Ask me about schema design, attributes, naming, rule
     with st.chat_message("user"):
         st.markdown(prompt)
 
+    # --- Handle domain confirmation flow ---
+    if st.session_state.awaiting_domain_confirm:
+        _log("CHAT/ROUTE", "Awaiting domain confirmation — routing to confirmation handler")
+        with st.chat_message("assistant"):
+            _handle_domain_confirm(prompt)
+        st.rerun()
+
     with st.chat_message("assistant"):
         has_data = st.session_state.df is not None
-        _log("CHAT/ROUTE", f"has_data={has_data} — classifying intent...")
+        has_domain_model = st.session_state.domain_model is not None
+        _log("CHAT/ROUTE", f"has_data={has_data}, has_domain_model={has_domain_model} — classifying intent...")
 
         intent_result = _classify_intent(prompt)
         intent = intent_result.get("intent", "general")
         params = intent_result.get("params", {})
         confidence = intent_result.get("confidence", 0)
 
-        if not has_data and intent in ("normalize", "hierarchy", "multi_view", "show_attributes",
-                                       "show_rules", "download", "change_category"):
-            _log("CHAT/ROUTE", f"Intent '{intent}' requires data but none loaded → falling back to smart_response")
+        # Conversational domain resolution: if user asks schema questions
+        # but there's no domain model and no data, ask for domain info
+        needs_domain = intent in (
+            "normalize", "hierarchy", "multi_view", "show_attributes",
+            "resolve_attributes", "show_rules", "schema_advice",
+        )
+        if not has_data and not has_domain_model and needs_domain:
+            _log("CHAT/ROUTE", f"Intent '{intent}' needs domain context but none available — asking for domain info")
+            response_text = (
+                "To give you the best schema advice, I need to understand your domain context.\n\n"
+                "Could you tell me:\n"
+                "1. **Domain** — e.g., Industrial Component, Consumer Electronics, Automotive Parts\n"
+                "2. **Sub-Domain** — e.g., Electrical Equipment, Mechanical Components, Pneumatic Systems\n"
+                "3. **Category** — e.g., Contactors, Circuit Breakers, Limit Switches, Relays\n\n"
+                "Or simply upload a dataset and I'll auto-detect these for you."
+            )
+            download_key = None
+        elif intent == "domain_setup":
+            _log("CHAT/ROUTE", "Handling domain_setup intent")
+            domain = params.get("domain", "")
+            sub_domain = params.get("sub_domain", "")
+            category = params.get("category", "")
+            if domain and sub_domain and category:
+                st.session_state.domain = domain
+                st.session_state.sub_domain = sub_domain
+                st.session_state.category = category
+                _log("CHAT/ROUTE", f"Generating domain model for {domain} > {sub_domain} > {category}")
+                try:
+                    dm, dm_path = generate_domain_model(
+                        domain=domain, sub_domain=sub_domain, category=category,
+                    )
+                    st.session_state.domain_model = dm
+                    st.session_state.domain_model_path = str(dm_path)
+                    entity_count = sum(len(v) for v in dm.get("entities", {}).values() if isinstance(v, list))
+                    prop_count = sum(
+                        sum(len(p) for p in g.values() if isinstance(p, list))
+                        for g in dm.get("property_model", {}).values()
+                    )
+                    response_text = (
+                        f"Domain model generated for **{domain} > {sub_domain} > {category}**.\n\n"
+                        f"- **Entities**: {entity_count}\n"
+                        f"- **Properties**: {prop_count}\n"
+                        f"- **Ontology triplets**: {len(dm.get('ontology', {}).get('triplets', []))}\n"
+                        f"- **Invariants**: {len(dm.get('invariants', []))}\n\n"
+                        f"I'm now ready to answer schema questions about {category}. "
+                        f"Upload a dataset for data-grounded advice, or ask away!"
+                    )
+                except Exception as exc:
+                    response_text = f"Failed to generate domain model: {exc}"
+                download_key = None
+            else:
+                missing = []
+                if not domain:
+                    missing.append("domain")
+                if not sub_domain:
+                    missing.append("sub-domain")
+                if not category:
+                    missing.append("category")
+                response_text = (
+                    f"I still need the following: **{', '.join(missing)}**.\n\n"
+                    f"For example: *Domain: Industrial Component, Sub-Domain: Electrical Equipment, Category: Contactors*"
+                )
+                download_key = None
+        elif not has_data and intent in ("normalize", "show_rules", "download", "change_category"):
+            _log("CHAT/ROUTE", f"Intent '{intent}' requires uploaded data → falling back to smart_response")
             response_text = _smart_response(prompt)
             download_key = None
         else:
@@ -1418,6 +1643,7 @@ if prompt := st.chat_input("Ask me about schema design, attributes, naming, rule
                 "hierarchy": lambda p: _handle_hierarchy(p),
                 "multi_view": lambda p: _handle_multi_view(p),
                 "show_attributes": lambda p: _handle_show_attributes(p),
+                "resolve_attributes": lambda p: _handle_resolve_attributes(p),
                 "show_rules": lambda p: _handle_show_rules(p),
                 "change_category": lambda p: _handle_change_category(p),
                 "download": lambda p: _handle_download(p),

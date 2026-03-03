@@ -67,6 +67,20 @@ any relevant parameters.
   "what attributes should a contactor schema have?", "what's the ideal schema for relays?"
   Params: {{"attribute": "attribute name mentioned or null", "question": "the design question"}}
 
+- `resolve_attributes` — user explicitly asks to resolve / build / generate canonical
+  attributes or the canonical attribute schema for the loaded dataset or category.
+  Examples: "resolve attributes", "build the canonical schema", "generate attributes",
+  "what are the relevant attributes?", "show me possible attributes", "attribute resolution",
+  "find canonical attributes", "run attribute resolver"
+  Params: {{}}
+
+- `domain_setup` — user is providing domain/sub-domain/category information in response
+  to the system asking for it, or proactively specifying their domain context.
+  Examples: "domain is industrial component, sub-domain electrical equipment, category contactors",
+  "the category is relays", "I'm working with limit switches in electrical equipment",
+  "industrial component > electrical > circuit breakers"
+  Params: {{"domain": "domain name or empty", "sub_domain": "sub-domain name or empty", "category": "category name or empty"}}
+
 - `normalize` — user wants to derive normalisation rules for one or more columns.
   Examples: "normalize voltage", "run rules for current rating", "clean up poles",
   "normalise all columns"
@@ -88,8 +102,8 @@ any relevant parameters.
   Examples: "show supply chain view", "ERP lens", "ecommerce perspective", "analytical view"
   Params: {{"view_type": "supply_chain|ecommerce|analytical", "source": "rules|attributes"}}
 
-- `show_attributes` — user wants to see resolved canonical attributes / schema.
-  Examples: "show attributes", "list the schema", "canonical attributes", "ideal schema"
+- `show_attributes` — user wants to see already-resolved canonical attributes / schema.
+  Examples: "show attributes", "list the schema", "canonical attributes"
   Params: {{}}
 
 - `show_rules` — user wants to see previously derived normalisation rules.
@@ -118,6 +132,9 @@ any relevant parameters.
   Params: {{"question": "the user's question"}}
 
 **Classification Rules:**
+- `resolve_attributes` when user explicitly asks to resolve, generate, or build attributes.
+  This is different from `show_attributes` which just displays already-resolved attributes.
+- `domain_setup` when user is providing domain context information.
 - `schema_advice` takes PRIORITY over `general` when the user asks about data modeling,
   schema design, splitting/merging attributes, data types, regex, naming, relationships,
   constraints, or abstract representations.

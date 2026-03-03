@@ -20,8 +20,7 @@ from normalisation_rules.config import (
     get_openai_client,
     PROJECT_ROOT,
     get_attribute_resolver_log_path_for_run,
-    load_domain_backbone,
-    get_backbone_attributes_summary,
+    get_domain_model_context,
     get_manufacturers_for_category,
 )
 from normalisation_rules.prompts.attribute_resolver_prompt import (
@@ -389,6 +388,7 @@ def model_backbone_schema(
     category: str,
     model: str = "gpt-4o",
     log_path: Path | None = None,
+    domain_model: dict | None = None,
 ) -> Dict[str, Any]:
     _log_block(log_path, "BACKBONE MODELING – START", f"Category: {category} | Model: {model}")
     standards_attrs = attributes_from_standards.get("attributes", [])
@@ -407,9 +407,13 @@ def model_backbone_schema(
         f"Dataset attributes: {len(dataset_attrs)}",
     )
 
+    dm_context = ""
+    if domain_model:
+        dm_context = get_domain_model_context(domain_model)
+
     prompt = build_backbone_modeling_prompt(
         standards_preview, manu_preview, dataset_preview, dataset_excerpt,
-        category=category,
+        category=category, domain_model_context=dm_context,
     )
     _log_block(log_path, "BACKBONE MODELING – PROMPT", prompt[:8000] + ("...(truncated)" if len(prompt) > 8000 else ""))
     client = get_openai_client()
@@ -503,29 +507,26 @@ def standardize_attributes(
     output_json_path: str | None = None,
     output_csv_path: str | None = None,
     max_search_results: int = 5,
+    domain_model: dict | None = None,
 ) -> tuple[Dict[str, Any], List[Dict[str, Any]], Path]:
     """Run the full workflow: gather evidence -> backbone modeling -> lens projection.
 
     If *profiling_data* is provided (the dict from ``data_loader.profile_and_save``),
     it is used directly instead of re-loading the raw dataset from *dataset_path*.
+
+    If *domain_model* is provided (the runtime LLM-generated 7-section model),
+    it is used as additional context for backbone modeling.
     """
     log_path = get_attribute_resolver_log_path_for_run()
     _log_block(log_path, "PIPELINE START", f"Category: {category}\nLog file: {log_path}")
 
-    bb = load_domain_backbone(category)
-    bb_attrs = bb.get("attributes", [])
-    bb_inv = bb.get("invariants", [])
-    if bb_attrs:
-        summary = get_backbone_attributes_summary(category)
-        _log_block(
-            log_path,
-            "BACKBONE LOADED",
-            f"Attributes: {len(bb_attrs)} | Invariants: {len(bb_inv)}\n\n{summary}",
-        )
-        print(f"  [Backbone] Loaded {len(bb_attrs)} canonical attributes, {len(bb_inv)} invariants for '{category}'")
+    if domain_model:
+        dm_ctx = get_domain_model_context(domain_model)
+        _log_block(log_path, "DOMAIN MODEL CONTEXT", f"Using runtime domain model\n{dm_ctx[:2000]}")
+        print(f"  [Domain Model] Using runtime domain model as context for '{category}'")
     else:
-        _log_block(log_path, "BACKBONE", f"No backbone found for '{category}' — reasoning from first principles.")
-        print(f"  [Backbone] No backbone for '{category}' — reasoning from first principles")
+        _log_block(log_path, "DOMAIN MODEL", f"No domain model for '{category}' — reasoning from first principles.")
+        print(f"  [Domain Model] No domain model for '{category}' — reasoning from first principles")
 
     output_json_path = output_json_path or "recommended_attributes.json"
     output_csv_path = output_csv_path or "standardized_attributes.csv"
@@ -561,7 +562,8 @@ def standardize_attributes(
 
     print("  [Backbone] Building canonical schema with structural classification...")
     backbone_result = model_backbone_schema(
-        from_standards, from_manufacturers, from_dataset, category, log_path=log_path,
+        from_standards, from_manufacturers, from_dataset, category,
+        log_path=log_path, domain_model=domain_model,
     )
     backbone = backbone_result.get("backbone", [])
     print(f"  [Backbone] {len(backbone)} attributes modeled")

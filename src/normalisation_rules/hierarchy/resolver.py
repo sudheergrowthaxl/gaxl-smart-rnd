@@ -15,7 +15,6 @@ import pandas as pd
 
 from normalisation_rules.config import (
     get_openai_client,
-    load_domain_backbone,
     get_manufacturers_for_category,
 )
 from normalisation_rules.prompts.hierarchy_prompt import (
@@ -33,12 +32,13 @@ HEADERS_HTTP = {"User-Agent": "Mozilla/5.0 (compatible; hierarchy-resolver/1.0)"
 def discover_manufacturer_urls(
     category: str,
     max_manufacturers: int = 5,
+    domain_model: dict | None = None,
 ) -> List[Dict]:
     """Discover manufacturer product page URLs for a category via Tavily.
 
     Returns list of dicts: [{name, url, known_path (optional)}].
     """
-    manufacturers = get_manufacturers_for_category(category)[:max_manufacturers]
+    manufacturers = get_manufacturers_for_category(category, domain_model=domain_model)[:max_manufacturers]
     results = []
 
     tavily_key = os.getenv("TAVILY_API_KEY")
@@ -77,18 +77,20 @@ def discover_manufacturer_urls(
 # Dynamic UNSPSC discovery via Tavily
 # ---------------------------------------------------------------------------
 
-def discover_unspsc_context(category: str) -> str:
+def discover_unspsc_context(category: str, domain_model: dict | None = None) -> str:
     """Discover UNSPSC classification context for a category via Tavily.
 
     Returns text containing UNSPSC segment/family/class information.
     """
-    # Check backbone for UNSPSC hint
-    bb = load_domain_backbone(category)
-    standards = bb.get("domain", {}).get("standards_basis", [])
     unspsc_hint = ""
-    for s in standards:
-        if isinstance(s, str) and "unspsc" in s.lower():
-            unspsc_hint = s
+    if domain_model:
+        gov = domain_model.get("entities", {}).get("governance", [])
+        for g in gov:
+            desc = g.get("description", "").lower()
+            name = g.get("name", "").lower()
+            if "unspsc" in desc or "unspsc" in name:
+                unspsc_hint = g.get("description", "")
+                break
 
     tavily_key = os.getenv("TAVILY_API_KEY")
     if not tavily_key:
@@ -97,7 +99,13 @@ def discover_unspsc_context(category: str) -> str:
     from tavily import TavilyClient
     client = TavilyClient(api_key=tavily_key)
 
-    query = f"UNSPSC code for {category} electrical equipment classification"
+    query = f"UNSPSC code for {category} classification"
+    if domain_model:
+        ov = domain_model.get("domain_overview", {})
+        domain_hint = ov.get("domain", "")
+        sub_hint = ov.get("sub_domain", "")
+        if domain_hint:
+            query = f"UNSPSC code for {category} {sub_hint} {domain_hint} classification"
     if unspsc_hint:
         query += f" {unspsc_hint}"
 
@@ -129,8 +137,11 @@ def extract_hierarchy_with_ai(
     category: str,
     customer_hierarchy_paths: List[str] | None = None,
     model: str = "gpt-4o-mini",
+    domain_model: dict | None = None,
 ) -> Dict:
-    prompt = build_extract_hierarchy_prompt(raw_text, category, customer_hierarchy_paths)
+    prompt = build_extract_hierarchy_prompt(
+        raw_text, category, customer_hierarchy_paths, domain_model=domain_model,
+    )
     client = get_openai_client()
     response = client.chat.completions.create(
         model=model,
@@ -154,6 +165,7 @@ def recommend_paths_from_crawled_and_customer(
     unspsc_hierarchy_path: str | None,
     manufacturer_crawled_paths: List[Dict],
     model: str = "gpt-4o-mini",
+    domain_model: dict | None = None,
 ) -> Dict:
     prompt = build_recommend_paths_prompt(
         category,
@@ -161,6 +173,7 @@ def recommend_paths_from_crawled_and_customer(
         unspsc_excerpt,
         unspsc_hierarchy_path,
         manufacturer_crawled_paths,
+        domain_model=domain_model,
     )
     client = get_openai_client()
     response = client.chat.completions.create(
@@ -336,9 +349,11 @@ def scrape_manufacturer_site_for_hierarchy(
     }
 
 
-def get_hierarchy_from_manufacturer_websites(category: str, timeout: int = 30) -> List[Dict]:
+def get_hierarchy_from_manufacturer_websites(
+    category: str, timeout: int = 30, domain_model: dict | None = None,
+) -> List[Dict]:
     """Discover and crawl manufacturer sites for any category."""
-    discovered = discover_manufacturer_urls(category)
+    discovered = discover_manufacturer_urls(category, domain_model=domain_model)
     contributions = []
     for m in discovered:
         name = m.get("name", "Unknown")
@@ -362,10 +377,12 @@ def standardize_hierarchy(
     excerpt_max_len: int = 500,
     customer_hierarchy_col: str | None = None,
     crawled_paths_output_path: str | None = None,
+    domain_model: dict | None = None,
 ) -> tuple[pd.DataFrame, List[Dict]]:
     """Main workflow: UNSPSC discovery + manufacturer crawling -> AI recommendation.
 
     Works with ANY product category — URLs and UNSPSC paths discovered dynamically.
+    The domain_model (runtime LLM-generated) is the primary context for taxonomy.
     """
     sources = sources or []
     customer_paths: List[str] | None = None
@@ -384,11 +401,17 @@ def standardize_hierarchy(
 
         # 1) UNSPSC context via Tavily discovery
         print(f"  [UNSPSC] Discovering classification for '{category}'...")
-        unspsc_text = discover_unspsc_context(category)
-        unspsc_ai = extract_hierarchy_with_ai(unspsc_text, category, customer_hierarchy_paths=customer_paths)
+        unspsc_text = discover_unspsc_context(category, domain_model=domain_model)
+        unspsc_ai = extract_hierarchy_with_ai(
+            unspsc_text, category,
+            customer_hierarchy_paths=customer_paths,
+            domain_model=domain_model,
+        )
 
         # 2) Manufacturer sites: discover URLs dynamically, then crawl
-        manufacturer_contributions = get_hierarchy_from_manufacturer_websites(category)
+        manufacturer_contributions = get_hierarchy_from_manufacturer_websites(
+            category, domain_model=domain_model,
+        )
         manufacturer_contributions_for_json = [
             {
                 "source_name": c["source_name"],
@@ -440,6 +463,7 @@ def standardize_hierarchy(
             unspsc_excerpt=unspsc_text,
             unspsc_hierarchy_path=unspsc_path or None,
             manufacturer_crawled_paths=manufacturer_crawled_paths,
+            domain_model=domain_model,
         )
 
         results.append(recommendation)

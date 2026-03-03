@@ -1,7 +1,8 @@
 """Configuration, environment variables, and dynamic helpers.
 
-All category-specific logic is derived at runtime from backbone YAML files
-or LLM reasoning -- no hardcoded product-specific constants.
+All category-specific logic is derived at runtime via LLM-generated domain
+models — no static YAML backbone files.  The domain model is produced once
+per session and passed through as a dict.
 """
 
 import json
@@ -33,9 +34,6 @@ HIERARCHY_RECOMMENDED_JSON = PROJECT_ROOT / "recommended_hierarchies.json"
 ATTRIBUTE_RESOLVER_OUTPUT_JSON = PROJECT_ROOT / "recommended_attributes.json"
 ATTRIBUTE_RESOLVER_OUTPUT_CSV = PROJECT_ROOT / "standardized_attributes.csv"
 ATTRIBUTE_RESOLVER_LOGS_DIR = PROJECT_ROOT / "logs"
-
-# Knowledge base directory for backbone YAML files
-KNOWLEDGE_BASE_DIR = PROJECT_ROOT / "knowledge_base"
 
 # Data directory for profiling outputs (auto-generated per dataset)
 DATA_DIR = PROJECT_ROOT / "data"
@@ -134,27 +132,24 @@ def get_categories_from_docx() -> list[str]:
 
 
 # ---------------------------------------------------------------------------
-# Dynamic manufacturer list for a category
+# Dynamic manufacturer list for a category (LLM-only, no YAML)
 # ---------------------------------------------------------------------------
 
-def get_manufacturers_for_category(category: str) -> list[str]:
-    """Get manufacturers for a category from backbone YAML, or via LLM fallback."""
-    bb = load_domain_backbone(category)
-    domain = bb.get("domain", {})
-    manufacturers = domain.get("manufacturers", [])
-    if manufacturers:
-        return manufacturers
+def get_manufacturers_for_category(category: str, domain_model: dict | None = None) -> list[str]:
+    """Get manufacturers for a category via LLM or from the runtime domain model."""
+    if domain_model:
+        gov = domain_model.get("entities", {}).get("governance", [])
+        mfrs = [e.get("name", "") for e in gov if e.get("type") == "external" and e.get("name")]
+        if mfrs:
+            return mfrs
 
-    # LLM fallback: ask for top manufacturers of this category
     try:
         client = get_openai_client()
         response = client.chat.completions.create(
             model="gpt-4o-mini",
             messages=[{"role": "user", "content": (
-                f"List the top 5 global manufacturers of {category} "
-                f"(industrial electrical equipment). "
-                f"Output ONLY a JSON array of strings, e.g. "
-                f'["ABB", "Siemens", "Schneider Electric", "Eaton", "Rockwell Automation"]'
+                f"List the top 5 global manufacturers of {category}. "
+                f"Output ONLY a JSON object with key 'manufacturers' containing an array of strings."
             )}],
             temperature=0.1,
             response_format={"type": "json_object"},
@@ -174,71 +169,100 @@ def get_manufacturers_for_category(category: str) -> list[str]:
 
 
 # ---------------------------------------------------------------------------
-# Domain backbone loader
+# Runtime domain model helpers (read from LLM-generated dict, not YAML)
 # ---------------------------------------------------------------------------
 
-_backbone_cache: dict[str, dict] = {}
-
-
-def load_domain_backbone(category: str) -> dict:
-    """Load and cache the domain backbone YAML for a specific category.
-
-    Tries knowledge_base/{category}.yaml first, falls back to default.yaml.
-    """
-    global _backbone_cache
-
-    safe_category = category.lower().replace(" ", "_")
-
-    if safe_category in _backbone_cache:
-        return _backbone_cache[safe_category]
-
-    backbone_path = KNOWLEDGE_BASE_DIR / f"{safe_category}.yaml"
-    if not backbone_path.is_file():
-        backbone_path = KNOWLEDGE_BASE_DIR / "default.yaml"
-        if not backbone_path.is_file():
-            _backbone_cache[safe_category] = {}
-            return {}
-
-    try:
-        import yaml
-        with open(backbone_path, "r", encoding="utf-8") as f:
-            data = yaml.safe_load(f) or {}
-            _backbone_cache[safe_category] = data
-            return data
-    except Exception:
-        _backbone_cache[safe_category] = {}
-        return {}
-
-
-def get_backbone_attributes_summary(category: str) -> str:
-    """Return a compact text summary of backbone attributes for prompt injection."""
-    bb = load_domain_backbone(category)
-    attrs = bb.get("attributes", [])
-    if not attrs:
+def get_domain_model_context(domain_model: dict) -> str:
+    """Build a compact text summary from the runtime domain model for prompt injection."""
+    if not domain_model:
         return ""
 
-    lines = []
-    for a in attrs:
-        name = a.get("name", "")
-        role = a.get("structural_role", "")
-        dtype = a.get("data_type", "")
-        tier = a.get("tier", "")
-        deps = a.get("dependencies", [])
-        dep_strs = [f"{d.get('attribute', '?')} ({d.get('type', '?')})" for d in deps]
-        dep_text = "; ".join(dep_strs) if dep_strs else "none"
-        unit = a.get("unit")
-        unit_text = unit.get("base_unit", "") if isinstance(unit, dict) else "—"
-        lines.append(
-            f"- {name} | role={role} | type={dtype} | unit={unit_text} "
-            f"| tier={tier} | deps=[{dep_text}]"
+    parts = []
+    ov = domain_model.get("domain_overview", {})
+    if ov:
+        parts.append(
+            f"Domain: {ov.get('domain', '?')} > {ov.get('sub_domain', '?')} > {ov.get('category', '?')}\n"
+            f"Purpose: {ov.get('functional_purpose', '')}\n"
+            f"Boundaries: {ov.get('system_boundaries', '')}"
         )
+
+    entities = domain_model.get("entities", {})
+    for group, items in entities.items():
+        if items:
+            names = [e.get("name", "?") for e in items[:10]]
+            parts.append(f"{group}: {', '.join(names)}")
+
+    pm = domain_model.get("property_model", {})
+    if pm:
+        for entity, groups in list(pm.items())[:3]:
+            all_props = []
+            for group_name, props in groups.items():
+                if isinstance(props, list):
+                    all_props.extend(props[:5])
+            if all_props:
+                parts.append(f"Properties of {entity}: {', '.join(all_props[:15])}")
+
+    triplets = domain_model.get("ontology", {}).get("triplets", [])
+    if triplets:
+        trip_strs = [f"({t[0]}, {t[1]}, {t[2]})" for t in triplets[:10]]
+        parts.append(f"Ontology ({len(triplets)} triplets): {'; '.join(trip_strs)}")
+
+    invariants = domain_model.get("invariants", [])
+    if invariants:
+        inv_strs = [f"{i.get('id','')}: {i.get('rule','')}" for i in invariants[:8]]
+        parts.append(f"Invariants: {'; '.join(inv_strs)}")
+
+    return "\n".join(parts)
+
+
+def get_domain_entities_summary(domain_model: dict) -> str:
+    """Return entities section as formatted text."""
+    if not domain_model:
+        return ""
+    entities = domain_model.get("entities", {})
+    lines = []
+    for group, items in entities.items():
+        if items:
+            lines.append(f"**{group.replace('_', ' ').title()}**:")
+            for e in items:
+                lines.append(f"  - {e.get('name', '?')} ({e.get('type', '?')}): {e.get('description', '')}")
     return "\n".join(lines)
 
 
-def get_backbone_invariants_summary(category: str) -> str:
-    """Return a compact text summary of domain invariants for prompt injection."""
-    bb = load_domain_backbone(category)
-    invariants = bb.get("invariants", [])
+def get_domain_property_model_summary(domain_model: dict) -> str:
+    """Return property model as formatted text."""
+    if not domain_model:
+        return ""
+    pm = domain_model.get("property_model", {})
+    lines = []
+    for entity, groups in pm.items():
+        lines.append(f"**{entity}**:")
+        for group_name, props in groups.items():
+            if isinstance(props, list) and props:
+                lines.append(f"  {group_name}: {', '.join(str(p) for p in props)}")
+    return "\n".join(lines)
+
+
+def get_domain_ontology_summary(domain_model: dict) -> str:
+    """Return ontology triplets as formatted text."""
+    if not domain_model:
+        return ""
+    onto = domain_model.get("ontology", {})
+    triplets = onto.get("triplets", [])
+    if not triplets:
+        return ""
+    lines = [f"Namespace: {onto.get('namespace_prefix', 'fso')}"]
+    for t in triplets:
+        if len(t) >= 3:
+            lines.append(f"  ({t[0]}, {t[1]}, {t[2]})")
+    return "\n".join(lines)
+
+
+def get_domain_invariants_summary(domain_model: dict) -> str:
+    """Return invariants as formatted text."""
+    if not domain_model:
+        return ""
+    invariants = domain_model.get("invariants", [])
     if not invariants:
         return ""
     return "\n".join(
@@ -247,67 +271,32 @@ def get_backbone_invariants_summary(category: str) -> str:
     )
 
 
-def get_backbone_normalization_for_attribute(attr_name: str, category: str) -> str:
-    """Return normalization guidance for a specific attribute from the backbone."""
-    bb = load_domain_backbone(category)
-    norm = bb.get("normalization", {})
-    attrs = bb.get("attributes", [])
+def get_domain_normalization_context(domain_model: dict, attr_name: str) -> str:
+    """Extract normalization-relevant context for an attribute from the domain model."""
+    if not domain_model:
+        return ""
 
     lines = []
+    pm = domain_model.get("property_model", {})
+    for entity, groups in pm.items():
+        for group_name, props in groups.items():
+            if isinstance(props, list):
+                for p in props:
+                    p_str = str(p).lower()
+                    if attr_name.lower() in p_str:
+                        lines.append(f"Domain model property match: {entity} > {group_name} > {p}")
 
-    attr_meta = None
-    for a in attrs:
-        if a.get("name", "").lower() == attr_name.lower():
-            attr_meta = a
-            break
+    terminology = domain_model.get("terminology", [])
+    for t in terminology:
+        if attr_name.lower() in t.get("term", "").lower():
+            lines.append(
+                f"Terminology: {t.get('term', '')} — {t.get('definition', '')}\n"
+                f"  Functional role: {t.get('functional_role', '')}"
+            )
 
-    if attr_meta:
-        lines.append(f"Backbone metadata for '{attr_meta.get('name', '')}':")
-        lines.append(f"  structural_role: {attr_meta.get('structural_role', '?')}")
-        lines.append(f"  data_type: {attr_meta.get('data_type', '?')}")
-        allowed = attr_meta.get("allowed_values")
-        if allowed:
-            lines.append(f"  allowed_values: {allowed}")
-        unit = attr_meta.get("unit")
-        if isinstance(unit, dict):
-            lines.append(f"  unit: {unit.get('base_unit', '?')} ({unit.get('unit_system', '?')})")
-        canon = attr_meta.get("canonical_format")
-        if canon:
-            lines.append(f"  canonical_format: {canon}")
-        parse = attr_meta.get("parse_pattern")
-        if parse:
-            lines.append(f"  parse_pattern: {parse}")
-
-    sep = norm.get("multi_value_separator")
-    if sep:
-        lines.append(f"Multi-value separator: {sep!r}")
-
-    name_lower = attr_name.lower()
-    for key, section in norm.items():
-        if key == "multi_value_separator":
-            continue
-        if not isinstance(section, dict):
-            continue
-        if _norm_key_matches(key, name_lower):
-            if "canonical" in section:
-                lines.append(f"Canonical format: {section['canonical']}")
-            if "canonical_values" in section:
-                lines.append(f"Canonical values: {section['canonical_values']}")
-            if "mappings" in section:
-                lines.append("Mappings:")
-                for src, tgt in section["mappings"].items():
-                    lines.append(f"  {src!r} -> {tgt!r}")
-            if "examples" in section:
-                lines.append("Examples:")
-                for ex in section["examples"]:
-                    lines.append(f"  {ex.get('input', '?')} -> {ex.get('output', '?')}")
-            if "pattern" in section:
-                lines.append(f"Pattern: {section['pattern']}")
+    invariants = domain_model.get("invariants", [])
+    for inv in invariants:
+        if attr_name.lower() in inv.get("rule", "").lower() or attr_name.lower() in inv.get("description", "").lower():
+            lines.append(f"Invariant {inv.get('id','')}: {inv.get('rule','')} — {inv.get('description','')}")
 
     return "\n".join(lines) if lines else ""
-
-
-def _norm_key_matches(key: str, attr_name_lower: str) -> bool:
-    key_lower = key.lower().replace("_", " ")
-    keywords = key_lower.split()
-    return any(kw in attr_name_lower for kw in keywords)

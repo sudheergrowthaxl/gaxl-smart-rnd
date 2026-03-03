@@ -1,34 +1,39 @@
 """Prompt builders for hierarchy resolution.
 
-Loads domain backbone context for entity classification and UNSPSC grounding.
+Uses runtime-generated domain model for context — no static YAML backbone.
 """
 
 from typing import List
 
-from normalisation_rules.config import load_domain_backbone
 
-
-def _get_backbone_hierarchy_context(category: str) -> str:
-    """Extract hierarchy-relevant context from the domain backbone."""
-    bb = load_domain_backbone(category)
-    if not bb:
+def _get_domain_model_hierarchy_context(domain_model: dict | None) -> str:
+    """Extract hierarchy-relevant context from the runtime domain model."""
+    if not domain_model:
         return ""
 
     lines = []
-    domain = bb.get("domain", {})
-    if domain:
-        lines.append(f"Domain: {domain.get('name', '?')} > {domain.get('sub_domain', '?')} > {domain.get('focus_entity', '?')}")
-        standards = domain.get("standards_basis", [])
-        if standards:
-            lines.append(f"Standards basis: {', '.join(standards)}")
-        manufacturers = domain.get("manufacturers", [])
-        if manufacturers:
-            lines.append(f"Key manufacturers: {', '.join(manufacturers)}")
+    ov = domain_model.get("domain_overview", {})
+    if ov:
+        lines.append(
+            f"Domain: {ov.get('domain', '?')} > {ov.get('sub_domain', '?')} > {ov.get('category', '?')}"
+        )
+        if ov.get("functional_purpose"):
+            lines.append(f"Functional purpose: {ov['functional_purpose']}")
+        if ov.get("system_boundaries"):
+            lines.append(f"System boundaries: {ov['system_boundaries']}")
 
-    entities = bb.get("entities", {})
-    primary = entities.get("primary", [])
-    if primary:
-        lines.append("Primary entities: " + ", ".join(e.get("name", "") for e in primary))
+    entities = domain_model.get("entities", {})
+    for group, items in entities.items():
+        if items:
+            names = [e.get("name", "") for e in items[:8]]
+            lines.append(f"{group.replace('_', ' ').title()}: {', '.join(names)}")
+
+    triplets = domain_model.get("ontology", {}).get("triplets", [])
+    containment = [t for t in triplets if any(kw in str(t[1]).lower() for kw in ("partof", "contains", "classifiedas", "typeof", "type"))]
+    if containment:
+        lines.append("Key hierarchy relationships:")
+        for t in containment[:10]:
+            lines.append(f"  ({t[0]}, {t[1]}, {t[2]})")
 
     return "\n".join(lines)
 
@@ -37,6 +42,7 @@ def build_extract_hierarchy_prompt(
     raw_text: str,
     category: str,
     customer_hierarchy_paths: List[str] | None = None,
+    domain_model: dict | None = None,
 ) -> str:
     """Build the prompt for AI-based hierarchy extraction from UNSPSC/manufacturer text."""
     customer_block = ""
@@ -49,12 +55,12 @@ def build_extract_hierarchy_prompt(
     {paths_preview}
     """
 
-    backbone_ctx = _get_backbone_hierarchy_context(category)
+    dm_ctx = _get_domain_model_hierarchy_context(domain_model)
     backbone_block = ""
-    if backbone_ctx:
+    if dm_ctx:
         backbone_block = f"""
-    Domain backbone reference (use as context to guide reasoning, not as absolute constraint):
-    {backbone_ctx}
+    Domain model context (use as PRIMARY context to guide reasoning):
+    {dm_ctx}
     """
 
     return f"""
@@ -94,6 +100,7 @@ def build_recommend_paths_prompt(
     unspsc_excerpt: str,
     unspsc_hierarchy_path: str | None,
     manufacturer_crawled_paths: list,
+    domain_model: dict | None = None,
 ) -> str:
     """Build the prompt for the single AI step that compares all sources and recommends paths."""
     customer_block = ""
@@ -116,48 +123,56 @@ def build_recommend_paths_prompt(
         for c in manufacturer_crawled_paths
     )
 
-    backbone_ctx = _get_backbone_hierarchy_context(category)
-    backbone_block = ""
-    if backbone_ctx:
-        backbone_block = f"""
-    Domain backbone reference (use as context to guide reasoning, not as absolute constraint — override if evidence is stronger):
-    {backbone_ctx}
+    dm_ctx = _get_domain_model_hierarchy_context(domain_model)
+    dm_block = ""
+    if dm_ctx:
+        dm_block = f"""
+    **PRIMARY CONTEXT — Domain Model** (use this as the primary source for the global generalized hierarchy):
+    {dm_ctx}
     """
 
     return f"""
     You are an expert in product taxonomy for supply chain (ERP) and ecommerce (channel, assortment).
 
     Available inputs for category "{category}":
+    {dm_block}
     {unspsc_path_line}
     - UNSPSC excerpt (segment/family/class context): {unspsc_excerpt[:2800]}
     {customer_block}
-    - Manufacturer/ecommerce site paths (crawled from real sites):
+    - Manufacturer/ecommerce site paths (REFERENCE ONLY — shown if user asks for them):
     {manufacturer_block}
-    {backbone_block}
+
     You must REASON and CHOOSE — do not default supply_chain to UNSPSC or ecommerce to manufacturer without explicit reasoning.
 
-    1) supply_chain_recommended_path (ERP/procurement):
-       Which single path best supports procurement, inventory, and standards (e.g. sourcing, P2P)? Consider: UNSPSC is the global standard for spend classification; customer paths may match how the organization already codes items; manufacturer paths reflect vendor taxonomies. Pick the path that best fits supply chain use (it may be UNSPSC, customer, or manufacturer — decide and justify). Output that exact path string.
+    1) global_generalized_hierarchy_path:
+       The PRIMARY canonical taxonomy path derived from the DOMAIN MODEL context above.
+       Use the domain model's domain > sub-domain > category structure, entity hierarchy,
+       and functional purpose as the primary source. UNSPSC and manufacturer paths are
+       references only. Output a clean, generalized hierarchy path.
 
-    2) ecommerce_recommended_path (selling/channel/assortment):
-       Which single path best supports how buyers navigate and how products are merchandised? Consider: ecommerce sites and customer data often use channel/assortment language; UNSPSC is rarely used on storefronts. Pick the path that best fits selling and discovery (it may be customer, manufacturer, or a cleaned UNSPSC-style path — decide and justify). Output that exact path string.
+    2) supply_chain_recommended_path (ERP/procurement):
+       Which single path best supports procurement, inventory, and standards? Consider UNSPSC
+       as the global standard for spend classification. Output that exact path string.
 
-    3) global_generalized_hierarchy_path:
-       One canonical path using strict priority: if UNSPSC path is available use it; else use the first/primary customer path; else use the best available manufacturer path. Output that single path.
+    3) ecommerce_recommended_path (selling/channel/assortment):
+       Which single path best supports how buyers navigate and products are merchandised?
+       Consider ecommerce sites and customer data. Output that exact path string.
 
     4) supply_chain_reason:
-       One or two clear sentences: which path you chose for supply_chain_recommended_path, why it fits ERP/procurement better than the others, and which source it came from (UNSPSC / customer / manufacturer). No vague or generic phrases.
+       One or two clear sentences: which path you chose for supply_chain_recommended_path,
+       why it fits ERP/procurement, and which source it came from.
 
     5) ecommerce_reason:
-       One or two clear sentences: which path you chose for ecommerce_recommended_path, why it fits selling/channel better than the others, and which source it came from. No vague or generic phrases.
+       One or two clear sentences: which path you chose for ecommerce_recommended_path,
+       why it fits selling/channel, and which source it came from.
 
-    Output ONLY valid JSON. Use real paths from the inputs above; reasons must be specific and non-generic.
+    Output ONLY valid JSON. Reasons must be specific and non-generic.
     {{
-        "supply_chain_recommended_path": "exact path string you chose for supply chain",
-        "ecommerce_recommended_path": "exact path string you chose for ecommerce",
-        "global_generalized_hierarchy_path": "one path by priority UNSPSC then customer then manufacturer",
-        "supply_chain_reason": "specific reason naming the chosen path and why it fits supply chain",
-        "ecommerce_reason": "specific reason naming the chosen path and why it fits ecommerce",
+        "global_generalized_hierarchy_path": "domain model derived canonical hierarchy path",
+        "supply_chain_recommended_path": "exact path string for supply chain",
+        "ecommerce_recommended_path": "exact path string for ecommerce",
+        "supply_chain_reason": "specific reason",
+        "ecommerce_reason": "specific reason",
         "unspsc_code": "39121529",
         "confidence": 0.95
     }}

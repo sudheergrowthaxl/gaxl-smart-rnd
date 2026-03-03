@@ -1,13 +1,8 @@
 """Prompt builders for attribute resolution.
 
-All prompts can optionally receive canonical backbone data from domain_backbone.yaml
-to ground the LLM output against the domain model.
+All prompts use the runtime domain model (LLM-generated) as context.
+No static YAML backbone files.
 """
-
-from normalisation_rules.config import (
-    get_backbone_attributes_summary,
-    get_backbone_invariants_summary,
-)
 
 
 def build_standards_extraction_prompt(raw_excerpt: str, category: str) -> str:
@@ -72,38 +67,29 @@ def build_backbone_modeling_prompt(
     dataset_preview: str,
     dataset_excerpt: str,
     category: str,
+    domain_model_context: str = "",
 ) -> str:
     """Build the prompt for canonical backbone schema modeling with structural classification."""
-    backbone_ref = get_backbone_attributes_summary(category)
-    invariants_ref = get_backbone_invariants_summary(category)
-
     backbone_section = ""
-    if backbone_ref:
+    if domain_model_context:
         backbone_section = f"""
-**DOMAIN BACKBONE REFERENCE (knowledge_base/{category.lower().replace(' ', '_')}.yaml)**
-The following is a REFERENCE attribute list from a pre-built domain backbone for this category.
-Use it as contextual guidance — NOT as an absolute constraint. Your job is to REASON from the
-functional purpose of a {category.lower()} and from the evidence below. If the backbone lists an attribute,
-validate it against the evidence. If you discover attributes NOT in the backbone, include them.
-If you disagree with any backbone classification, override it and explain your reasoning.
+**DOMAIN MODEL CONTEXT (runtime-generated)**
+The following domain model was generated for this category. Use it as the PRIMARY context
+to guide your attribute schema. It describes entities, properties, ontology relationships,
+and operational logic. Validate each attribute against this model:
 
-{backbone_ref}
+{domain_model_context}
 """
     else:
         backbone_section = f"""
-**NO PRE-BUILT BACKBONE AVAILABLE**
-No domain-specific backbone exists for "{category}". You must derive the schema entirely from:
+**NO DOMAIN MODEL AVAILABLE**
+No domain model exists for "{category}". You must derive the schema entirely from:
 1) Your intrinsic knowledge of what a {category.lower()} IS (functional purpose, physical components, electrical characteristics),
 2) The evidence sources provided below (standards, manufacturer data, user dataset).
 Reason from first principles: "What defines this entity? What attributes are needed to distinguish one variant from another?"
 """
 
     invariants_section = ""
-    if invariants_ref:
-        invariants_section = f"""
-**DOMAIN INVARIANTS (reference constraints — validate against your reasoning)**
-{invariants_ref}
-"""
 
     return f"""You are an ontology and schema architect for the Electrical Equipment domain, specifically **{category}**. You have deep expertise in IEC standards, NEMA, UNSPSC, and electrical product data modeling.
 

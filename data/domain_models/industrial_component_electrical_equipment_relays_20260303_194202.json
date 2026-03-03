@@ -1,0 +1,371 @@
+{
+  "domain_overview": {
+    "domain": "Industrial Component",
+    "sub_domain": "Electrical Equipment",
+    "category": "Relays",
+    "domain_summary": "The Industrial Component domain focuses on the production and distribution of components used in industrial settings. These components are essential for the operation and control of machinery and systems.",
+    "sub_domain_summary": "The Electrical Equipment sub-domain includes devices and components that manage and control electrical power and signals. It encompasses a wide range of products, including relays, which are critical for switching and controlling electrical circuits.",
+    "functional_purpose": "Relays are used to control the flow of electricity in a circuit. They enable the control of a high-power circuit with a low-power signal, providing isolation and protection for sensitive components.",
+    "system_boundaries": "Relays interact with electrical control systems, power distribution networks, and automation systems. They have physical boundaries defined by their installation environment and logical boundaries defined by their control logic and signal processing capabilities."
+  },
+  "entities": {
+    "primary": [
+      {
+        "name": "Relay",
+        "type": "physical",
+        "description": "A device that opens or closes electrical contacts to control the flow of electricity in a circuit."
+      }
+    ],
+    "supporting_infrastructure": [
+      {
+        "name": "Socket",
+        "type": "physical",
+        "description": "A component that provides a connection point for relays, allowing for easy installation and replacement."
+      }
+    ],
+    "control_and_monitoring": [
+      {
+        "name": "Control Circuit",
+        "type": "logical",
+        "description": "A circuit that provides the control signals to operate the relay."
+      }
+    ],
+    "safety_and_protection": [
+      {
+        "name": "Circuit Breaker",
+        "type": "physical",
+        "description": "A safety device that interrupts the flow of electricity in the event of an overload or short circuit."
+      }
+    ],
+    "governance": [
+      {
+        "name": "IEC Standards",
+        "type": "standard",
+        "description": "International standards governing the design and performance of electrical equipment, including relays."
+      }
+    ]
+  },
+  "property_model": {
+    "Relay": {
+      "electrical_characteristics": [
+        "Coil Voltage",
+        "Contact Configuration",
+        "Rated Current"
+      ],
+      "mechanical_characteristics": [
+        "Mounting Type",
+        "Terminal Type"
+      ],
+      "performance_metrics": [
+        "Switching Speed",
+        "Electrical Life"
+      ],
+      "durability_and_environmental": [
+        "Operating Temperature Range",
+        "Humidity Resistance"
+      ],
+      "safety_and_protection": [
+        "Dielectric Strength",
+        "Insulation Resistance"
+      ],
+      "functional_capabilities": [
+        "Latching",
+        "Non-Latching"
+      ],
+      "standards_and_compliance": [
+        "UL Certification",
+        "RoHS Compliance"
+      ],
+      "identification_and_commercial": [
+        "Material Number",
+        "Manufacturer Part Number"
+      ]
+    }
+  },
+  "ontology": {
+    "namespace_prefix": "fso",
+    "triplets": [
+      [
+        "fso:Relay",
+        "fso:hasElectricalCharacteristic",
+        "fso:CoilVoltage"
+      ],
+      [
+        "fso:Relay",
+        "fso:hasMechanicalCharacteristic",
+        "fso:MountingType"
+      ],
+      [
+        "fso:Relay",
+        "fso:hasPerformanceMetric",
+        "fso:SwitchingSpeed"
+      ],
+      [
+        "fso:Relay",
+        "fso:hasDurabilityAttribute",
+        "fso:OperatingTemperatureRange"
+      ],
+      [
+        "fso:Relay",
+        "fso:hasSafetyFeature",
+        "fso:DielectricStrength"
+      ],
+      [
+        "fso:Relay",
+        "fso:hasFunctionalCapability",
+        "fso:Latching"
+      ],
+      [
+        "fso:Relay",
+        "fso:compliesWith",
+        "fso:ULCertification"
+      ],
+      [
+        "fso:Relay",
+        "fso:identifiedBy",
+        "fso:MaterialNumber"
+      ],
+      [
+        "fso:Relay",
+        "rdf:type",
+        "fso:ElectricalComponent"
+      ],
+      [
+        "fso:Socket",
+        "fso:connectsTo",
+        "fso:Relay"
+      ],
+      [
+        "fso:ControlCircuit",
+        "fso:controls",
+        "fso:Relay"
+      ],
+      [
+        "fso:CircuitBreaker",
+        "fso:protects",
+        "fso:Relay"
+      ],
+      [
+        "fso:Relay",
+        "fso:partOf",
+        "fso:ElectricalSystem"
+      ],
+      [
+        "fso:Relay",
+        "fso:manufacturedBy",
+        "fso:Vendor"
+      ],
+      [
+        "fso:Relay",
+        "fso:hasStandard",
+        "fso:IECStandard"
+      ],
+      [
+        "fso:Relay",
+        "fso:hasAttribute",
+        "fso:ContactConfiguration"
+      ],
+      [
+        "fso:Relay",
+        "fso:hasAttribute",
+        "fso:RatedCurrent"
+      ],
+      [
+        "fso:Relay",
+        "fso:hasAttribute",
+        "fso:TerminalType"
+      ],
+      [
+        "fso:Relay",
+        "fso:hasAttribute",
+        "fso:ElectricalLife"
+      ],
+      [
+        "fso:Relay",
+        "fso:hasAttribute",
+        "fso:HumidityResistance"
+      ]
+    ]
+  },
+  "terminology": [
+    {
+      "term": "Relay",
+      "definition": "An electrically operated switch used to control a circuit.",
+      "functional_role": "Enables control of high-power circuits with low-power signals.",
+      "related_terms": [
+        "Contact",
+        "Coil"
+      ]
+    },
+    {
+      "term": "Coil Voltage",
+      "definition": "The voltage required to energize the relay coil.",
+      "functional_role": "Determines the control signal required to operate the relay.",
+      "related_terms": [
+        "Relay",
+        "Control Circuit"
+      ]
+    },
+    {
+      "term": "Contact Configuration",
+      "definition": "The arrangement of contacts within a relay, such as SPST or DPDT.",
+      "functional_role": "Defines the switching capabilities of the relay.",
+      "related_terms": [
+        "Relay",
+        "Contact"
+      ]
+    },
+    {
+      "term": "Rated Current",
+      "definition": "The maximum current that the relay contacts can carry.",
+      "functional_role": "Determines the load capacity of the relay.",
+      "related_terms": [
+        "Relay",
+        "Contact"
+      ]
+    },
+    {
+      "term": "Switching Speed",
+      "definition": "The time it takes for the relay to open or close its contacts.",
+      "functional_role": "Affects the response time of the relay in a circuit.",
+      "related_terms": [
+        "Relay",
+        "Performance Metric"
+      ]
+    },
+    {
+      "term": "Dielectric Strength",
+      "definition": "The maximum voltage that the relay can withstand without breaking down.",
+      "functional_role": "Ensures the relay can operate safely under high voltage conditions.",
+      "related_terms": [
+        "Relay",
+        "Safety"
+      ]
+    },
+    {
+      "term": "Latching",
+      "definition": "A relay feature that maintains its state after the control signal is removed.",
+      "functional_role": "Allows the relay to remain in a set position without continuous power.",
+      "related_terms": [
+        "Relay",
+        "Functional Capability"
+      ]
+    },
+    {
+      "term": "UL Certification",
+      "definition": "A certification indicating compliance with safety standards set by Underwriters Laboratories.",
+      "functional_role": "Ensures the relay meets safety and performance standards.",
+      "related_terms": [
+        "Relay",
+        "Standards"
+      ]
+    },
+    {
+      "term": "Material Number",
+      "definition": "A unique identifier assigned to a relay for inventory and sales purposes.",
+      "functional_role": "Facilitates tracking and management of relay products.",
+      "related_terms": [
+        "Relay",
+        "Identification"
+      ]
+    },
+    {
+      "term": "Socket",
+      "definition": "A component that provides a connection point for relays.",
+      "functional_role": "Allows for easy installation and replacement of relays.",
+      "related_terms": [
+        "Relay",
+        "Mounting"
+      ]
+    },
+    {
+      "term": "Control Circuit",
+      "definition": "A circuit that provides the control signals to operate the relay.",
+      "functional_role": "Determines the operation of the relay within a system.",
+      "related_terms": [
+        "Relay",
+        "Coil Voltage"
+      ]
+    },
+    {
+      "term": "Circuit Breaker",
+      "definition": "A safety device that interrupts the flow of electricity in the event of an overload or short circuit.",
+      "functional_role": "Protects the relay and connected circuits from damage.",
+      "related_terms": [
+        "Relay",
+        "Safety"
+      ]
+    },
+    {
+      "term": "IEC Standards",
+      "definition": "International standards governing the design and performance of electrical equipment.",
+      "functional_role": "Ensures relays meet international safety and performance criteria.",
+      "related_terms": [
+        "Relay",
+        "Standards"
+      ]
+    },
+    {
+      "term": "Operating Temperature Range",
+      "definition": "The range of temperatures within which the relay can operate safely.",
+      "functional_role": "Determines the environmental conditions suitable for relay operation.",
+      "related_terms": [
+        "Relay",
+        "Durability"
+      ]
+    },
+    {
+      "term": "Humidity Resistance",
+      "definition": "The ability of the relay to operate in humid conditions without failure.",
+      "functional_role": "Ensures reliable operation in various environmental conditions.",
+      "related_terms": [
+        "Relay",
+        "Durability"
+      ]
+    }
+  ],
+  "operational_logic": {
+    "workflows": [
+      "Step 1: Control circuit sends a signal to the relay coil.",
+      "Step 2: Relay coil energizes, causing the contacts to change state.",
+      "Step 3: Relay contacts open or close, controlling the flow of electricity in the circuit."
+    ],
+    "energy_flow": "The control circuit provides a low-power signal to the relay coil, which in turn controls a high-power circuit by opening or closing the relay contacts.",
+    "failure_conditions": [
+      "Coil failure due to overvoltage.",
+      "Contact welding due to excessive current.",
+      "Mechanical failure of the relay mechanism."
+    ],
+    "compliance_constraints": [
+      "Must comply with IEC and UL standards.",
+      "Must operate within specified temperature and humidity ranges."
+    ]
+  },
+  "invariants": [
+    {
+      "id": "INV-01",
+      "rule": "fso:Relay fso:hasElectricalCharacteristic fso:CoilVoltage",
+      "description": "Every relay must have a defined coil voltage."
+    },
+    {
+      "id": "INV-02",
+      "rule": "fso:Relay fso:hasAttribute fso:ContactConfiguration",
+      "description": "Every relay must have a contact configuration."
+    },
+    {
+      "id": "INV-03",
+      "rule": "fso:Relay fso:compliesWith fso:ULCertification",
+      "description": "Every relay must comply with UL certification standards."
+    },
+    {
+      "id": "INV-04",
+      "rule": "fso:Relay fso:hasFunctionalCapability fso:Latching",
+      "description": "Relays with latching capability must maintain their state after the control signal is removed."
+    },
+    {
+      "id": "INV-05",
+      "rule": "fso:Relay fso:partOf fso:ElectricalSystem",
+      "description": "Every relay must be part of an electrical system."
+    }
+  ]
+}
