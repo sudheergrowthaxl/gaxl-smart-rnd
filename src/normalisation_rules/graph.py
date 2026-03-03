@@ -1,5 +1,10 @@
-"""LangGraph workflow: Tavily context (standards + manufacturers) -> curate values -> LLM -> parse rules."""
+"""LangGraph workflow: Tavily context -> curate values -> LLM -> parse rules.
 
+All domain/category references are dynamic — derived from state at runtime.
+Multi-view projection is a separate on-demand function, not part of the graph.
+"""
+
+import json
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -7,15 +12,14 @@ from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_core.language_models import BaseChatModel
 from langgraph.graph import StateGraph, END, START
 
-from normalisation_rules.config import DEFAULT_MANUFACTURERS
-from normalisation_rules.prompts import SYSTEM_PROMPT, build_user_prompt
+from normalisation_rules.config import get_manufacturers_for_category, get_openai_client
+from normalisation_rules.prompts import get_system_prompt, build_user_prompt
 from normalisation_rules.state import RuleDerivationState
 from normalisation_rules.tavily_context import search_attribute_context, search_manufacturer_values
 from normalisation_rules.curate_values import curate_possible_values
 
 
 def _log_tavily_result(state: RuleDerivationState, name: str, query_used: str, context: str, label: str) -> None:
-    """Write a Tavily result block to the shared log file."""
     log_path = state.get("tavily_log_path")
     if log_path and isinstance(log_path, str):
         path = Path(log_path)
@@ -26,6 +30,14 @@ def _log_tavily_result(state: RuleDerivationState, name: str, query_used: str, c
             f.write(block)
 
 
+def _build_domain_string(state: RuleDerivationState) -> str:
+    """Build the domain search string from the category in state."""
+    category = state.get("category", "")
+    if category:
+        return f"electrical {category.lower()}"
+    return state.get("domain", "electrical equipment")
+
+
 def _fetch_context_node(state: RuleDerivationState) -> dict:
     """Fetch standards web context for the current attribute using Tavily."""
     if not state.get("use_tavily", True):
@@ -33,18 +45,16 @@ def _fetch_context_node(state: RuleDerivationState) -> dict:
     attr = state.get("current_attribute") or {}
     name = attr.get("name", "")
     search_depth = state.get("search_depth", "basic")
+    domain = _build_domain_string(state)
 
-    # Extract top sample values for better query targeting
     values = attr.get("values") or []
     sample_values = [str(v.get("value", "")) for v in values[:5] if v.get("value")]
 
-    print(f"  [Tavily/Standards] Searching for attribute: {name} (depth={search_depth})")
-    context = ""
-    query_used = ""
+    print(f"  [Tavily/Standards] Searching for attribute: {name} (domain={domain}, depth={search_depth})")
     try:
         context, query_used = search_attribute_context(
             attribute_name=name,
-            domain="electrical contactors",
+            domain=domain,
             max_results=5,
             max_content_chars=6000,
             search_depth=search_depth,
@@ -65,20 +75,19 @@ def _fetch_manufacturer_context_node(state: RuleDerivationState) -> dict:
     attr = state.get("current_attribute") or {}
     name = attr.get("name", "")
     search_depth = state.get("search_depth", "basic")
-    manufacturers = state.get("manufacturers") or DEFAULT_MANUFACTURERS
+    domain = _build_domain_string(state)
+    category = state.get("category", "")
+    manufacturers = state.get("manufacturers") or get_manufacturers_for_category(category)
 
-    # Extract top sample values for better query targeting
     values = attr.get("values") or []
     sample_values = [str(v.get("value", "")) for v in values[:5] if v.get("value")]
 
     print(f"  [Tavily/Manufacturer] Searching for attribute: {name} (manufacturers: {len(manufacturers)})")
-    context = ""
-    query_used = ""
     try:
         context, query_used = search_manufacturer_values(
             attribute_name=name,
             manufacturers=manufacturers,
-            domain="electrical contactors",
+            domain=domain,
             max_results=5,
             max_content_chars=6000,
             search_depth=search_depth,
@@ -93,7 +102,7 @@ def _fetch_manufacturer_context_node(state: RuleDerivationState) -> dict:
 
 
 def _curate_values_node(state: RuleDerivationState) -> dict:
-    """Combine customer data, standards context, and manufacturer context into curated values."""
+    """Combine customer data, standards context, and manufacturer context."""
     attr = state.get("current_attribute") or {}
     name = attr.get("name", "")
     standards_context = state.get("web_context", "")
@@ -116,11 +125,13 @@ def _derive_rules_node(state: RuleDerivationState, llm: BaseChatModel) -> dict:
     attr = state.get("current_attribute") or {}
     curated_values = state.get("curated_values", "")
     few_shot = state.get("few_shot_examples", "")
-    domain = state.get("domain", "Contactors")
+    category = state.get("category", "")
+    domain = state.get("domain", category)
 
     user_text = build_user_prompt(attr, curated_values, few_shot, domain)
+    system_prompt = get_system_prompt(domain)
     messages = [
-        SystemMessage(content=SYSTEM_PROMPT),
+        SystemMessage(content=system_prompt),
         HumanMessage(content=user_text),
     ]
     try:
@@ -129,16 +140,14 @@ def _derive_rules_node(state: RuleDerivationState, llm: BaseChatModel) -> dict:
     except Exception as e:
         return {"rules": [], "error": str(e)}
 
-    # Parse rule lines: Entity\tAttribute\tNormalization\tRule
     lines = [s.strip() for s in content.splitlines() if s.strip()]
     rules = []
     for line in lines:
         if "\t" in line:
             rules.append(line)
-        elif line.startswith(domain) or "Normalization" in line:
+        elif line.startswith(domain) or line.startswith(category) or "Normalization" in line:
             rules.append(line)
 
-    # Cap at 3 rules per attribute (safety net if LLM over-generates)
     max_rules_per_attribute = 3
     if len(rules) > max_rules_per_attribute:
         rules = rules[:max_rules_per_attribute]
@@ -147,28 +156,13 @@ def _derive_rules_node(state: RuleDerivationState, llm: BaseChatModel) -> dict:
 
 
 def build_rule_derivation_graph(llm: BaseChatModel) -> StateGraph:
-    """
-    Build the LangGraph:
-    START -> fetch_context -> fetch_manufacturer_context -> curate_values -> derive_rules -> END
-    """
+    """Build the LangGraph: fetch_context -> fetch_mfr -> curate -> derive -> END."""
     graph = StateGraph(RuleDerivationState)
 
-    def fetch_context(state: RuleDerivationState) -> dict:
-        return _fetch_context_node(state)
-
-    def fetch_manufacturer_context(state: RuleDerivationState) -> dict:
-        return _fetch_manufacturer_context_node(state)
-
-    def curate_values(state: RuleDerivationState) -> dict:
-        return _curate_values_node(state)
-
-    def derive_rules(state: RuleDerivationState) -> dict:
-        return _derive_rules_node(state, llm)
-
-    graph.add_node("fetch_context", fetch_context)
-    graph.add_node("fetch_manufacturer_context", fetch_manufacturer_context)
-    graph.add_node("curate_values", curate_values)
-    graph.add_node("derive_rules", derive_rules)
+    graph.add_node("fetch_context", _fetch_context_node)
+    graph.add_node("fetch_manufacturer_context", _fetch_manufacturer_context_node)
+    graph.add_node("curate_values", _curate_values_node)
+    graph.add_node("derive_rules", lambda state: _derive_rules_node(state, llm))
 
     graph.add_edge(START, "fetch_context")
     graph.add_edge("fetch_context", "fetch_manufacturer_context")
@@ -183,20 +177,26 @@ def run_for_attribute(
     llm: BaseChatModel,
     attribute: dict,
     few_shot_examples: str,
-    domain: str = "Contactors",
+    category: str,
+    domain: str | None = None,
     use_tavily: bool = True,
     tavily_log_path: str | None = None,
     search_depth: str = "basic",
     manufacturers: list[str] | None = None,
 ) -> tuple[list[str], dict]:
-    """
-    Run the graph for a single attribute. Returns (list_of_rule_lines, curated_values_dict).
+    """Run the graph for a single attribute.
 
-    The curated_values_dict contains the structured data from all three sources,
-    which can be collected and saved to a JSON file for review.
+    Returns (list_of_rule_lines, curated_values_dict).
     """
+    if domain is None:
+        domain = category
+
+    if manufacturers is None:
+        manufacturers = get_manufacturers_for_category(category)
+
     compiled = build_rule_derivation_graph(llm).compile()
     initial: RuleDerivationState = {
+        "category": category,
         "current_attribute": attribute,
         "web_context": "",
         "manufacturer_context": "",
@@ -206,13 +206,11 @@ def run_for_attribute(
         "use_tavily": use_tavily,
         "search_depth": search_depth,
         "tavily_log_path": tavily_log_path or "",
-        "manufacturers": manufacturers or DEFAULT_MANUFACTURERS,
+        "manufacturers": manufacturers,
         "rules": [],
     }
     result = compiled.invoke(initial)
 
-    # Rebuild the curated dict for saving (the combined_context is in state, but we
-    # also want the structured breakdown for the JSON export)
     curated_dict = curate_possible_values(
         attribute=attribute,
         standards_context=result.get("web_context", ""),
@@ -220,3 +218,47 @@ def run_for_attribute(
     )
 
     return result.get("rules") or [], curated_dict
+
+
+# ---------------------------------------------------------------------------
+# On-demand multi-view projection (NOT part of the LangGraph pipeline)
+# ---------------------------------------------------------------------------
+
+def project_rules_to_views(
+    rules: list[str],
+    category: str,
+    view_type: str = "supply_chain",
+    model: str = "gpt-4o-mini",
+) -> dict:
+    """Project derived normalisation rules into a specific view lens on demand.
+
+    Args:
+        rules: List of tab-separated rule lines.
+        category: Product category.
+        view_type: One of 'supply_chain', 'ecommerce', 'analytical'.
+        model: OpenAI model to use.
+
+    Returns:
+        dict with view-specific rule projections and reasoning.
+    """
+    from normalisation_rules.prompts.normalisation_rules_prompt import (
+        build_rules_lens_projection_prompt,
+    )
+
+    rules_text = "\n".join(rules)
+    prompt = build_rules_lens_projection_prompt(rules_text, category, view_type)
+
+    client = get_openai_client()
+    try:
+        response = client.chat.completions.create(
+            model=model,
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0.1,
+            response_format={"type": "json_object"},
+        )
+        content = response.choices[0].message.content
+        if not content:
+            return {"error": "Empty response", "view_type": view_type, "rules": []}
+        return json.loads(content)
+    except (json.JSONDecodeError, TypeError, Exception) as e:
+        return {"error": str(e), "view_type": view_type, "rules": []}

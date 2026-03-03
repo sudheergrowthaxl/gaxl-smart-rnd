@@ -1,25 +1,123 @@
-"""Hierarchy resolver: UNSPSC + manufacturer site scraping + AI path recommendation."""
+"""Hierarchy resolver: dynamic UNSPSC + manufacturer site discovery + AI path recommendation.
+
+All manufacturer URLs and UNSPSC paths are discovered at runtime via Tavily and LLM
+reasoning — no hardcoded URLs or segment codes.
+"""
 
 import json
+import os
 import requests
 from bs4 import BeautifulSoup
 from typing import List, Dict
 from urllib.parse import urlparse, unquote
 
-try:
-    import tabula
-    _tabula_read_pdf = getattr(tabula, "read_pdf", None)
-except ImportError:
-    tabula = None
-    _tabula_read_pdf = None
-
 import pandas as pd
 
-from normalisation_rules.config import get_openai_client
+from normalisation_rules.config import (
+    get_openai_client,
+    load_domain_backbone,
+    get_manufacturers_for_category,
+)
 from normalisation_rules.prompts.hierarchy_prompt import (
     build_extract_hierarchy_prompt,
     build_recommend_paths_prompt,
 )
+
+HEADERS_HTTP = {"User-Agent": "Mozilla/5.0 (compatible; hierarchy-resolver/1.0)"}
+
+
+# ---------------------------------------------------------------------------
+# Dynamic manufacturer URL discovery via Tavily
+# ---------------------------------------------------------------------------
+
+def discover_manufacturer_urls(
+    category: str,
+    max_manufacturers: int = 5,
+) -> List[Dict]:
+    """Discover manufacturer product page URLs for a category via Tavily.
+
+    Returns list of dicts: [{name, url, known_path (optional)}].
+    """
+    manufacturers = get_manufacturers_for_category(category)[:max_manufacturers]
+    results = []
+
+    tavily_key = os.getenv("TAVILY_API_KEY")
+    if not tavily_key:
+        return [{"name": m, "url": "", "known_path": None} for m in manufacturers]
+
+    from tavily import TavilyClient
+    client = TavilyClient(api_key=tavily_key)
+
+    for mfr in manufacturers:
+        query = f"{mfr} {category} product catalog page official site"
+        try:
+            response = client.search(
+                query=query,
+                max_results=3,
+                search_depth="basic",
+            )
+            best_url = ""
+            for r in response.get("results", []):
+                url = r.get("url", "")
+                url_lower = url.lower()
+                mfr_lower = mfr.lower().replace(" ", "")
+                if any(frag in url_lower for frag in [mfr_lower, mfr_lower.split()[0]]):
+                    best_url = url
+                    break
+            if not best_url and response.get("results"):
+                best_url = response["results"][0].get("url", "")
+            results.append({"name": mfr, "url": best_url, "known_path": None})
+        except Exception:
+            results.append({"name": mfr, "url": "", "known_path": None})
+
+    return results
+
+
+# ---------------------------------------------------------------------------
+# Dynamic UNSPSC discovery via Tavily
+# ---------------------------------------------------------------------------
+
+def discover_unspsc_context(category: str) -> str:
+    """Discover UNSPSC classification context for a category via Tavily.
+
+    Returns text containing UNSPSC segment/family/class information.
+    """
+    # Check backbone for UNSPSC hint
+    bb = load_domain_backbone(category)
+    standards = bb.get("domain", {}).get("standards_basis", [])
+    unspsc_hint = ""
+    for s in standards:
+        if isinstance(s, str) and "unspsc" in s.lower():
+            unspsc_hint = s
+
+    tavily_key = os.getenv("TAVILY_API_KEY")
+    if not tavily_key:
+        return f"UNSPSC classification for {category}: {unspsc_hint or 'unknown'}"
+
+    from tavily import TavilyClient
+    client = TavilyClient(api_key=tavily_key)
+
+    query = f"UNSPSC code for {category} electrical equipment classification"
+    if unspsc_hint:
+        query += f" {unspsc_hint}"
+
+    try:
+        response = client.search(
+            query=query,
+            max_results=5,
+            search_depth="advanced",
+            include_answer=True,
+        )
+        parts = []
+        if response.get("answer"):
+            parts.append(response["answer"])
+        for r in response.get("results", [])[:5]:
+            content = (r.get("content") or "").strip()
+            if content:
+                parts.append(content[:2000])
+        return "\n\n".join(parts) if parts else f"UNSPSC for {category}: {unspsc_hint or 'not found'}"
+    except Exception as e:
+        return f"UNSPSC discovery failed: {e}. Hint: {unspsc_hint or 'none'}"
 
 
 # ---------------------------------------------------------------------------
@@ -32,7 +130,6 @@ def extract_hierarchy_with_ai(
     customer_hierarchy_paths: List[str] | None = None,
     model: str = "gpt-4o-mini",
 ) -> Dict:
-    """Uses OpenAI to extract hierarchy paths and map to category."""
     prompt = build_extract_hierarchy_prompt(raw_text, category, customer_hierarchy_paths)
     client = get_openai_client()
     response = client.chat.completions.create(
@@ -58,11 +155,6 @@ def recommend_paths_from_crawled_and_customer(
     manufacturer_crawled_paths: List[Dict],
     model: str = "gpt-4o-mini",
 ) -> Dict:
-    """
-    Single AI step: compare customer path(s) + UNSPSC + manufacturer crawled paths;
-    output supply_chain_recommended_path, ecommerce_recommended_path,
-    global_generalized_hierarchy_path, supply_chain_reason, ecommerce_reason.
-    """
     prompt = build_recommend_paths_prompt(
         category,
         customer_hierarchy_paths,
@@ -80,152 +172,33 @@ def recommend_paths_from_crawled_and_customer(
     try:
         content = response.choices[0].message.content
         if not content:
-            return {
-                "error": "Empty response",
-                "supply_chain_recommended_path": "",
-                "ecommerce_recommended_path": "",
-                "global_generalized_hierarchy_path": "",
-                "supply_chain_reason": "",
-                "ecommerce_reason": "",
-                "confidence": 0,
-            }
+            return _empty_recommendation()
         out = json.loads(content)
-        out.setdefault("supply_chain_recommended_path", "")
-        out.setdefault("ecommerce_recommended_path", "")
-        out.setdefault("global_generalized_hierarchy_path", "")
-        out.setdefault("supply_chain_reason", "")
-        out.setdefault("ecommerce_reason", "")
+        for key in ("supply_chain_recommended_path", "ecommerce_recommended_path",
+                     "global_generalized_hierarchy_path", "supply_chain_reason",
+                     "ecommerce_reason"):
+            out.setdefault(key, "")
         out.setdefault("confidence", 0)
         return out
     except (json.JSONDecodeError, TypeError):
-        return {
-            "error": "JSON parse failed",
-            "supply_chain_recommended_path": "",
-            "ecommerce_recommended_path": "",
-            "global_generalized_hierarchy_path": "",
-            "supply_chain_reason": "",
-            "ecommerce_reason": "",
-            "confidence": 0,
-        }
+        return _empty_recommendation()
+
+
+def _empty_recommendation() -> Dict:
+    return {
+        "error": "Parse failed",
+        "supply_chain_recommended_path": "",
+        "ecommerce_recommended_path": "",
+        "global_generalized_hierarchy_path": "",
+        "supply_chain_reason": "",
+        "ecommerce_reason": "",
+        "confidence": 0,
+    }
 
 
 # ---------------------------------------------------------------------------
-# UNSPSC scraping
+# Breadcrumb/nav extraction from crawled pages
 # ---------------------------------------------------------------------------
-
-UNSPSC_BASE = "https://usa.databasesets.com/unspsc"
-HEADERS = {"User-Agent": "Mozilla/5.0 (compatible; hierarchy-resolver/1.0)"}
-
-
-def _fetch_unspsc_page(path: str, timeout: int) -> tuple[str | None, str | None]:
-    url = UNSPSC_BASE + path if path.startswith("/") else f"{UNSPSC_BASE}/{path}"
-    try:
-        resp = requests.get(url, timeout=timeout, headers=HEADERS)
-        html = resp.text
-        if resp.status_code == 404 or "page not found" in html.lower() or "could not be found" in html.lower():
-            return None, "Page not found"
-        if "cloudflare" in html.lower() and ("blocked" in html.lower() or "attention required" in html.lower()):
-            return None, "Blocked (Cloudflare)"
-        return html, None
-    except requests.RequestException as e:
-        return None, str(e)
-
-
-def scrape_unspsc(category: str, timeout: int = 15) -> str:
-    """Scrape UNSPSC hierarchy from usa.databasesets.com/unspsc."""
-    text_parts = []
-
-    html, err = _fetch_unspsc_page("/", timeout)
-    if err:
-        msg = f"UNSPSC home failed: {err}. Using other sources."
-        print("  [UNSPSC]", msg)
-        return msg
-    soup = BeautifulSoup(html, "html.parser")
-    for a in soup.find_all("a", href=True):
-        href = a.get("href", "")
-        if "/unspsc/segment/" in href:
-            code = a.get_text(strip=True)
-            if code.isdigit() and len(code) == 8:
-                parent = a.find_parent("tr")
-                name = ""
-                if parent:
-                    tds = parent.find_all("td")
-                    for i, td in enumerate(tds):
-                        if a in td.find_all("a") and i + 1 < len(tds):
-                            name = tds[i + 1].get_text(strip=True)
-                            break
-                text_parts.append(f"Segment {code} {name or code}")
-    if text_parts:
-        text_parts = [f"UNSPSC segments: {' | '.join(text_parts[:60])}"]
-
-    html2, err2 = _fetch_unspsc_page("/segment/39000000", timeout)
-    if not err2 and html2:
-        soup2 = BeautifulSoup(html2, "html.parser")
-        for a in soup2.find_all("a", href=True):
-            if "/unspsc/family/" not in a.get("href", ""):
-                continue
-            code = a.get_text(strip=True)
-            if code.isdigit() and len(code) == 8:
-                parent = a.find_parent("tr")
-                name = ""
-                if parent:
-                    tds = parent.find_all("td")
-                    for i, td in enumerate(tds):
-                        if a in td.find_all("a") and i + 1 < len(tds):
-                            name = tds[i + 1].get_text(strip=True)
-                            break
-                text_parts.append(f"Family {code} {name or code}")
-
-    html3, err3 = _fetch_unspsc_page("/family/39120000", timeout)
-    if not err3 and html3:
-        soup3 = BeautifulSoup(html3, "html.parser")
-        for a in soup3.find_all("a", href=True):
-            if "/unspsc/class/" not in a.get("href", ""):
-                continue
-            code = a.get_text(strip=True)
-            if code.isdigit() and len(code) == 8:
-                parent = a.find_parent("tr")
-                name = ""
-                if parent:
-                    tds = parent.find_all("td")
-                    for i, td in enumerate(tds):
-                        if a in td.find_all("a") and i + 1 < len(tds):
-                            name = tds[i + 1].get_text(strip=True)
-                            break
-                text_parts.append(f"Class {code} {name or code}")
-
-    text = " | ".join(text_parts) if text_parts else "No UNSPSC hierarchy data extracted."
-    print(f"  [UNSPSC] Fetched {len(text)} chars")
-    return text
-
-
-# ---------------------------------------------------------------------------
-# Manufacturer site scraping
-# ---------------------------------------------------------------------------
-
-MANUFACTURER_HIERARCHY_URLS = [
-    {
-        "name": "Siemens",
-        "url": "https://www.siemens.com/global/en/products/automation/industrial-controls/sirius/sirius-control/contactors.html",
-    },
-    {
-        "name": "Schneider Electric",
-        "url": "https://www.se.com/in/en/product-category/1500-contactors-and-protection-relays/",
-        "known_path": "Home > All products > Industrial Automation and Control > Contactors and Protection Relays > Contactors",
-    },
-    {
-        "name": "Rockwell Automation",
-        "url": "https://www.rockwellautomation.com/en-us/products/hardware/motor-control.html",
-        "known_path": "Home > Products > Hardware Catalog > Motor Control",
-    },
-    {
-        "name": "Eaton",
-        "url": "https://www.eaton.com/in/en-us/products/controls-drives-automation-sensors/contactors-and-starters.html",
-    },
-]
-
-HEADERS_HTTP = {"User-Agent": "Mozilla/5.0 (compatible; hierarchy-resolver/1.0)"}
-
 
 def _hierarchy_from_url_path(url: str) -> str:
     parsed = urlparse(url)
@@ -235,7 +208,7 @@ def _hierarchy_from_url_path(url: str) -> str:
     segments = []
     for part in path.replace(".html", "").replace(".htm", "").split("/"):
         part = unquote(part)
-        if not part or part in ("en", "us", "en-us", "www", "in"):
+        if not part or part.lower() in ("en", "us", "en-us", "www", "in", "global"):
             continue
         readable = part.replace("-", " ").replace("_", " ").title()
         if len(readable) > 2 and readable not in segments:
@@ -261,10 +234,6 @@ def _extract_breadcrumb_and_nav(soup: BeautifulSoup, page_url: str = "") -> str:
             text = elem.get_text(separator=" > ", strip=True)
             if 8 < len(text) < 400:
                 parts.append(text)
-        if "nav" in cls_str or "path" in cls_str:
-            text = elem.get_text(separator=" > ", strip=True)
-            if 10 < len(text) < 400 and ">" in text:
-                parts.append(text)
 
     for ol in soup.find_all("ol"):
         links = ol.find_all("a", href=True)
@@ -277,8 +246,6 @@ def _extract_breadcrumb_and_nav(soup: BeautifulSoup, page_url: str = "") -> str:
         url_path = _hierarchy_from_url_path(page_url)
         if url_path and url_path not in parts:
             parts.append(url_path)
-        if "rockwellautomation" in page_url.lower() and "motor-control" in page_url:
-            parts.insert(0, "Home > Products > Hardware Catalog > Motor Control")
 
     for tag in soup.find_all(["h1", "h2"], limit=5):
         t = tag.get_text(strip=True)
@@ -309,27 +276,33 @@ def scrape_manufacturer_site_for_hierarchy(
     timeout: int = 30,
     known_path: str | None = None,
 ) -> Dict:
-    """Crawl manufacturer page and extract hierarchy path (breadcrumbs/nav). No AI."""
+    """Crawl a manufacturer page and extract hierarchy path."""
+    if not url:
+        return {
+            "source_name": manufacturer_name,
+            "url": "",
+            "excerpt_from_site": "No URL discovered",
+            "extracted_hierarchy": {"crawled_path": known_path or ""},
+        }
+
     last_error = None
     for attempt in range(2):
         try:
             resp = requests.get(url, timeout=timeout, headers=HEADERS_HTTP)
             if resp.status_code != 200:
-                crawled = known_path or ""
                 return {
                     "source_name": manufacturer_name,
                     "url": url,
                     "excerpt_from_site": f"HTTP {resp.status_code}",
-                    "extracted_hierarchy": {"crawled_path": crawled, "error": f"HTTP {resp.status_code}"},
+                    "extracted_hierarchy": {"crawled_path": known_path or "", "error": f"HTTP {resp.status_code}"},
                 }
             html = resp.text
             if "cloudflare" in html.lower() and "blocked" in html.lower():
-                crawled = known_path or ""
                 return {
                     "source_name": manufacturer_name,
                     "url": url,
                     "excerpt_from_site": "Blocked (Cloudflare)",
-                    "extracted_hierarchy": {"crawled_path": crawled, "error": "Blocked"},
+                    "extracted_hierarchy": {"crawled_path": known_path or "", "error": "Blocked"},
                 }
             soup = BeautifulSoup(html, "html.parser")
             hierarchy_snippet = _extract_breadcrumb_and_nav(soup, page_url=url)
@@ -337,9 +310,9 @@ def scrape_manufacturer_site_for_hierarchy(
             if not crawled and known_path:
                 crawled = known_path
             excerpt = (
-                hierarchy_snippet[:500] + ("…" if len(hierarchy_snippet) > 500 else "")
+                hierarchy_snippet[:500] + ("..." if len(hierarchy_snippet) > 500 else "")
                 if hierarchy_snippet
-                else ("No hierarchy found on page." if not known_path else "")
+                else ""
             )
             return {
                 "source_name": manufacturer_name,
@@ -354,25 +327,24 @@ def scrape_manufacturer_site_for_hierarchy(
         except requests.RequestException as e:
             last_error = e
             break
-    crawled = known_path or ""
+
     return {
         "source_name": manufacturer_name,
         "url": url,
         "excerpt_from_site": f"Request failed: {last_error}",
-        "extracted_hierarchy": {"crawled_path": crawled, "error": str(last_error)},
+        "extracted_hierarchy": {"crawled_path": known_path or "", "error": str(last_error)},
     }
 
 
 def get_hierarchy_from_manufacturer_websites(category: str, timeout: int = 30) -> List[Dict]:
-    """Crawl manufacturer sites for contactors; extract breadcrumb path only."""
+    """Discover and crawl manufacturer sites for any category."""
+    discovered = discover_manufacturer_urls(category)
     contributions = []
-    for m in MANUFACTURER_HIERARCHY_URLS:
+    for m in discovered:
         name = m.get("name", "Unknown")
         url = m.get("url", "")
         known_path = m.get("known_path")
-        if not url:
-            continue
-        print(f"  [Manufacturer] {name} ...")
+        print(f"  [Manufacturer] {name} — {url or '(no URL found)'}")
         contributions.append(
             scrape_manufacturer_site_for_hierarchy(name, url, category, timeout, known_path=known_path)
         )
@@ -391,9 +363,9 @@ def standardize_hierarchy(
     customer_hierarchy_col: str | None = None,
     crawled_paths_output_path: str | None = None,
 ) -> tuple[pd.DataFrame, List[Dict]]:
-    """
-    Main workflow: UNSPSC + manufacturer website scraping -> single AI recommendation step.
-    Returns (enriched DataFrame, list of JSON records).
+    """Main workflow: UNSPSC discovery + manufacturer crawling -> AI recommendation.
+
+    Works with ANY product category — URLs and UNSPSC paths discovered dynamically.
     """
     sources = sources or []
     customer_paths: List[str] | None = None
@@ -410,11 +382,12 @@ def standardize_hierarchy(
     for idx, row in df.iterrows():
         category = row[hierarchy_col]
 
-        # 1) UNSPSC context
-        unspsc_text = scrape_unspsc(category)
+        # 1) UNSPSC context via Tavily discovery
+        print(f"  [UNSPSC] Discovering classification for '{category}'...")
+        unspsc_text = discover_unspsc_context(category)
         unspsc_ai = extract_hierarchy_with_ai(unspsc_text, category, customer_hierarchy_paths=customer_paths)
 
-        # 2) Manufacturer sites: crawl paths only
+        # 2) Manufacturer sites: discover URLs dynamically, then crawl
         manufacturer_contributions = get_hierarchy_from_manufacturer_websites(category)
         manufacturer_contributions_for_json = [
             {
@@ -433,7 +406,6 @@ def standardize_hierarchy(
             for c in manufacturer_contributions
         ]
 
-        # Optional user-provided HTML sources
         for source in sources:
             if source.get("type") == "pdf":
                 continue
@@ -454,13 +426,13 @@ def standardize_hierarchy(
             manufacturer_contributions_for_json.append({
                 "source_name": name,
                 "url": url,
-                "excerpt_from_site": text[:excerpt_max_len] + ("…" if len(text) > excerpt_max_len else ""),
+                "excerpt_from_site": text[:excerpt_max_len] + ("..." if len(text) > excerpt_max_len else ""),
                 "extracted_hierarchy": {"crawled_path": path_from_source},
             })
             if path_from_source:
                 manufacturer_crawled_paths.append({"source_name": name, "crawled_path": path_from_source})
 
-        # 3) Single AI step: recommend supply chain + ecommerce paths
+        # 3) AI recommendation: supply chain + ecommerce paths
         unspsc_path = (unspsc_ai or {}).get("hierarchy_path", "") or ""
         recommendation = recommend_paths_from_crawled_and_customer(
             category=category,
@@ -470,25 +442,20 @@ def standardize_hierarchy(
             manufacturer_crawled_paths=manufacturer_crawled_paths,
         )
 
-        supply_chain_path = recommendation.get("supply_chain_recommended_path", "")
-        ecommerce_path = recommendation.get("ecommerce_recommended_path", "")
-        global_path = recommendation.get("global_generalized_hierarchy_path", "")
-        supply_chain_reason = recommendation.get("supply_chain_reason", "")
-        ecommerce_reason = recommendation.get("ecommerce_reason", "")
         results.append(recommendation)
 
         json_records.append({
             "category": category,
-            "recommended_path": supply_chain_path,
-            "ecommerce_recommended_path": ecommerce_path,
-            "global_generalized_hierarchy_path": global_path,
-            "supply_chain_reason": supply_chain_reason,
-            "ecommerce_reason": ecommerce_reason,
+            "recommended_path": recommendation.get("supply_chain_recommended_path", ""),
+            "ecommerce_recommended_path": recommendation.get("ecommerce_recommended_path", ""),
+            "global_generalized_hierarchy_path": recommendation.get("global_generalized_hierarchy_path", ""),
+            "supply_chain_reason": recommendation.get("supply_chain_reason", ""),
+            "ecommerce_reason": recommendation.get("ecommerce_reason", ""),
             "unspsc_code": recommendation.get("unspsc_code", ""),
             "standard": recommendation.get("standard", "UNSPSC/Manufacturer"),
             "confidence": recommendation.get("confidence", 0),
             "from_unspsc": {
-                "excerpt_preview": unspsc_text[:excerpt_max_len] + ("…" if len(unspsc_text) > excerpt_max_len else ""),
+                "excerpt_preview": unspsc_text[:excerpt_max_len] + ("..." if len(unspsc_text) > excerpt_max_len else ""),
                 "extracted_hierarchy": unspsc_ai,
             },
             "from_manufacturer_websites": manufacturer_contributions_for_json,

@@ -1,22 +1,15 @@
-"""Tavily web search to build domain context per attribute for normalisation rules."""
+"""Tavily web search to build domain context per attribute for normalisation rules.
+
+No hardcoded domain strings or skip-keyword lists. The domain is passed by
+callers based on the detected category, and skip logic uses data profiling
+statistics rather than keyword matching.
+"""
 
 from typing import Any
 
-from normalisation_rules.config import TAVILY_API_KEY, DEFAULT_MANUFACTURERS
+from normalisation_rules.config import TAVILY_API_KEY
 
-# Lazy client to avoid import errors if tavily not used
 _tavily_client: Any = None
-
-# Attribute-name keywords that indicate Tavily search won't add value
-# (dates, internal IDs, free-text descriptions, manufacturer-specific fields)
-_SKIP_KEYWORDS = [
-    "date",
-    "expiry",
-    "row number",
-    "part number",
-    "character description",
-    "mfr part",
-]
 
 
 def get_tavily_client():
@@ -30,58 +23,58 @@ def get_tavily_client():
     return _tavily_client
 
 
-def should_skip_tavily(attribute_name: str) -> bool:
-    """Return True if this attribute is unlikely to benefit from web search."""
-    label = attribute_name.replace("zz_", "").strip().lower()
-    return any(kw in label for kw in _SKIP_KEYWORDS)
+def should_skip_tavily(attribute: dict) -> bool:
+    """Determine from data statistics whether Tavily search would add value.
+
+    Uses the attribute's profiling data (semantic_type, distinct_count, etc.)
+    instead of a hardcoded keyword list.
+    """
+    semantic = (attribute.get("semantic_type") or "").strip()
+    if semantic in ("ID", "Constant", "Empty/NA"):
+        return True
+
+    name_lower = attribute.get("name", "").lower()
+    # Skip obvious non-searchable fields based on structural patterns
+    if any(pattern in name_lower for pattern in ("row number", "row_number", "index", "unnamed:")):
+        return True
+
+    return False
 
 
 def search_attribute_context(
     attribute_name: str,
-    domain: str = "electrical contactors",
+    domain: str,
     max_results: int = 5,
     max_content_chars: int = 8000,
     search_depth: str = "basic",
     sample_values: list[str] | None = None,
 ) -> tuple[str, str]:
-    """
-    Search the web for domain context about this attribute.
-    Returns (context_string, query_used) to pass to the LLM and optionally log.
+    """Search the web for domain context about this attribute.
 
-    Parameters
-    ----------
-    search_depth : "basic" or "advanced"
-        basic  = faster, fewer results, lower cost
-        advanced = deeper crawl, richer context, higher cost
-    sample_values : list of top observed values (optional)
-        Included in the query so Tavily returns format-specific results.
+    Args:
+        domain: Required — the domain string for search queries
+                (e.g., "electrical contactors", "electrical relays").
     """
     if not TAVILY_API_KEY:
         return ("", "")
 
-    # Skip attributes where web search adds no value
-    if should_skip_tavily(attribute_name):
-        return ("", f"(skipped: '{attribute_name}' not suitable for web search)")
-
     client = get_tavily_client()
-    label = attribute_name.replace("zz_", "").strip()
+    label = attribute_name.strip()
 
-    # --- Build query with sample values for targeted results ---
     if sample_values:
         top_vals = ", ".join(f"'{v}'" for v in sample_values[:5])
         query = (
             f"Standard accepted values for '{label}' in {domain}. "
             f"Observed variations: {top_vals}. "
-            f"What are the canonical forms per IEC 60947 or NEMA ICS standards?"
+            f"What are the canonical forms per IEC or NEMA standards?"
         )
     else:
         query = (
             f"Standard values and classifications for '{label}' in {domain} "
-            f"according to IEC 60947 and NEMA ICS standards. "
+            f"according to IEC and NEMA standards. "
             f"List all allowed values and common abbreviations."
         )
 
-    # Adjust limits for advanced depth (richer context budget)
     if search_depth == "advanced":
         max_results = max(max_results, 10)
         max_content_chars = max(max_content_chars, 15000)
@@ -113,34 +106,26 @@ def search_attribute_context(
 
 def search_manufacturer_values(
     attribute_name: str,
-    manufacturers: list[str] | None = None,
-    domain: str = "electrical contactors",
+    manufacturers: list[str],
+    domain: str,
     max_results: int = 5,
     max_content_chars: int = 8000,
-    search_depth: str = None,
+    search_depth: str | None = None,
     sample_values: list[str] | None = None,
 ) -> tuple[str, str]:
-    """
-    Search manufacturer websites/catalogs for values of this attribute.
-    Returns (context_string, query_used).
+    """Search manufacturer catalogs for values of this attribute.
 
-    Makes a single consolidated Tavily query mentioning all manufacturers
-    to find how they represent this attribute in their product catalogs.
+    Args:
+        manufacturers: Required — list of manufacturer names to search.
+        domain: Required — the domain string for search queries.
     """
     if not TAVILY_API_KEY:
         return ("", "")
 
-    if should_skip_tavily(attribute_name):
-        return ("", f"(skipped: '{attribute_name}' not suitable for manufacturer search)")
-
-    if manufacturers is None:
-        manufacturers = DEFAULT_MANUFACTURERS
-
     client = get_tavily_client()
-    label = attribute_name.replace("zz_", "").strip()
+    label = attribute_name.strip()
     mfr_names = ", ".join(manufacturers)
 
-    # Build query targeting manufacturer catalog values
     if sample_values:
         top_vals = ", ".join(f"'{v}'" for v in sample_values[:5])
         query = (
@@ -154,7 +139,6 @@ def search_manufacturer_values(
             f"What specific values and formats do these manufacturers use in their datasheets and catalogs?"
         )
 
-    # Adjust limits for advanced depth
     if search_depth == "advanced":
         max_results = max(max_results, 10)
         max_content_chars = max(max_content_chars, 15000)

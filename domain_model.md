@@ -1,16 +1,51 @@
-# Domain Model: Contactors — Electrical Equipment
+# Domain Model: Industrial Components (Dynamic)
 
 > **Domain**: Industrial Component
-> **Sub-Domain**: Electrical Equipment
-> **Focus Entity**: Contactor
-> **Version**: 1.0
-> **Standards Basis**: IEC 60947-4-1, IEC 60947-1, NEMA ICS 2, UNSPSC 39121004
+> **Sub-Domain**: Electrical Equipment (and others)
+> **Focus Entity**: Dynamic (e.g., Contactor, Relay, Switch, Sensor)
+> **Version**: 2.0 (Dynamic Architecture)
+> **Standards Basis**: IEC 60947 series, NEMA ICS, UNSPSC, and category-specific standards
 
 ---
 
-## 1. Domain Overview
+## 1. Dynamic Domain Architecture
 
-### 1.1 Domain Summary
+### 1.1 Overview
+The Schema Builder V0 has evolved from a static, single-category model to a **dynamic, multi-category knowledge engine**. It uses a flexible "Knowledge Base" approach where the domain backbone is loaded contextually based on the product category being processed.
+
+### 1.2 Key Capabilities
+- **Dynamic Category Support**: The system can switch contexts (e.g., from Contactors to Relays) at runtime, loading the appropriate ontological backbone from `knowledge_base/`.
+- **Chain of Thought (CoT) Reasoning**: The AI reasoning engine now explains *why* a specific attribute, rule, or hierarchy path is chosen, based on the functional purpose of the entity.
+- **Multi-View Lenses**: The core schema is projected into three distinct views:
+    1.  **Supply Chain (ERP)**: Focus on procurement, standards, and logistics.
+    2.  **Ecommerce (Sales)**: Focus on discovery, merchandising, and search facets.
+    3.  **Analytical (Data Quality)**: Focus on completeness and governance.
+
+### 1.3 System Boundaries (Dynamic)
+The system boundaries adapt to the focus entity. For a **Contactor**, the boundary includes the coil and contacts. For a **Sensor**, it includes the sensing element and output interface.
+
+---
+
+## 2. Interactive Workflow (UI)
+
+The system is accessible via a **Streamlit UI** (`schema_builder_ui/app.py`) that guides users through the schema generation process:
+
+1.  **Upload**: Users upload raw product data (Excel/CSV/JSON).
+2.  **Category Selection**: Users select the target category (e.g., "Contactors", "Relays") from a dynamic list populated by `Electrical_Components.docx`.
+3.  **Pipeline Execution**:
+    - **Normalization**: Derives rules to standardize messy data.
+    - **Hierarchy**: Resolves UNSPSC and Ecommerce paths.
+    - **Attribute Resolution**: Generates the "Golden Schema" with CoT reasoning.
+4.  **Results**: Users view and download standardized data and schemas.
+
+---
+
+## 3. Domain Model: Contactors (Reference Implementation)
+
+*(The following sections detail the specific model for Contactors, which serves as the template for other categories)*
+
+### 3.1 Domain Overview
+...
 
 **Industrial Components** encompass standardized, manufactured physical objects
 used in the construction, operation, and maintenance of industrial systems.

@@ -8,9 +8,9 @@ from typing import List
 from normalisation_rules.config import load_domain_backbone
 
 
-def _get_backbone_hierarchy_context() -> str:
+def _get_backbone_hierarchy_context(category: str) -> str:
     """Extract hierarchy-relevant context from the domain backbone."""
-    bb = load_domain_backbone()
+    bb = load_domain_backbone(category)
     if not bb:
         return ""
 
@@ -49,11 +49,11 @@ def build_extract_hierarchy_prompt(
     {paths_preview}
     """
 
-    backbone_ctx = _get_backbone_hierarchy_context()
+    backbone_ctx = _get_backbone_hierarchy_context(category)
     backbone_block = ""
     if backbone_ctx:
         backbone_block = f"""
-    Domain backbone reference (authoritative classification):
+    Domain backbone reference (use as context to guide reasoning, not as absolute constraint):
     {backbone_ctx}
     """
 
@@ -73,8 +73,11 @@ def build_extract_hierarchy_prompt(
     - Supply chain: "Electrical Equipment > Electrical equipment and components and supplies > Electrical controls and accessories > Contactors" (UNSPSC-aligned)
     - Ecommerce: "Industrial Controls > Contactors & Accessories > Contactors" or similar customer-facing navigation
 
+    Chain of Thought: Briefly reason about the best fit for supply chain vs ecommerce before outputting JSON.
+
     Output ONLY valid JSON:
     {{
+        "reasoning": "Supply chain path chosen because... Ecommerce path chosen because...",
         "hierarchy_path": "Main > Category > Subcategory",
         "ecommerce_hierarchy_path": "Commerce > Category > Subcategory",
         "unspsc_code": "39121529",
@@ -113,11 +116,11 @@ def build_recommend_paths_prompt(
         for c in manufacturer_crawled_paths
     )
 
-    backbone_ctx = _get_backbone_hierarchy_context()
+    backbone_ctx = _get_backbone_hierarchy_context(category)
     backbone_block = ""
     if backbone_ctx:
         backbone_block = f"""
-    Domain backbone reference (authoritative classification — use to validate your choices):
+    Domain backbone reference (use as context to guide reasoning, not as absolute constraint — override if evidence is stronger):
     {backbone_ctx}
     """
 

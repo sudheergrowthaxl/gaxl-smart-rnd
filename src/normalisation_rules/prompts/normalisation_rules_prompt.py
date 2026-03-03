@@ -1,36 +1,50 @@
 """Prompts for normalisation rule derivation.
 
-Loads canonical normalization patterns from domain_backbone.yaml when available,
-so the LLM produces rules aligned with the domain model.
+Loads canonical normalization patterns from the knowledge base when available,
+so the LLM produces rules aligned with the domain model. Works with any
+product category — no hardcoded category references.
 """
 
 from normalisation_rules.config import get_backbone_normalization_for_attribute
 
-SYSTEM_PROMPT = """You are an expert in data normalisation for Electrical Equipment, specifically Contactors.
-Your task is to derive clear, actionable normalisation rules based on:
-1) Attribute-level statistics (datatype, range, cardinality, missing %, imbalance, patterns across values) for a given attribute,
-2) Curated possible values from three sources (when provided):
+
+def get_system_prompt(domain: str) -> str:
+    return f"""You are an expert in data normalisation for Industrial Electrical Equipment, currently working on the category **{domain}**.
+
+**Your approach — Chain of Thought reasoning:**
+Before deriving any rule, you MUST first reason about the functional purpose of the attribute within this product category. Follow these steps explicitly:
+
+1) **Functional Purpose**: What does this attribute MEAN for a {domain.lower()}? What is its physical or electrical significance? If you are unfamiliar with this specific category, reason from first principles about what kind of component it is, what it does, and why this attribute matters.
+
+2) **Expected Format**: What format would an engineer, procurement specialist, or ecommerce buyer expect to see? Consider how this attribute would appear in a purchase order, a datasheet, and a product listing.
+
+3) **Pattern Analysis**: What patterns exist in the observed data that deviate from that expected format? Are there abbreviations, unit inconsistencies, text vs numeric mismatches?
+
+4) **Canonical Representation**: What would the canonical (standard) representation be, and why? Ground your answer in IEC, NEMA, UNSPSC, or manufacturer conventions where applicable.
+
+**Inputs you will receive:**
+1) Attribute-level statistics (datatype, range, cardinality, missing %, patterns across values),
+2) Curated possible values from up to three sources (when provided):
    a) Customer observed values (distinct values from profiling data),
-   b) Standards context (IEC 60947, NEMA ICS terminology and accepted values),
-   c) Manufacturer catalog values (how ABB, Siemens, Schneider Electric, Eaton, Square D etc. represent this attribute),
-3) Canonical domain backbone metadata (when provided): structural role, data type, allowed values, canonical formats, and mapping tables from the domain model. Rules MUST align with these canonical definitions.
+   b) Standards context (IEC, NEMA, UNSPSC terminology and accepted values),
+   c) Manufacturer catalog values (how major manufacturers represent this attribute),
+3) Domain backbone reference (when available): structural role, data type, allowed values, canonical formats, and mapping tables. This is REFERENCE CONTEXT to guide your reasoning — not an absolute constraint. If you believe the data or your domain expertise suggests a different approach, override the backbone and explain why.
 
-Rules must be GENERALISED over the entire attribute—do not output one rule per distinct value.
-- Output 1–2 rules per attribute (3 only if clearly needed). Match the style of the few-shot examples: general format standardisation, conditional logic, or mapping families, not exhaustive value-by-value mappings.
-- Use attribute-level statistics and patterns to infer general normalisation rules (e.g. "normalize to format X", "if condition then Y", "A/B/C become Z").
-- When backbone metadata provides canonical_format, allowed_values, or mappings, your rules MUST normalise values toward those canonical forms.
-- Exclude any rule related to NULL or missing values. Do not generate rules that deal with handling, replacing, or flagging nulls, blanks, or missing data. Only generate rules that normalise and standardise actual present values.
+**If NO domain backbone is provided:**
+Reason from FIRST PRINCIPLES. Ask: "What IS a {domain.lower()}? What is its function in an industrial electrical system? What attributes define it and how should they be represented?" Use your intrinsic knowledge of electrical engineering, IEC/NEMA standards, and product data modeling.
 
-Output format: one rule per line, tab-separated:
+**Rule derivation guidelines:**
+- Rules must be GENERALISED over the entire attribute — do not output one rule per distinct value.
+- Output 1–2 rules per attribute (3 only if clearly needed).
+- Use attribute-level statistics and patterns to infer general normalisation rules.
+- Each rule MUST include a brief reasoning statement explaining WHY this normalisation is needed (based on the functional purpose of the attribute).
+- Exclude any rule related to NULL or missing values.
+
+**Output format:** one rule per line, tab-separated:
 Entity\tAttribute\tNormalization\tRule description
 
-Example lines (general, not per-value):
-Contactors\tzz_Auxiliary Contact\tNormalization\tNormalize to format 1NO+1NC
-Contactors\tzz_Number of Poles\tNormalization\t"3P", "3 Pole", "Three Pole" normalize them to 3
-Contactors\tzz_Mounting Type\tNormalization\t"On Rail", "35mm rail" becomes "DIN Rail"
-
-- Use the exact format above with tabs. Do not output any header line—only rule lines.
-- If no meaningful rule can be derived, output a single line explaining why (still in the same format with Attribute and "Normalization" and the explanation as Rule description).
+- Use the exact format above with tabs. Do not output any header line — only rule lines.
+- If no meaningful rule can be derived, output a single line explaining why.
 """
 
 
@@ -48,7 +62,7 @@ def build_user_prompt(
     range_val = attribute.get("range")
     values = attribute.get("values", [])
 
-    backbone_guidance = get_backbone_normalization_for_attribute(name)
+    backbone_guidance = get_backbone_normalization_for_attribute(name, category=domain)
 
     lines = [
         "--- Few-shot examples (output 1–2 rules per attribute in this style, general not per-value) ---",
@@ -58,14 +72,14 @@ def build_user_prompt(
 
     if backbone_guidance:
         lines.extend([
-            "--- Domain backbone guidance (canonical definitions — rules MUST align with these) ---",
+            "--- Domain backbone reference (use as context to guide reasoning, not as absolute constraint) ---",
             backbone_guidance,
             "",
         ])
 
     lines.extend([
         "--- Attribute to derive rules for ---",
-        f"Domain: {domain}",
+        f"Category: {domain}",
         f"Attribute: {name}",
         f"Datatype: {datatype}",
         f"Semantic type: {semantic_type}",
@@ -85,7 +99,7 @@ def build_user_prompt(
     if curated_context.strip():
         lines.extend([
             "",
-            "--- Curated possible values from all sources (use this to align rules with standards and industry practice) ---",
+            "--- Curated possible values from all sources ---",
             curated_context[:12000],
             "",
         ])
@@ -95,9 +109,77 @@ def build_user_prompt(
         "Derive 1–2 generalised normalisation rules for this attribute. "
         "Do not list one rule per value; generalise from the statistics, patterns, "
         "and the curated context above (customer data, standards, and manufacturer catalogs). "
-        "When domain backbone guidance is provided, ensure your rules normalise toward "
-        "the canonical formats, allowed values, and mappings defined there. "
-        "Exclude any rule related to NULL or missing values—only rules for actual present values. "
+        "When domain backbone reference is provided, use it as context to guide your reasoning — "
+        "but if the data or your domain expertise suggests a different canonical form, use that instead and explain why. "
+        "Exclude any rule related to NULL or missing values — only rules for actual present values. "
+        "Chain of Thought: For each rule, briefly reason about WHY this normalisation is needed "
+        "based on the functional purpose of the attribute. "
+        "Include this reasoning in the Rule description. "
         "Output only the rule lines (tab-separated: Entity, Attribute, Normalization, Rule description), one per line."
     )
     return "\n".join(lines)
+
+
+def build_rules_lens_projection_prompt(
+    rules_text: str,
+    category: str,
+    view_type: str,
+) -> str:
+    """On-demand prompt to project derived normalisation rules into a specific view.
+
+    Args:
+        rules_text: The derived rules (tab-separated lines).
+        category: Product category.
+        view_type: One of 'supply_chain', 'ecommerce', 'analytical'.
+    """
+    view_descriptions = {
+        "supply_chain": (
+            "**Supply Chain / ERP perspective**: Focus on how these normalisation rules "
+            "support procurement, inventory management, P2P workflows, and standards compliance. "
+            "Which rules ensure data consistency for purchase orders, vendor comparison, and "
+            "spend classification? Which rules align with IEC/NEMA/UNSPSC coding?"
+        ),
+        "ecommerce": (
+            "**Ecommerce / Selling perspective**: Focus on how these normalisation rules "
+            "support product discovery, comparison, filtering, and merchandising. "
+            "Which rules ensure data is buyer-friendly? Which rules support faceted search, "
+            "product matching, and cross-sell/up-sell?"
+        ),
+        "analytical": (
+            "**Analytical / Data Quality perspective**: Focus on how these normalisation rules "
+            "support data quality assessment, reporting, and analytics. "
+            "Which rules ensure completeness, consistency, and accuracy metrics? "
+            "Which rules enable meaningful aggregation and trend analysis?"
+        ),
+    }
+
+    view_desc = view_descriptions.get(view_type, view_descriptions["supply_chain"])
+
+    return f"""You are a product data architect projecting normalisation rules into domain-specific views.
+
+**Task**: Given the normalisation rules derived for **{category}**, project them into the
+{view_type.replace('_', ' ')} view.
+
+{view_desc}
+
+**Chain of Thought**: For each rule, reason about:
+1) Does this rule matter for the {view_type.replace('_', ' ')} context? Why or why not?
+2) How would applying this rule improve data quality in this specific context?
+3) What is the business impact of NOT applying this rule in this context?
+
+**Derived Normalisation Rules:**
+{rules_text}
+
+**Output ONLY valid JSON:**
+{{
+  "view_type": "{view_type}",
+  "reasoning": "Overall rationale for which rules matter in this view and why...",
+  "projected_rules": [
+    {{
+      "rule": "the original rule text",
+      "relevance": "critical|important|supplementary",
+      "view_rationale": "Why this rule matters (or doesn't) for {view_type.replace('_', ' ')}"
+    }}
+  ]
+}}
+"""

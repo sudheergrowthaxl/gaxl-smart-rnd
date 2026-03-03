@@ -1,10 +1,11 @@
-"""
-Attribute resolver for Contactors category (Electrical equipment domain).
-Gathers attributes from: (1) Standards (UNSPSC, IEC, NEMA), (2) Manufacturer sites/technical specs (Tavily),
-(3) Contactors dataset; then builds a canonical backbone schema with structural classification,
-and projects supply chain and ecommerce views from that backbone.
+"""Attribute resolver for any product category (Electrical equipment domain).
 
-All pipeline activity is logged to a timestamped file under ``logs/``.
+Gathers attributes from: (1) Standards via Tavily, (2) Manufacturer sites via Tavily,
+(3) User-uploaded dataset; then builds a canonical backbone schema with structural
+classification and projects supply chain, ecommerce, and analytical views.
+
+All search queries are generated dynamically by the LLM at runtime — no hardcoded
+query lists. Category is passed through every function call.
 """
 
 import json
@@ -21,12 +22,16 @@ from normalisation_rules.config import (
     get_attribute_resolver_log_path_for_run,
     load_domain_backbone,
     get_backbone_attributes_summary,
+    get_manufacturers_for_category,
 )
 from normalisation_rules.prompts.attribute_resolver_prompt import (
     build_standards_extraction_prompt,
     build_manufacturer_extraction_prompt,
     build_backbone_modeling_prompt,
     build_lens_projection_prompt,
+)
+from normalisation_rules.prompts.search_query_generation_prompt import (
+    build_search_query_generation_prompt,
 )
 
 
@@ -35,7 +40,6 @@ from normalisation_rules.prompts.attribute_resolver_prompt import (
 # ---------------------------------------------------------------------------
 
 def _log_block(log_path: Path | None, label: str, body: str) -> None:
-    """Append a timestamped block to the run log file."""
     if not log_path:
         return
     ts = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
@@ -55,7 +59,6 @@ def _log_block(log_path: Path | None, label: str, body: str) -> None:
 # ---------------------------------------------------------------------------
 
 def _get_tavily_client():
-    """Return TavilyClient; raises if TAVILY_API_KEY not set."""
     key = os.getenv("TAVILY_API_KEY")
     if not key or not str(key).strip():
         raise ValueError("TAVILY_API_KEY not set. Add it to .env or environment.")
@@ -68,7 +71,6 @@ def _tavily_search(
     max_results: int = 5,
     log_path: Path | None = None,
 ) -> str:
-    """Run Tavily search and return concatenated context text."""
     _log_block(log_path, "TAVILY SEARCH", f"Query: {query}\nMax results: {max_results}")
     client = _get_tavily_client()
     response = client.search(
@@ -94,26 +96,116 @@ def _tavily_search(
 
 
 # ---------------------------------------------------------------------------
-# 1. Attributes from Contactors dataset
+# LLM-generated search queries (replaces hardcoded query lists)
 # ---------------------------------------------------------------------------
+
+def _generate_search_queries(
+    category: str,
+    query_type: str,
+    model: str = "gpt-4o-mini",
+    log_path: Path | None = None,
+) -> list[str]:
+    """Use the LLM to generate optimal search queries for a category."""
+    prompt = build_search_query_generation_prompt(category, query_type)
+    _log_block(log_path, f"QUERY GENERATION ({query_type.upper()})", f"Category: {category}")
+    client = get_openai_client()
+    try:
+        response = client.chat.completions.create(
+            model=model,
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0.2,
+            response_format={"type": "json_object"},
+        )
+        content = response.choices[0].message.content or ""
+        result = json.loads(content)
+        queries = result.get("queries", [])
+        _log_block(log_path, f"QUERY GENERATION ({query_type.upper()}) — RESULT",
+                   f"Generated {len(queries)} queries:\n" + "\n".join(f"  - {q}" for q in queries))
+        return queries if queries else _fallback_queries(category, query_type)
+    except Exception as e:
+        _log_block(log_path, f"QUERY GENERATION ({query_type.upper()}) — ERROR", str(e))
+        return _fallback_queries(category, query_type)
+
+
+def _fallback_queries(category: str, query_type: str) -> list[str]:
+    """Minimal fallback queries when LLM query generation fails."""
+    cat = category.lower()
+    if query_type == "standards":
+        return [
+            f"UNSPSC {cat} attributes properties classification",
+            f"IEC standards {cat} specifications attributes",
+            f"NEMA {cat} ratings specifications",
+        ]
+    return [
+        f"{cat} technical specifications datasheet attributes",
+        f"{cat} product catalog specifications manufacturers",
+    ]
+
+
+# ---------------------------------------------------------------------------
+# 1. Attributes from user dataset (or from persisted profiling JSON)
+# ---------------------------------------------------------------------------
+
+def get_attributes_from_profiling(
+    profiling: Dict[str, Any],
+    category: str,
+    log_path: Path | None = None,
+) -> Dict[str, Any]:
+    """Extract attribute evidence from an already-profiled dataset.
+
+    Accepts the profiling dict (column name -> stats) that was persisted
+    to the data/ folder by ``data_loader.profile_and_save()``.
+    """
+    _log_block(log_path, "PROFILING LOAD – START",
+               f"Category: {category} | Columns: {len(profiling)}")
+
+    columns = list(profiling.keys())
+    attributes = []
+    sample_parts = []
+    for col, stats in profiling.items():
+        vals = stats.get("distinct_values") or []
+        sample = vals[0]["value"] if vals else ""
+        attributes.append({"name": col, "source": "user_dataset_profiling", "sample": sample})
+        if sample:
+            sample_parts.append(f"{col}: {sample}")
+
+    _log_block(
+        log_path,
+        "PROFILING LOAD – DONE",
+        f"Columns ({len(columns)}): {columns}\n\nSample excerpt:\n" + "\n".join(sample_parts[:30]),
+    )
+    return {
+        "attributes": attributes,
+        "columns": columns,
+        "raw_excerpt": "\n".join(sample_parts[:50]) if sample_parts else "",
+    }
+
 
 def get_attributes_from_dataset(
     dataset_path: str,
+    category: str,
     log_path: Path | None = None,
 ) -> Dict[str, Any]:
-    """Load Contactors_Dataset.xlsx and extract column names as attributes."""
-    _log_block(log_path, "DATASET LOAD – START", f"Path: {dataset_path}")
+    """Load the user's dataset from disk and extract column names as attributes.
+
+    Prefer ``get_attributes_from_profiling()`` when a profiling JSON is
+    already available in the data/ folder.
+    """
+    _log_block(log_path, "DATASET LOAD – START", f"Path: {dataset_path}\nCategory: {category}")
     if not os.path.isfile(dataset_path):
         err = f"Dataset file not found: {dataset_path}"
         _log_block(log_path, "DATASET LOAD – ERROR", err)
-        return {
-            "attributes": [],
-            "columns": [],
-            "raw_excerpt": "",
-            "error": err,
-        }
+        return {"attributes": [], "columns": [], "raw_excerpt": "", "error": err}
     try:
-        df = pd.read_excel(dataset_path)
+        ext = os.path.splitext(dataset_path)[1].lower()
+        if ext == ".csv":
+            df = pd.read_csv(dataset_path)
+        elif ext in (".xlsx", ".xls"):
+            df = pd.read_excel(dataset_path)
+        elif ext == ".json":
+            df = pd.read_json(dataset_path)
+        else:
+            df = pd.read_excel(dataset_path)
     except Exception as e:
         _log_block(log_path, "DATASET LOAD – ERROR", str(e))
         return {"attributes": [], "columns": [], "raw_excerpt": "", "error": str(e)}
@@ -126,7 +218,7 @@ def get_attributes_from_dataset(
         for v in df[col].dropna().head(1):
             sample = str(v).strip()[:200]
             break
-        attributes.append({"name": col, "source": "Contactors_Dataset", "sample": sample or ""})
+        attributes.append({"name": col, "source": "user_dataset", "sample": sample or ""})
         if sample:
             sample_parts.append(f"{col}: {sample}")
 
@@ -143,16 +235,8 @@ def get_attributes_from_dataset(
 
 
 # ---------------------------------------------------------------------------
-# 2. Attributes from standards (UNSPSC, IEC, NEMA) via Tavily
+# 2. Attributes from standards via Tavily (LLM-generated queries)
 # ---------------------------------------------------------------------------
-
-STANDARD_SEARCH_QUERIES = [
-    "UNSPSC electrical equipment contactors attributes properties",
-    "IEC 60947 contactor specifications attributes list",
-    "IEC 60947-4-1 contactor rated voltage current attributes",
-    "NEMA contactor specifications attributes ratings",
-]
-
 
 def get_attributes_from_standards(
     category: str,
@@ -160,10 +244,12 @@ def get_attributes_from_standards(
     max_results_per_query: int = 3,
     log_path: Path | None = None,
 ) -> Dict[str, Any]:
-    """Use Tavily search for UNSPSC/IEC/NEMA attribute context, then AI extraction."""
     _log_block(log_path, "STANDARDS SEARCH – START", f"Category: {category}")
+
+    queries = _generate_search_queries(category, "standards", log_path=log_path)
+
     combined_text = []
-    for q in STANDARD_SEARCH_QUERIES:
+    for q in queries:
         try:
             text = _tavily_search(q, max_results=max_results_per_query, log_path=log_path)
             if text:
@@ -178,7 +264,7 @@ def get_attributes_from_standards(
         return {"attributes": [], "raw_excerpt": "", "error": "No content from standards search."}
 
     client = get_openai_client()
-    prompt = build_standards_extraction_prompt(raw_excerpt)
+    prompt = build_standards_extraction_prompt(raw_excerpt, category)
     _log_block(log_path, "STANDARDS AI EXTRACTION – PROMPT", prompt[:5000] + ("...(truncated)" if len(prompt) > 5000 else ""))
     try:
         response = client.chat.completions.create(
@@ -202,24 +288,20 @@ def get_attributes_from_standards(
 
 
 # ---------------------------------------------------------------------------
-# 3. Attributes from manufacturer sites via Tavily
+# 3. Attributes from manufacturer sites via Tavily (LLM-generated queries)
 # ---------------------------------------------------------------------------
-
-MANUFACTURER_SEARCH_QUERIES = [
-    "contactors technical specifications datasheet attributes Schneider Siemens Eaton Rockwell",
-    "contactor product attributes specifications site:se.com",
-]
-
 
 def get_attributes_from_manufacturer_sites(
     category: str,
     max_search_results: int = 5,
     log_path: Path | None = None,
 ) -> Dict[str, Any]:
-    """Use Tavily search for manufacturer content, then AI extraction."""
     _log_block(log_path, "MANUFACTURER SEARCH – START", f"Category: {category}")
+
+    queries = _generate_search_queries(category, "manufacturer", log_path=log_path)
+
     combined_text = []
-    for q in MANUFACTURER_SEARCH_QUERIES:
+    for q in queries:
         try:
             text = _tavily_search(q, max_results=max_search_results, log_path=log_path)
             if text:
@@ -234,7 +316,7 @@ def get_attributes_from_manufacturer_sites(
         return {"attributes": [], "raw_excerpt": "", "error": "No content from manufacturer search."}
 
     client = get_openai_client()
-    prompt = build_manufacturer_extraction_prompt(raw_excerpt)
+    prompt = build_manufacturer_extraction_prompt(raw_excerpt, category)
     _log_block(log_path, "MANUFACTURER AI EXTRACTION – PROMPT", prompt[:5000] + ("...(truncated)" if len(prompt) > 5000 else ""))
     try:
         response = client.chat.completions.create(
@@ -267,7 +349,6 @@ _VALID_STABILITY = {"high", "medium", "low"}
 
 
 def _validate_backbone_attribute(attr: dict) -> dict:
-    """Ensure all required backbone fields exist with valid defaults."""
     attr.setdefault("name", "")
     attr.setdefault("description", "")
     if attr.get("structural_role") not in _VALID_STRUCTURAL_ROLES:
@@ -296,7 +377,6 @@ def _validate_backbone_attribute(attr: dict) -> dict:
         3,
     )
     attr["confidence"] = conf
-
     attr.setdefault("sources", [])
     attr.setdefault("rationale", "")
     return attr
@@ -307,13 +387,9 @@ def model_backbone_schema(
     attributes_from_manufacturers: Dict[str, Any],
     attributes_from_dataset: Dict[str, Any],
     category: str,
-    model: str = "gpt-4o-mini",
+    model: str = "gpt-4o",
     log_path: Path | None = None,
 ) -> Dict[str, Any]:
-    """
-    Build the canonical backbone schema from gathered evidence.
-    Returns dict with 'reasoning' and 'backbone' (list of structurally classified attributes).
-    """
     _log_block(log_path, "BACKBONE MODELING – START", f"Category: {category} | Model: {model}")
     standards_attrs = attributes_from_standards.get("attributes", [])
     standards_preview = json.dumps(standards_attrs, indent=2) if standards_attrs else "None"
@@ -333,6 +409,7 @@ def model_backbone_schema(
 
     prompt = build_backbone_modeling_prompt(
         standards_preview, manu_preview, dataset_preview, dataset_excerpt,
+        category=category,
     )
     _log_block(log_path, "BACKBONE MODELING – PROMPT", prompt[:8000] + ("...(truncated)" if len(prompt) > 8000 else ""))
     client = get_openai_client()
@@ -341,6 +418,7 @@ def model_backbone_schema(
             model=model,
             messages=[{"role": "user", "content": prompt}],
             temperature=0.2,
+            max_tokens=16000,
             response_format={"type": "json_object"},
         )
         content = response.choices[0].message.content
@@ -365,25 +443,22 @@ def model_backbone_schema(
 
 
 # ---------------------------------------------------------------------------
-# 5. Lens projection: derive supply chain and ecommerce views from backbone
+# 5. Lens projection: derive supply chain, ecommerce, and analytical views
 # ---------------------------------------------------------------------------
 
 def project_lenses(
     backbone: list[dict],
-    model: str = "gpt-4o-mini",
+    category: str,
+    model: str = "gpt-4o",
     log_path: Path | None = None,
 ) -> Dict[str, Any]:
-    """
-    Project the canonical backbone into supply chain and ecommerce views.
-    Returns dict with 'supply_chain' and 'ecommerce' lists.
-    """
-    _log_block(log_path, "LENS PROJECTION – START", f"Backbone size: {len(backbone)} | Model: {model}")
+    _log_block(log_path, "LENS PROJECTION – START", f"Category: {category} | Backbone size: {len(backbone)} | Model: {model}")
     if not backbone:
         _log_block(log_path, "LENS PROJECTION – SKIP", "Empty backbone; nothing to project.")
-        return {"supply_chain": [], "ecommerce": []}
+        return {"supply_chain": [], "ecommerce": [], "analytical": []}
 
     backbone_json = json.dumps(backbone, indent=2)
-    prompt = build_lens_projection_prompt(backbone_json)
+    prompt = build_lens_projection_prompt(backbone_json, category=category)
     _log_block(log_path, "LENS PROJECTION – PROMPT", prompt[:8000] + ("...(truncated)" if len(prompt) > 8000 else ""))
     client = get_openai_client()
     try:
@@ -391,26 +466,29 @@ def project_lenses(
             model=model,
             messages=[{"role": "user", "content": prompt}],
             temperature=0.1,
+            max_tokens=8000,
             response_format={"type": "json_object"},
         )
         content = response.choices[0].message.content
         _log_block(log_path, "LENS PROJECTION – RAW RESPONSE", content or "(empty)")
         if not content:
             _log_block(log_path, "LENS PROJECTION – ERROR", "Empty response from LLM")
-            return {"supply_chain": [], "ecommerce": []}
+            return {"supply_chain": [], "ecommerce": [], "analytical": []}
         out = json.loads(content)
         out.setdefault("supply_chain", [])
         out.setdefault("ecommerce", [])
+        out.setdefault("analytical", [])
         _log_block(
             log_path,
             "LENS PROJECTION – DONE",
-            f"Supply chain attributes: {len(out['supply_chain'])}\n"
-            f"Ecommerce attributes: {len(out['ecommerce'])}",
+            f"Supply chain: {len(out['supply_chain'])} | "
+            f"Ecommerce: {len(out['ecommerce'])} | "
+            f"Analytical: {len(out.get('analytical', []))}",
         )
         return out
     except (json.JSONDecodeError, TypeError) as e:
         _log_block(log_path, "LENS PROJECTION – ERROR", f"JSON parse failed: {e}")
-        return {"supply_chain": [], "ecommerce": []}
+        return {"supply_chain": [], "ecommerce": [], "analytical": []}
 
 
 # ---------------------------------------------------------------------------
@@ -418,56 +496,37 @@ def project_lenses(
 # ---------------------------------------------------------------------------
 
 def standardize_attributes(
-    category: str = "contactors",
+    category: str,
     dataset_path: str | None = None,
+    profiling_data: Dict[str, Any] | None = None,
     output_dir: str = ".",
     output_json_path: str | None = None,
     output_csv_path: str | None = None,
     max_search_results: int = 5,
 ) -> tuple[Dict[str, Any], List[Dict[str, Any]], Path]:
-    """
-    Run the full workflow: gather evidence -> backbone modeling -> lens projection.
-    Returns (full_result_dict, list of backbone rows for CSV, log_file_path).
+    """Run the full workflow: gather evidence -> backbone modeling -> lens projection.
+
+    If *profiling_data* is provided (the dict from ``data_loader.profile_and_save``),
+    it is used directly instead of re-loading the raw dataset from *dataset_path*.
     """
     log_path = get_attribute_resolver_log_path_for_run()
     _log_block(log_path, "PIPELINE START", f"Category: {category}\nLog file: {log_path}")
 
-    bb = load_domain_backbone()
+    bb = load_domain_backbone(category)
     bb_attrs = bb.get("attributes", [])
     bb_inv = bb.get("invariants", [])
     if bb_attrs:
-        summary = get_backbone_attributes_summary()
+        summary = get_backbone_attributes_summary(category)
         _log_block(
             log_path,
             "BACKBONE LOADED",
             f"Attributes: {len(bb_attrs)} | Invariants: {len(bb_inv)}\n\n{summary}",
         )
-        print(f"  [Backbone] Loaded {len(bb_attrs)} canonical attributes, {len(bb_inv)} invariants from domain_backbone.yaml")
+        print(f"  [Backbone] Loaded {len(bb_attrs)} canonical attributes, {len(bb_inv)} invariants for '{category}'")
     else:
-        _log_block(log_path, "BACKBONE", "domain_backbone.yaml not found or empty — running without canonical grounding.")
-        print("  [Backbone] domain_backbone.yaml not found — running without canonical grounding")
+        _log_block(log_path, "BACKBONE", f"No backbone found for '{category}' — reasoning from first principles.")
+        print(f"  [Backbone] No backbone for '{category}' — reasoning from first principles")
 
-    config_path = PROJECT_ROOT / "config.yaml"
-    if config_path.is_file():
-        try:
-            import yaml
-            with open(config_path, "r", encoding="utf-8") as f:
-                cfg = yaml.safe_load(f) or {}
-            attrs_cfg = cfg.get("attributes") or {}
-            if not dataset_path:
-                dataset_path = attrs_cfg.get("contactors_dataset_path")
-            if max_search_results == 5:
-                max_search_results = attrs_cfg.get("max_search_results", 5)
-            if not output_json_path:
-                output_json_path = attrs_cfg.get("output_json_path")
-            if not output_csv_path:
-                output_csv_path = attrs_cfg.get("output_csv_path")
-            _log_block(log_path, "CONFIG", f"Loaded overrides from {config_path}")
-        except Exception as exc:
-            _log_block(log_path, "CONFIG WARNING", f"Failed to load config.yaml: {exc}")
-
-    default_dataset = str(PROJECT_ROOT / "Contactors_Dataset.xlsx")
-    dataset_path = dataset_path or default_dataset
     output_json_path = output_json_path or "recommended_attributes.json"
     output_csv_path = output_csv_path or "standardized_attributes.csv"
 
@@ -475,27 +534,31 @@ def standardize_attributes(
         log_path,
         "RESOLVED PARAMETERS",
         f"dataset_path: {dataset_path}\n"
+        f"profiling_data: {'provided (' + str(len(profiling_data)) + ' columns)' if profiling_data else 'None'}\n"
         f"output_json_path: {output_json_path}\n"
         f"output_csv_path: {output_csv_path}\n"
         f"max_search_results: {max_search_results}",
     )
 
-    # Step 1-3: evidence gathering
     print(f"  [Log] {log_path}")
-    print("  [Standards] Searching UNSPSC, IEC, NEMA via Tavily...")
+    print(f"  [Standards] Searching standards via Tavily for '{category}'...")
     from_standards = get_attributes_from_standards(
         category, max_results_per_query=max_search_results, log_path=log_path,
     )
 
-    print("  [Manufacturers] Searching manufacturer sites via Tavily...")
+    print(f"  [Manufacturers] Searching manufacturer sites via Tavily for '{category}'...")
     from_manufacturers = get_attributes_from_manufacturer_sites(
         category, max_search_results=max_search_results, log_path=log_path,
     )
 
-    print(f"  [Dataset] Loading from: {dataset_path}")
-    from_dataset = get_attributes_from_dataset(dataset_path, log_path=log_path)
+    from_dataset: Dict[str, Any] = {"attributes": [], "columns": [], "raw_excerpt": ""}
+    if profiling_data:
+        print(f"  [Dataset] Loading from profiling data ({len(profiling_data)} columns)")
+        from_dataset = get_attributes_from_profiling(profiling_data, category, log_path=log_path)
+    elif dataset_path:
+        print(f"  [Dataset] Loading from: {dataset_path}")
+        from_dataset = get_attributes_from_dataset(dataset_path, category, log_path=log_path)
 
-    # Step 4: backbone modeling
     print("  [Backbone] Building canonical schema with structural classification...")
     backbone_result = model_backbone_schema(
         from_standards, from_manufacturers, from_dataset, category, log_path=log_path,
@@ -503,14 +566,11 @@ def standardize_attributes(
     backbone = backbone_result.get("backbone", [])
     print(f"  [Backbone] {len(backbone)} attributes modeled")
 
-    # Step 5: lens projection
-    print("  [Lenses] Projecting supply chain and ecommerce views...")
-    lenses = project_lenses(backbone, log_path=log_path)
+    print("  [Lenses] Projecting supply chain, ecommerce, and analytical views...")
+    lenses = project_lenses(backbone, category, log_path=log_path)
     print(f"  [Lenses] Supply chain: {len(lenses.get('supply_chain', []))} | "
-          f"Ecommerce: {len(lenses.get('ecommerce', []))}")
-
-    # Build backbone name lookup for lens enrichment
-    backbone_by_name = {a["name"]: a for a in backbone}
+          f"Ecommerce: {len(lenses.get('ecommerce', []))} | "
+          f"Analytical: {len(lenses.get('analytical', []))}")
 
     full_result = {
         "category": category,
@@ -523,9 +583,9 @@ def standardize_attributes(
         "error": backbone_result.get("error"),
     }
 
-    # Build CSV rows: one row per backbone attribute with lens relevance columns
     sc_names = {e.get("name") for e in lenses.get("supply_chain", [])}
     ec_names = {e.get("name") for e in lenses.get("ecommerce", [])}
+    an_names = {e.get("name") for e in lenses.get("analytical", [])}
 
     rows = []
     for a in backbone:
@@ -552,11 +612,11 @@ def standardize_attributes(
             "confidence_standards": conf.get("standards_coverage", ""),
             "supply_chain_relevant": a.get("name", "") in sc_names,
             "ecommerce_relevant": a.get("name", "") in ec_names,
+            "analytical_relevant": a.get("name", "") in an_names,
             "rationale": a.get("rationale", ""),
             "sources": sources_str,
         })
 
-    # Write outputs
     output_dir = os.path.abspath(output_dir)
     if output_json_path:
         out_json = os.path.join(output_dir, output_json_path) if not os.path.isabs(output_json_path) else output_json_path
@@ -575,7 +635,8 @@ def standardize_attributes(
                 "name", "structural_role", "data_type", "intrinsic", "unit",
                 "dependencies", "confidence_composite", "confidence_necessity",
                 "confidence_stability", "confidence_standards",
-                "supply_chain_relevant", "ecommerce_relevant", "rationale", "sources",
+                "supply_chain_relevant", "ecommerce_relevant", "analytical_relevant",
+                "rationale", "sources",
             ]).to_csv(out_csv, index=False)
         _log_block(log_path, "OUTPUT – CSV", f"Written to: {out_csv} ({len(rows)} rows)")
 
@@ -585,6 +646,7 @@ def standardize_attributes(
         f"Backbone: {len(backbone)} attributes\n"
         f"Supply chain lens: {len(lenses.get('supply_chain', []))} attributes\n"
         f"Ecommerce lens: {len(lenses.get('ecommerce', []))} attributes\n"
+        f"Analytical lens: {len(lenses.get('analytical', []))} attributes\n"
         f"Errors: {full_result.get('error') or 'None'}",
     )
 
@@ -592,16 +654,21 @@ def standardize_attributes(
 
 
 def main() -> None:
-    """Entrypoint for standalone attribute resolution."""
+    """Entrypoint for standalone attribute resolution (defaults to user prompt)."""
+    import sys
+    if len(sys.argv) < 2:
+        print("Usage: python -m normalisation_rules.attribute_resolver.resolver <category>")
+        sys.exit(1)
+    category = sys.argv[1]
     result, rows, run_log = standardize_attributes(
-        category="contactors",
+        category=category,
         dataset_path=None,
         output_dir=str(PROJECT_ROOT),
         output_json_path="recommended_attributes.json",
         output_csv_path="standardized_attributes.csv",
         max_search_results=5,
     )
-    print("Saved recommended_attributes.json and standardized_attributes.csv")
+    print(f"Saved recommended_attributes.json and standardized_attributes.csv")
     print(f"Log file: {run_log}")
     reasoning_preview = (result.get("reasoning") or "")[:500]
     if reasoning_preview:
@@ -615,6 +682,7 @@ def main() -> None:
     lenses = result.get("lenses", {})
     print(f"Supply chain view: {len(lenses.get('supply_chain', []))} attributes")
     print(f"Ecommerce view: {len(lenses.get('ecommerce', []))} attributes")
+    print(f"Analytical view: {len(lenses.get('analytical', []))} attributes")
 
 
 if __name__ == "__main__":

@@ -11,7 +11,7 @@ def _parse_rule_line(line: str) -> tuple[str, str, str, str] | None:
     parts = line.split("\t")
     if len(parts) >= 4:
         return (parts[0].strip(), parts[1].strip(), parts[2].strip(), parts[3].strip())
-    if len(parts) == 1 and (line.startswith("Contactors") or "Normalization" in line):
+    if len(parts) == 1 and "Normalization" in line:
         # Malformed: put whole line in Rule description
         return ("", "", "Normalization", line)
     if len(parts) == 3:

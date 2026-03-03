@@ -7,6 +7,8 @@ from typing import Annotated, TypedDict
 class RuleDerivationState(TypedDict, total=False):
     """State for the rule derivation graph."""
 
+    # Auto-detected product category
+    category: str
     # Current attribute being processed
     current_attribute: dict
     # Web search context for this attribute (from Tavily standards search)
@@ -17,7 +19,7 @@ class RuleDerivationState(TypedDict, total=False):
     curated_values: str
     # Few-shot examples text
     few_shot_examples: str
-    # Domain (e.g. Contactors)
+    # Domain string for search queries (e.g. "electrical contactors")
     domain: str
     # Whether to call Tavily for web context
     use_tavily: bool
@@ -27,6 +29,10 @@ class RuleDerivationState(TypedDict, total=False):
     tavily_log_path: str
     # List of manufacturers to search for catalog values
     manufacturers: list[str]
+    # Original-to-cleaned column name mapping from prefix stripping
+    column_mapping: dict[str, str]
+    # Canonical attributes from attribute resolution (feeds into normalisation)
+    canonical_attributes: list[dict]
     # Accumulated rules (reducer appends when node returns {"rules": [...]})
     rules: Annotated[list[str], operator.add]
     # Last error if any

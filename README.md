@@ -44,6 +44,16 @@ The pipeline:
 
 ## Usage
 
+### Streamlit UI (Interactive)
+
+To launch the web interface for file upload and interactive schema generation:
+
+```bash
+uv run streamlit run schema_builder_ui/app.py
+```
+
+### CLI (Command Line)
+
 - **Default (OpenAI + Tavily, all suitable attributes):**
 
   ```bash

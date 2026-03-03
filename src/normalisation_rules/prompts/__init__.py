@@ -1,5 +1,13 @@
-"""Prompt builders for all pipelines (normalisation rules, hierarchy, attribute resolver)."""
+"""Prompt builders for all pipelines."""
 
-from normalisation_rules.prompts.normalisation_rules_prompt import SYSTEM_PROMPT, build_user_prompt
+from normalisation_rules.prompts.normalisation_rules_prompt import (
+    get_system_prompt,
+    build_user_prompt,
+    build_rules_lens_projection_prompt,
+)
 
-__all__ = ["SYSTEM_PROMPT", "build_user_prompt"]
+__all__ = [
+    "get_system_prompt",
+    "build_user_prompt",
+    "build_rules_lens_projection_prompt",
+]

@@ -1,0 +1,154 @@
+# Default Domain Backbone — Generic Electrical Component
+#
+# This file is loaded when no category-specific backbone exists.
+# It provides shared structural patterns common to ALL electrical components.
+# The LLM will reason from its intrinsic knowledge + user data + this minimal context.
+
+domain:
+  name: Industrial Component
+  sub_domain: Electrical Equipment
+  focus_entity: Generic Component
+  standards_basis:
+    - IEC 60947 (low-voltage switchgear)
+    - NEMA ICS (industrial control standards)
+    - UNSPSC (product classification)
+  manufacturers:
+    - ABB
+    - Siemens
+    - Schneider Electric
+    - Eaton
+    - Rockwell Automation
+
+# No specific entities — the LLM should derive these from the category's functional purpose.
+entities:
+  primary: []
+  supporting: []
+  control: []
+  protection: []
+  governance:
+    - name: IEC_Standards
+      type: standard
+    - name: NEMA_Standards
+      type: standard
+    - name: UNSPSC
+      type: taxonomy
+    - name: Manufacturer
+      type: external
+    - name: CertificationBody
+      type: external
+
+# Universal attributes that apply to virtually ALL electrical components.
+# The LLM should ADD category-specific attributes beyond these.
+attributes:
+  - name: Manufacturer
+    structural_role: identity
+    data_type: enumeration
+    unit: null
+    intrinsic: false
+    standards_defined: false
+    cross_manufacturer_stability: high
+    tier: 1
+
+  - name: Part number
+    structural_role: identity
+    data_type: scalar
+    unit: null
+    intrinsic: false
+    standards_defined: false
+    cross_manufacturer_stability: high
+    tier: 1
+
+  - name: Rated voltage
+    structural_role: variant-defining
+    data_type: scalar
+    unit: {base_unit: V, unit_system: SI}
+    intrinsic: true
+    standards_defined: true
+    cross_manufacturer_stability: high
+    tier: 1
+
+  - name: Rated current
+    structural_role: variant-defining
+    data_type: scalar
+    unit: {base_unit: A, unit_system: SI}
+    intrinsic: true
+    standards_defined: true
+    cross_manufacturer_stability: high
+    tier: 1
+
+  - name: Mounting type
+    structural_role: variant-defining
+    data_type: enumeration
+    unit: null
+    allowed_values: [DIN Rail, Panel Mount, DIN Rail/Panel Mount, Screw Mount]
+    intrinsic: true
+    standards_defined: false
+    cross_manufacturer_stability: medium
+    tier: 2
+
+  - name: Degree of protection (IP)
+    structural_role: descriptive
+    data_type: enumeration
+    unit: null
+    intrinsic: true
+    standards_defined: true
+    cross_manufacturer_stability: high
+    tier: 2
+
+  - name: Weight
+    structural_role: descriptive
+    data_type: scalar
+    unit: {base_unit: kg, unit_system: SI}
+    intrinsic: true
+    standards_defined: false
+    cross_manufacturer_stability: low
+    tier: 3
+
+  - name: Dimensions (H x W x D)
+    structural_role: descriptive
+    data_type: composite
+    unit: {base_unit: mm, unit_system: SI}
+    intrinsic: true
+    standards_defined: false
+    cross_manufacturer_stability: low
+    tier: 3
+
+  - name: Product description
+    structural_role: descriptive
+    data_type: scalar
+    unit: null
+    intrinsic: false
+    standards_defined: false
+    cross_manufacturer_stability: low
+    tier: 3
+
+# No category-specific invariants — the LLM should derive these from functional analysis.
+invariants: []
+
+# Universal normalization patterns shared across categories.
+normalization:
+  multi_value_separator: " || "
+  voltage:
+    unit_normalization:
+      - {pattern: '(\d+)\s*VAC', canonical: "{n} V AC"}
+      - {pattern: '(\d+)\s*VDC', canonical: "{n} V DC"}
+      - {pattern: '(\d+)\s*V\s*AC', canonical: "{n} V AC"}
+  mounting:
+    canonical_values:
+      - DIN Rail
+      - Panel Mount
+      - DIN Rail/Panel Mount
+      - Screw Mount
+    mappings:
+      "On Rail": "DIN Rail"
+      "35mm rail": "DIN Rail"
+      "Clip-On": "DIN Rail"
+      "Base Mount": "Panel Mount"
+  certifications:
+    separator: " || "
+    canonical_values:
+      - UL Listed
+      - CSA Certified
+      - CE Approved
+      - GOST Certified
+      - RoHS Compliant

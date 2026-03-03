@@ -5,7 +5,9 @@ alwaysApply: true
 
 # Project Overview
 
-Python 3.10+ CLI application (`normalisation-rules`) that derives data normalization rules for Electrical Equipment (Contactors) using LLMs.
+**Schema Builder Agent** — produces deployable, opinionated product data schemas by applying expert knowledge consistently and at scale. A schema is successful not because it reflects the current state of the data, but because it reflects what the data **should** look like to support buying, selling, and moving products.
+
+The agent is: expert in product data modeling, opinionated about best practices, consistent in rule application, grounded in industry standards (IEC, ISO, UNSPSC, eClass), and honest about tradeoffs. It uses Chain-of-Thought prompting, has zero hardcoded constants, and auto-detects product categories.
 
 ## Tech Stack
 
@@ -16,68 +18,95 @@ Python 3.10+ CLI application (`normalisation-rules`) that derives data normaliza
 - **LLM providers**: OpenAI (gpt-4o, gpt-4o-mini), Groq (llama-3.1-8b-instant)
 - **Web search**: Tavily API
 - **Data processing**: pandas, openpyxl, BeautifulSoup4, requests
+- **UI**: Streamlit (opinionated AI schema architect — always-on chat, sidebar upload)
 
 ## Directory Layout
 
 ```
 Schema_Builder_V0/
 ├── pyproject.toml                     # uv project config, dependencies, entry point
-├── .env.example                       # API key template (OPENAI, GROQ, TAVILY)
-├── python_profiling.py                # Standalone data profiling utility
-├── Contactors_Profiling_distinct_values.json   # Input profiling data
-├── Few_Shot_Examples.txt              # Few-shot prompt examples
+├── .env.example                       # API key template
+├── Electrical_Components.docx         # Reference list of ALL supported categories
+├── data/                              # Auto-generated profiling JSONs (one per dataset)
+├── knowledge_base/                    # Dynamic domain backbones (per-category YAML)
+│   ├── contactors.yaml               # Detailed backbone for contactors
+│   └── default.yaml                  # Fallback for categories without specific YAML
+├── schema_builder_ui/                 # Streamlit UI (conversational agent)
+│   └── app.py
 └── src/normalisation_rules/           # Main package
-    ├── cli.py                         # CLI entry point (main())
-    ├── config.py                      # Centralized paths, API keys, constants
+    ├── cli.py                         # CLI entry point
+    ├── config.py                      # Paths, API keys, dynamic helpers (NO hardcoded constants)
     ├── models.py                      # LLM factory (OpenAI / Groq)
     ├── state.py                       # LangGraph TypedDict state
-    ├── graph.py                       # LangGraph workflow definition
-    ├── data_loader.py                 # Load/filter profiling JSON
-    ├── tavily_context.py              # Tavily web search integration
+    ├── graph.py                       # LangGraph workflow + on-demand multi-view projection
+    ├── category_detector.py           # LLM-based auto-category detection from user data
+    ├── prefix_stripper.py             # LLM-based column prefix detection and stripping
+    ├── data_loader.py                 # Generic dataset loader and profiler
+    ├── tavily_context.py              # Tavily web search (dynamic domain, no hardcoded queries)
     ├── curate_values.py               # Combine customer + standards + manufacturer data
     ├── export.py                      # Excel/text rule export
     ├── few_shots_generator.py         # Generate few-shot example mappings
     ├── prompts/
-    │   ├── normalisation_rules_prompt.py
-    │   ├── hierarchy_prompt.py
-    │   └── attribute_resolver_prompt.py
+    │   ├── normalisation_rules_prompt.py   # CoT rules + on-demand lens projection
+    │   ├── hierarchy_prompt.py             # Hierarchy extraction and recommendation
+    │   ├── attribute_resolver_prompt.py    # Standards/manufacturer/backbone CoT
+    │   ├── category_detection_prompt.py    # Auto-detect category from data
+    │   ├── prefix_detection_prompt.py      # Detect and strip column prefixes
+    │   ├── search_query_generation_prompt.py  # LLM-generated Tavily queries
+    │   └── intent_classification_prompt.py    # Conversational intent classifier
     ├── hierarchy/
-    │   └── resolver.py                # UNSPSC + manufacturer scraping pipeline
+    │   └── resolver.py                # Dynamic UNSPSC + manufacturer URL discovery
     └── attribute_resolver/
-        └── resolver.py                # Standards + manufacturer + dataset CoT pipeline
+        └── resolver.py                # LLM-generated queries + backbone + lenses
 ```
 
-## Three Pipelines
+## Workflow Architecture
 
-1. **Normalization rules** (`graph.py`, `cli.py:_run_normalisation_rules`):
-   `START -> fetch_context (Tavily standards) -> fetch_manufacturer_context (Tavily catalogs) -> curate_values -> derive_rules (LLM) -> END`
-   Outputs: Excel/text with tab-separated rules
+```
+Upload -> Auto-Detect Category -> Strip Prefixes -> Profile & Save to data/
+  -> Auto Attribute Resolution (from profiling) -> Schema Health Report
+  -> AI-Powered Conversational Loop:
+     - "normalize X column"         -> Normalisation Rules Pipeline (from profiling)
+     - "show hierarchy"             -> Hierarchy Resolution Pipeline
+     - "show ERP view"              -> On-Demand Multi-View Projection
+     - "what attributes am I missing?" -> Schema gap analysis
+     - "explain why X is important" -> LLM contextual reasoning
+     - "change category"            -> Re-profile & Re-detect
+     - any question                 -> LLM answers with full session context
+```
 
-2. **Hierarchy resolution** (`hierarchy/resolver.py`, `cli.py:_run_hierarchy`):
-   Scrape UNSPSC + manufacturer websites -> extract breadcrumb paths -> AI recommendation of supply chain + ecommerce paths
-   Outputs: CSV, JSON
+1. **Auto-detection**: `category_detector.py` analyzes column names, sample values, filename, and cross-references `Electrical_Components.docx` to identify the product category.
+2. **Prefix stripping**: `prefix_stripper.py` uses LLM to detect and remove vendor/system prefixes (e.g., `zz_`) from column names.
+3. **Profiling** (runs for every new dataset): `data_loader.profile_and_save()` profiles every column (datatype, distinct values, missing %, semantic type) and persists the result as a timestamped JSON in `data/`. All downstream pipelines load from this persisted profiling — they never re-read the raw dataset.
+4. **Attribute resolution** (always runs first, from profiling): evidence from standards (Tavily), manufacturer sites (Tavily), and profiling data -> LLM backbone modeling -> lens projection (supply chain, ecommerce, analytical).
+5. **Schema health report**: LLM compares user columns against canonical schema, identifies present/missing attributes, flags data quality issues, and produces ranked recommendations. Proactively displayed after the auto-pipeline.
+6. **Normalisation rules** (on-demand, from profiling): LangGraph pipeline with Tavily context -> curate values -> CoT rule derivation. Attribute stats come from the saved profiling JSON.
+7. **Hierarchy** (on-demand): dynamic UNSPSC discovery + manufacturer URL discovery via Tavily -> AI recommendation of supply chain + ecommerce paths.
+8. **Multi-view projection** (on-demand): user asks for ERP/ecommerce/analytical views of rules or attributes and the LLM projects them on demand.
+9. **Smart assistant**: for general/explain queries, the LLM generates contextual responses referencing profiling, canonical attributes, missing attributes, and session state.
 
-3. **Attribute resolution** (`attribute_resolver/resolver.py`, `cli.py:_run_attribute_resolver`):
-   Tavily search for standards + manufacturer attributes -> load dataset columns -> Chain-of-Thought derivation
-   Outputs: JSON, CSV
+## Entry Points
 
-## Entry Point
-
+### CLI
 ```bash
-uv run normalisation-rules [--provider openai|groq] [--priority-only] [--no-tavily] [--limit N]
+uv run normalisation-rules --dataset path/to/data.xlsx [--category Contactors]
 ```
 
-Interactive CLI prompts user for which pipelines to run (yes/no for each).
+### Streamlit UI
+```bash
+uv run streamlit run schema_builder_ui/app.py
+```
 
-## Configuration
+## Key Architectural Principles
 
-- API keys in `.env` file (loaded by `python-dotenv` in `config.py`)
-- All file paths centralized in `config.py` relative to `PROJECT_ROOT`
-- Default manufacturers: ABB, Eaton Cutler Hammer, Schneider Electric, Siemens, Square D
-
-## Key Conventions
-
-- No frontend exists; this is a CLI-only project
-- No test suite exists (no pytest setup)
-- Output files are timestamped where applicable (logs, curated values)
-- LLM responses always parsed with try/except, errors returned as dicts with `"error"` key
+- **Schema defines target state, not current state**: Schema describes what data SHOULD look like to support business outcomes. Observed data is evidence, not truth.
+- **Knowledge authority hierarchy**: Category-specific > Product domain > Architecture > Reference > Observed data. Higher authority overrides lower when they conflict.
+- **Opinionated decisions with rationale**: Every schema decision includes: the decision, rationale, alternatives rejected, and tradeoffs. Deviations from best practice are explicit and explainable.
+- **Zero hardcoded values**: No product-specific constants anywhere. Everything is LLM-reasoned or loaded from backbone YAML at runtime.
+- **Dynamic backbone as reference context**: `knowledge_base/` YAML files are reference knowledge, not constraints. For unknown categories, `default.yaml` + LLM domain knowledge is sufficient.
+- **Chain of Thought mandatory**: ALL prompts require reasoning about FUNCTIONAL PURPOSE before producing results. Every output explains WHY.
+- **Attribute resolution is the foundation**: Runs automatically after upload. Normalisation rules and hierarchy derive FROM this canonical schema.
+- **Proactive schema assessment**: After auto-pipeline, the agent defines the target state, identifies gaps, makes concrete schema decisions (split/rename/retype/add_constraint), and recommends naming conventions, types, and validation patterns.
+- **Multi-view projection is on-demand**: NOT auto-run. The user requests ERP/ecommerce/analytical views through conversation.
+- **Always-on conversational UI**: Chat works before and after dataset upload. Before upload: general schema design expertise. After upload: context-aware decisions grounded in actual data. LLM intent classification + schema-expert response generation.
+- **Category list from docx**: `Electrical_Components.docx` contains the full category reference. Categories are extracted at runtime, not hardcoded.

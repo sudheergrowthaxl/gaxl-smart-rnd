@@ -19,7 +19,7 @@ import openpyxl
 from openpyxl.styles import Font
 from langchain_core.messages import HumanMessage, SystemMessage
 
-from normalisation_rules.config import PROJECT_ROOT, DEFAULT_PROFILING_JSON
+from normalisation_rules.config import PROJECT_ROOT
 from normalisation_rules.data_loader import load_profiling_json
 from normalisation_rules.models import get_llm
 
@@ -205,7 +205,7 @@ def _generate_few_shots(llm, rule_description: str, observed_values: list[str]) 
 def generate_few_shots_excel(
     input_path: Path = DEFAULT_INPUT,
     output_path: Path = DEFAULT_OUTPUT,
-    profiling_path: Path = DEFAULT_PROFILING_JSON,
+    profiling_path: Path | None = None,
     provider: str = "openai",
     model: str | None = None,
 ) -> Path:
@@ -213,6 +213,8 @@ def generate_few_shots_excel(
 
     Returns the output path.
     """
+    if profiling_path is None:
+        raise ValueError("profiling_path is required — pass the path to profiling JSON.")
     profiling = load_profiling_json(profiling_path)
     llm = get_llm(provider=provider, model=model)
 
@@ -298,8 +300,8 @@ def main():
     parser.add_argument(
         "--profiling",
         type=Path,
-        default=DEFAULT_PROFILING_JSON,
-        help="Path to profiling JSON (default: Contactors_Profiling_distinct_values.json)",
+        default=None,
+        help="Path to profiling JSON (required)",
     )
     parser.add_argument(
         "--provider",
